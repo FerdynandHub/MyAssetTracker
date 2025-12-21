@@ -504,26 +504,34 @@ const startScanning = () => {
 };
 
 useEffect(() => {
+  let scanner = null;
+  
   if (scanning) {
-    const scanner = new Html5QrcodeScanner(
+    scanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
 
     scanner.render(
       (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear();
+        if (decodedText.trim() && !scannedIds.includes(decodedText.trim())) {
+          setScannedIds([...scannedIds, decodedText.trim()]);
+        }
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Ignore scanning errors
       }
     );
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
   }
-}, [scanning]);
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
+}, [scanning, scannedIds]);
 
   const stopScanning = () => {
     if (streamRef.current) {
