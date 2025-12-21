@@ -76,47 +76,47 @@ const App = () => {
 
   if (!mode) {
     
-    return (
-      
-      <div className="min-h-screen bg-gray-100 p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
-            <p className="text-gray-600">Select a mode to begin</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ModeCard
-              icon={<Eye className="w-12 h-12" />}
-              title="Overview"
-              description="View all assets by category"
-              onClick={() => setMode('overview')}
-              color="blue"
-            />
-            <ModeCard
-              icon={<Search className="w-12 h-12" />}
-              title="Check Information"
-              description="Scan or search asset details"
-              onClick={() => setMode('check')}
-              color="green"
-            />
-            <ModeCard
-              icon={<Download className="w-12 h-12" />}
-              title="Export"
-              description="Batch scan and export to CSV"
-              onClick={() => setMode('export')}
-              color="purple"
-            />
-            <ModeCard
-              icon={<Edit className="w-12 h-12" />}
-              title="Update Information"
-              description="Update asset information"
-              onClick={() => setMode('update')}
-              color="orange"
-            />
-          </div>
-        </div>
+  return (
+  <div className="min-h-[100vh] bg-gray-100 p-4 sm:p-6">
+    <div className="max-w-6xl mx-auto">
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
+        <p className="text-gray-600">Select a mode to begin</p>
       </div>
-    );
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <ModeCard
+          icon={<Eye className="w-12 h-12" />}
+          title="Overview"
+          description="View all assets by category"
+          onClick={() => setMode('overview')}
+          color="blue"
+        />
+        <ModeCard
+          icon={<Search className="w-12 h-12" />}
+          title="Check Information"
+          description="Scan or search asset details"
+          onClick={() => setMode('check')}
+          color="green"
+        />
+        <ModeCard
+          icon={<Download className="w-12 h-12" />}
+          title="Export"
+          description="Batch scan and export to CSV"
+          onClick={() => setMode('export')}
+          color="purple"
+        />
+        <ModeCard
+          icon={<Edit className="w-12 h-12" />}
+          title="Update Information"
+          description="Update asset information"
+          onClick={() => setMode('update')}
+          color="orange"
+        />
+      </div>
+    </div>
+  </div>
+);
+
   }
 
   const renderMode = () => {
@@ -183,6 +183,7 @@ const OverviewMode = ({ onBack }) => {
     : assets.filter(a => a.category === selectedCategory);
 
   const categories = ['All', ...CATEGORIES];
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
