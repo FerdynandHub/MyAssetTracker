@@ -1,0 +1,30 @@
+mutation CreateSeedData @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public, it seeds the database with example data.") @transaction {
+  movie_insertMany(data: [
+    {
+      title: "Inception",
+      year: 2010,
+      genres: ["sci-fi", "action"],
+      runtimeMinutes: 148,
+      summary: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
+    },
+    {
+      title: "The Matrix",
+      year: 1999,
+      genres: ["sci-fi", "action"],
+      runtimeMinutes: 136,
+      summary: "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
+    }
+  ])
+  user_insertMany(data: [
+    {
+      displayName: "Alice",
+      email: "alice@example.com"
+      createdAt: "2024-04-28T12:00:00Z"
+    },
+    {
+      displayName: "Bob",
+      email: "bob@example.com"
+      createdAt: "2024-04-28T13:00:00Z"
+    }
+  ])
+}
