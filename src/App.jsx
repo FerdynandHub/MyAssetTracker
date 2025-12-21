@@ -138,17 +138,17 @@ const App = () => {
 };
 
 const ModeCard = ({ icon, title, description, onClick, color }) => {
-  const colors = {
-    blue: 'from-blue-500 to-blue-600',
-    green: 'from-green-500 to-green-600',
-    purple: 'from-purple-500 to-purple-600',
-    orange: 'from-orange-500 to-orange-600'
+  const colorClasses = {
+    blue: 'bg-gradient-to-br from-blue-500 to-blue-600',
+    green: 'bg-gradient-to-br from-green-500 to-green-600',
+    purple: 'bg-gradient-to-br from-purple-500 to-purple-600',
+    orange: 'bg-gradient-to-br from-orange-500 to-orange-600'
   };
 
   return (
     <div
       onClick={onClick}
-      className={`bg-gradient-to-br ${colors[color]} rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white`}
+      className={`${colorClasses[color]} rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white`}
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
