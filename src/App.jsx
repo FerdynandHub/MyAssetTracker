@@ -325,10 +325,11 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        if (scanner) {
-          scanner.clear().catch(() => {});
-        }
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Just ignore scanning errors
       }
     );
   }
@@ -498,21 +499,31 @@ const ExportMode = ({ onBack }) => {
     }
   };
 
-  const startScanning = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+const startScanning = () => {
+  setScanning(true);
+};
+
+useEffect(() => {
+  if (scanning) {
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: { width: 250, height: 250 } }
+    );
+
+    scanner.render(
+      (decodedText) => {
+        setAssetId(decodedText);
+        checkAsset(decodedText);
+        scanner.clear();
+        setScanning(false);
       }
-      setScanning(true);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Could not access camera. Please use manual input.');
-    }
-  };
+    );
+
+    return () => {
+      scanner.clear().catch(() => {});
+    };
+  }
+}, [scanning]);
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -729,21 +740,31 @@ const SingleUpdateMode = ({ onBack }) => {
     setLoading(false);
   };
 
-  const startScanning = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+const startScanning = () => {
+  setScanning(true);
+};
+
+useEffect(() => {
+  if (scanning) {
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: { width: 250, height: 250 } }
+    );
+
+    scanner.render(
+      (decodedText) => {
+        setAssetId(decodedText);
+        checkAsset(decodedText);
+        scanner.clear();
+        setScanning(false);
       }
-      setScanning(true);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Could not access camera. Please use manual input.');
-    }
-  };
+    );
+
+    return () => {
+      scanner.clear().catch(() => {});
+    };
+  }
+}, [scanning]);
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -983,21 +1004,31 @@ const BatchUpdateMode = ({ onBack }) => {
     setLoading(false);
   };
 
-  const startScanning = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+const startScanning = () => {
+  setScanning(true);
+};
+
+useEffect(() => {
+  if (scanning) {
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: { width: 250, height: 250 } }
+    );
+
+    scanner.render(
+      (decodedText) => {
+        setAssetId(decodedText);
+        checkAsset(decodedText);
+        scanner.clear();
+        setScanning(false);
       }
-      setScanning(true);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Could not access camera. Please use manual input.');
-    }
-  };
+    );
+
+    return () => {
+      scanner.clear().catch(() => {});
+    };
+  }
+}, [scanning]);
 
   const stopScanning = () => {
     if (streamRef.current) {
