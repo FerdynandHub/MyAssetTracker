@@ -6,7 +6,7 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyti9NiS5_QcbVZELJsPyS0JQdIxAa4JYsoIcEJShYqNyZuRM54r5LVBhQdpcKhKI03/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtr94WUDtBTeOThp9uGAIqSQka9XRLepFg4qO6kB_SdT7watE3fswVXwCWVCC30QDQ/exec';
 
 const CATEGORIES = ['Projectors', 'Toolkit', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
