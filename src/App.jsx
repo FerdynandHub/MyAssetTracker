@@ -514,20 +514,15 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        scanner.clear().catch(() => {});
+        scanner.clear();
         setScanning(false);
-      },
-      (error) => {
-        // Just ignore scanning errors
       }
     );
-  }
 
-  return () => {
-    if (scanner) {
+    return () => {
       scanner.clear().catch(() => {});
-    }
-  };
+    };
+  }
 }, [scanning]);
 
   const stopScanning = () => {
@@ -760,20 +755,15 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        scanner.clear().catch(() => {});
+        scanner.clear();
         setScanning(false);
-      },
-      (error) => {
-        // Just ignore scanning errors
       }
     );
-  }
 
-  return () => {
-    if (scanner) {
+    return () => {
       scanner.clear().catch(() => {});
-    }
-  };
+    };
+  }
 }, [scanning]);
 
   const stopScanning = () => {
@@ -786,7 +776,6 @@ useEffect(() => {
   useEffect(() => {
     return () => stopScanning();
   }, []);
-
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -1020,10 +1009,8 @@ const startScanning = () => {
 };
 
 useEffect(() => {
-  let scanner = null;
-  
   if (scanning) {
-    scanner = new Html5QrcodeScanner(
+    const scanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
@@ -1032,20 +1019,15 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        scanner.clear().catch(() => {});
+        scanner.clear();
         setScanning(false);
-      },
-      (error) => {
-        // Just ignore scanning errors
       }
     );
-  }
 
-  return () => {
-    if (scanner) {
+    return () => {
       scanner.clear().catch(() => {});
-    }
-  };
+    };
+  }
 }, [scanning]);
 
   const stopScanning = () => {
@@ -1055,6 +1037,9 @@ useEffect(() => {
     setScanning(false);
   };
 
+  useEffect(() => {
+    return () => stopScanning();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
