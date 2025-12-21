@@ -322,16 +322,14 @@ useEffect(() => {
     );
 
     scanner.render(
-      (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear().catch(() => {});
-        setScanning(false);
-      },
-      (error) => {
-        // Just ignore scanning errors
-      }
-    );
+  (decodedText) => {
+    if (!scannedIds.includes(decodedText)) {
+      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+    }
+    scanner.clear();
+    setScanning(false);
+  }
+);
   }
 
   return () => {
