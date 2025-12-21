@@ -1,7 +1,7 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan } from 'lucide-react';
-
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 
@@ -272,8 +272,8 @@ const CheckMode = ({ onBack }) => {
   const [asset, setAsset] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [loading, setLoading] = useState(false);
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
+  //const videoRef = useRef(null);
+  //const streamRef = useRef(null);
 
  // const checkAsset = async (id) => {
   //  setLoading(true);
@@ -308,21 +308,31 @@ const CheckMode = ({ onBack }) => {
 };
 
 
-  const startScanning = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+const startScanning = () => {
+  setScanning(true);
+};
+
+useEffect(() => {
+  if (scanning) {
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: { width: 250, height: 250 } }
+    );
+
+    scanner.render(
+      (decodedText) => {
+        setAssetId(decodedText);
+        checkAsset(decodedText);
+        scanner.clear();
+        setScanning(false);
       }
-      setScanning(true);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Could not access camera. Please use manual input.');
-    }
-  };
+    );
+
+    return () => {
+      scanner.clear().catch(() => {});
+    };
+  }
+}, [scanning]);
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -386,18 +396,16 @@ const CheckMode = ({ onBack }) => {
           </div>
 
           {scanning && (
-            <div className="mt-4">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full rounded-lg"
-              />
-              <p className="text-sm text-gray-600 mt-2 text-center">
-                Note: Barcode scanning requires additional library integration
-              </p>
-            </div>
-          )}
+  <div className="mt-4">
+    <div id="reader"></div>
+    <button
+      onClick={() => setScanning(false)}
+      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
+    >
+      Stop Scanning
+    </button>
+  </div>
+)}
         </div>
 
         {loading && (
