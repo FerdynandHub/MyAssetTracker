@@ -1,16 +1,12 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan } from 'lucide-react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
-
-
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0ZXg17cMDPTCcWZex5qKDGwoUOXrOH2_zS6-8kC1IN8I_-FtgvHEBlUZAhY8qWF42/exec';
 
-const CATEGORIES = ['Projectors', 'Toolkit', 'TV', 'Screen', 'EventPC'];
+const CATEGORIES = ['Projectors', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
-
 
 
 
@@ -35,19 +31,8 @@ const App = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
-          <div className="flex justify-center mb-6">
-  <img
-    src="https://www.uph.edu/wp-content/uploads/2023/10/cropped-uph-universitas-pelita-harapan-logo.png"
-    alt="UPH Logo"
-    className="h-16 w-auto"
-  />
-</div>
-
-<form className="space-y-4">
-</form>
-
-          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">DASTRACK WEB BASED</h1>
-          <p className="text-gray-600 mb-6 text-center">Dynamic Automated Asset Tracker by Ferdynand</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Dastrack</h1>
+          <p className="text-gray-600 mb-6 text-center">Asset Management System</p>
           <input
             type="password"
             placeholder="Enter Access Code"
@@ -69,48 +54,46 @@ const App = () => {
   }
 
   if (!mode) {
-    
-  return (
-  <div className="min-h-[100vh] bg-gray-100 p-4 sm:p-6">
-    <div className="max-w-6xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
-        <p className="text-gray-600">Select a mode to begin</p>
+    return (
+      <div className="min-h-screen bg-gray-100 p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Dastrack</h1>
+            <p className="text-gray-600">Select a mode to begin</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ModeCard
+              icon={<Eye className="w-12 h-12" />}
+              title="Overview"
+              description="View all assets by category"
+              onClick={() => setMode('overview')}
+              color="blue"
+            />
+            <ModeCard
+              icon={<Search className="w-12 h-12" />}
+              title="Check Information"
+              description="Scan or search asset details"
+              onClick={() => setMode('check')}
+              color="green"
+            />
+            <ModeCard
+              icon={<Download className="w-12 h-12" />}
+              title="Export"
+              description="Batch scan and export to CSV"
+              onClick={() => setMode('export')}
+              color="purple"
+            />
+            <ModeCard
+              icon={<Edit className="w-12 h-12" />}
+              title="Update Information"
+              description="Update asset information"
+              onClick={() => setMode('update')}
+              color="orange"
+            />
+          </div>
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <ModeCard
-          icon={<Eye className="w-12 h-12" />}
-          title="Overview"
-          description="View all assets by category"
-          onClick={() => setMode('overview')}
-          color="blue"
-        />
-        <ModeCard
-          icon={<Search className="w-12 h-12" />}
-          title="Check Information"
-          description="Scan or search asset details"
-          onClick={() => setMode('check')}
-          color="green"
-        />
-        <ModeCard
-          icon={<Download className="w-12 h-12" />}
-          title="Export"
-          description="Batch scan and export to CSV"
-          onClick={() => setMode('export')}
-          color="purple"
-        />
-        <ModeCard
-          icon={<Edit className="w-12 h-12" />}
-          title="Update Information"
-          description="Update asset information"
-          onClick={() => setMode('update')}
-          color="orange"
-        />
-      </div>
-    </div>
-  </div>
-);
-
+    );
   }
 
   const renderMode = () => {
@@ -132,18 +115,17 @@ const App = () => {
 };
 
 const ModeCard = ({ icon, title, description, onClick, color }) => {
-  const inlineStyles = {
-    blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
-    green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
-    purple: { background: 'linear-gradient(to bottom right, #a855f7, #9333ea)' },
-    orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' }
+  const colors = {
+    blue: 'from-blue-500 to-blue-600',
+    green: 'from-green-500 to-green-600',
+    purple: 'from-purple-500 to-purple-600',
+    orange: 'from-orange-500 to-orange-600'
   };
 
   return (
     <div
       onClick={onClick}
-      style={inlineStyles[color]}
-      className="rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+      className={`bg-gradient-to-br ${colors[color]} rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white`}
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
@@ -178,11 +160,10 @@ const OverviewMode = ({ onBack }) => {
     : assets.filter(a => a.category === selectedCategory);
 
   const categories = ['All', ...CATEGORIES];
-  
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
-    <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-3xl font-bold text-gray-800">Overview</h1>
@@ -272,8 +253,8 @@ const CheckMode = ({ onBack }) => {
   const [asset, setAsset] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [loading, setLoading] = useState(false);
-  //const videoRef = useRef(null);
-  //const streamRef = useRef(null);
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
 
  // const checkAsset = async (id) => {
   //  setLoading(true);
@@ -308,36 +289,21 @@ const CheckMode = ({ onBack }) => {
 };
 
 
-const startScanning = () => {
-  setScanning(true);
-};
-
-useEffect(() => {
-  let scanner = null;
-  
-  if (scanning) {
-    scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } }
-    );
-
-    scanner.render(
-  (decodedText) => {
-    if (!scannedIds.includes(decodedText)) {
-      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
-    }
-    scanner.clear();
-    setScanning(false);
-  }
-);
-  }
-
-  return () => {
-    if (scanner) {
-      scanner.clear().catch(() => {});
+  const startScanning = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setScanning(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Could not access camera. Please use manual input.');
     }
   };
-}, [scanning]);
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -401,16 +367,18 @@ useEffect(() => {
           </div>
 
           {scanning && (
-  <div className="mt-4">
-    <div id="reader"></div>
-    <button
-      onClick={() => setScanning(false)}
-      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
-    >
-      Stop Scanning
-    </button>
-  </div>
-)}
+            <div className="mt-4">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full rounded-lg"
+              />
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                Note: Barcode scanning requires additional library integration
+              </p>
+            </div>
+          )}
         </div>
 
         {loading && (
@@ -497,32 +465,21 @@ const ExportMode = ({ onBack }) => {
     }
   };
 
-const startScanning = () => {
-  setScanning(true);
-};
-
-useEffect(() => {
-  if (scanning) {
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } }
-    );
-
-scanner.render(
-  (decodedText) => {
-    if (!scannedIds.includes(decodedText)) {
-      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+  const startScanning = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setScanning(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Could not access camera. Please use manual input.');
     }
-    scanner.clear();
-    setScanning(false);
-  }
-);
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
-  }
-}, [scanning]);
+  };
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -578,17 +535,16 @@ scanner.render(
             </button>
           </div>
 
-       {scanning && (
-  <div className="mt-4">
-    <div id="reader"></div>
-    <button
-      onClick={() => setScanning(false)}
-      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
-    >
-      Stop Scanning
-    </button>
-  </div>
-)}
+          {scanning && (
+            <div className="mt-4">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full rounded-lg"
+              />
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -654,7 +610,6 @@ const UpdateMode = ({ onBack }) => {
             >
               <Edit className="w-12 h-12 mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2 text-center">Single Update</h2>
-                <h3 className="text-2xl font-bold mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
               <p className="text-center opacity-90">Update one asset at a time</p>
             </div>
 
@@ -664,7 +619,6 @@ const UpdateMode = ({ onBack }) => {
             >
               <List className="w-12 h-12 mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2 text-center">Batch Update</h2>
-              <h3 className="text-2xl font-bold mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
               <p className="text-center opacity-90">Update multiple assets at once</p>
             </div>
           </div>
@@ -739,32 +693,21 @@ const SingleUpdateMode = ({ onBack }) => {
     setLoading(false);
   };
 
-const startScanning = () => {
-  setScanning(true);
-};
-
-useEffect(() => {
-  if (scanning) {
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } }
-    );
-
- scanner.render(
-  (decodedText) => {
-    if (!scannedIds.includes(decodedText)) {
-      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+  const startScanning = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setScanning(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Could not access camera. Please use manual input.');
     }
-    scanner.clear();
-    setScanning(false);
-  }
-);
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
-  }
-}, [scanning]);
+  };
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -820,17 +763,16 @@ useEffect(() => {
             </button>
           </div>
 
-{scanning && (
-  <div className="mt-4">
-    <div id="reader"></div>
-    <button
-      onClick={() => setScanning(false)}
-      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
-    >
-      Stop Scanning
-    </button>
-  </div>
-)}
+          {scanning && (
+            <div className="mt-4">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full rounded-lg"
+              />
+            </div>
+          )}
         </div>
 
         {loading && (
@@ -1004,32 +946,21 @@ const BatchUpdateMode = ({ onBack }) => {
     setLoading(false);
   };
 
-const startScanning = () => {
-  setScanning(true);
-};
-
-useEffect(() => {
-  if (scanning) {
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } }
-    );
-
-  scanner.render(
-  (decodedText) => {
-    if (!scannedIds.includes(decodedText)) {
-      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+  const startScanning = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setScanning(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Could not access camera. Please use manual input.');
     }
-    scanner.clear();
-    setScanning(false);
-  }
-);
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
-  }
-}, [scanning]);
+  };
 
   const stopScanning = () => {
     if (streamRef.current) {
@@ -1085,17 +1016,16 @@ useEffect(() => {
             </button>
           </div>
 
-       {scanning && (
-  <div className="mt-4">
-    <div id="reader"></div>
-    <button
-      onClick={() => setScanning(false)}
-      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
-    >
-      Stop Scanning
-    </button>
-  </div>
-)}
+          {scanning && (
+            <div className="mt-4">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full rounded-lg"
+              />
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
