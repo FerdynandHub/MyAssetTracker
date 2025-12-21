@@ -1,7 +1,7 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan } from 'lucide-react';
-import MobileMenu from './MobileMenu';
+
 
 
 
@@ -72,7 +72,6 @@ const App = () => {
     return (
       
       <div className="min-h-screen bg-gray-100 p-6">
-        <MobileMenu />
         <div className="max-w-6xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
