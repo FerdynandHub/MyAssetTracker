@@ -1,6 +1,9 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan } from 'lucide-react';
+import MobileMenu from './MobileMenu';
+
+
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0ZXg17cMDPTCcWZex5qKDGwoUOXrOH2_zS6-8kC1IN8I_-FtgvHEBlUZAhY8qWF42/exec';
@@ -65,8 +68,11 @@ const App = () => {
   }
 
   if (!mode) {
+    
     return (
+      
       <div className="min-h-screen bg-gray-100 p-6">
+        <MobileMenu />
         <div className="max-w-6xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
