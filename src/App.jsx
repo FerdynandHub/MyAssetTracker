@@ -787,6 +787,7 @@ useEffect(() => {
     return () => stopScanning();
   }, []);
 
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -1019,8 +1020,10 @@ const startScanning = () => {
 };
 
 useEffect(() => {
+  let scanner = null;
+  
   if (scanning) {
-    const scanner = new Html5QrcodeScanner(
+    scanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
@@ -1052,9 +1055,6 @@ useEffect(() => {
     setScanning(false);
   };
 
-  useEffect(() => {
-    return () => stopScanning();
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
