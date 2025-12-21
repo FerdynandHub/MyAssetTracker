@@ -514,15 +514,20 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        scanner.clear();
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Just ignore scanning errors
       }
     );
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
   }
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
 }, [scanning]);
 
   const stopScanning = () => {
@@ -755,15 +760,20 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        scanner.clear();
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Just ignore scanning errors
       }
     );
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
   }
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
 }, [scanning]);
 
   const stopScanning = () => {
@@ -1019,15 +1029,20 @@ useEffect(() => {
       (decodedText) => {
         setAssetId(decodedText);
         checkAsset(decodedText);
-        scanner.clear();
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Just ignore scanning errors
       }
     );
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
   }
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
 }, [scanning]);
 
   const stopScanning = () => {
