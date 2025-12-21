@@ -753,8 +753,10 @@ const startScanning = () => {
 };
 
 useEffect(() => {
+  let scanner = null;
+  
   if (scanning) {
-    const scanner = new Html5QrcodeScanner(
+    scanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
@@ -762,16 +764,21 @@ useEffect(() => {
     scanner.render(
       (decodedText) => {
         setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear();
+        fetchAsset(decodedText);
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Ignore scanning errors
       }
     );
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
   }
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
 }, [scanning]);
 
   const stopScanning = () => {
@@ -1017,26 +1024,34 @@ const startScanning = () => {
 };
 
 useEffect(() => {
+  let scanner = null;
+  
   if (scanning) {
-    const scanner = new Html5QrcodeScanner(
+    scanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
 
     scanner.render(
       (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear();
+        if (decodedText.trim() && !assetIds.includes(decodedText.trim())) {
+          setAssetIds([...assetIds, decodedText.trim()]);
+        }
+        scanner.clear().catch(() => {});
         setScanning(false);
+      },
+      (error) => {
+        // Ignore scanning errors
       }
     );
-
-    return () => {
-      scanner.clear().catch(() => {});
-    };
   }
-}, [scanning]);
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
+}, [scanning, assetIds]);
 
   const stopScanning = () => {
     if (streamRef.current) {
