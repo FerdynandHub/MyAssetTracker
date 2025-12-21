@@ -402,7 +402,7 @@ useEffect(() => {
 
           {scanning && (
   <div className="mt-4">
-    <div id="reader"></div>
+    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
@@ -580,7 +580,7 @@ scanner.render(
 
        {scanning && (
   <div className="mt-4">
-    <div id="reader"></div>
+    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
@@ -822,7 +822,7 @@ useEffect(() => {
 
 {scanning && (
   <div className="mt-4">
-    <div id="reader"></div>
+    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
@@ -1087,7 +1087,7 @@ useEffect(() => {
 
        {scanning && (
   <div className="mt-4">
-    <div id="reader"></div>
+    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
