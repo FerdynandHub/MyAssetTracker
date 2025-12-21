@@ -322,16 +322,14 @@ useEffect(() => {
     );
 
     scanner.render(
-      (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear().catch(() => {});
-        setScanning(false);
-      },
-      (error) => {
-        // Just ignore scanning errors
-      }
-    );
+  (decodedText) => {
+    if (!scannedIds.includes(decodedText)) {
+      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+    }
+    scanner.clear();
+    setScanning(false);
+  }
+);
   }
 
   return () => {
@@ -404,7 +402,7 @@ useEffect(() => {
 
           {scanning && (
   <div className="mt-4">
-    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
+    <div id="reader"></div>
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
@@ -510,14 +508,15 @@ useEffect(() => {
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
 
-    scanner.render(
-      (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear();
-        setScanning(false);
-      }
-    );
+scanner.render(
+  (decodedText) => {
+    if (!scannedIds.includes(decodedText)) {
+      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+    }
+    scanner.clear();
+    setScanning(false);
+  }
+);
 
     return () => {
       scanner.clear().catch(() => {});
@@ -581,7 +580,7 @@ useEffect(() => {
 
        {scanning && (
   <div className="mt-4">
-    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
+    <div id="reader"></div>
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
@@ -751,14 +750,15 @@ useEffect(() => {
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
 
-    scanner.render(
-      (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear();
-        setScanning(false);
-      }
-    );
+ scanner.render(
+  (decodedText) => {
+    if (!scannedIds.includes(decodedText)) {
+      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+    }
+    scanner.clear();
+    setScanning(false);
+  }
+);
 
     return () => {
       scanner.clear().catch(() => {});
@@ -822,7 +822,7 @@ useEffect(() => {
 
 {scanning && (
   <div className="mt-4">
-    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
+    <div id="reader"></div>
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
@@ -1015,14 +1015,15 @@ useEffect(() => {
       { fps: 10, qrbox: { width: 250, height: 250 } }
     );
 
-    scanner.render(
-      (decodedText) => {
-        setAssetId(decodedText);
-        checkAsset(decodedText);
-        scanner.clear();
-        setScanning(false);
-      }
-    );
+  scanner.render(
+  (decodedText) => {
+    if (!scannedIds.includes(decodedText)) {
+      setScannedIds([...scannedIds, decodedText]);  // ✅ Correct
+    }
+    scanner.clear();
+    setScanning(false);
+  }
+);
 
     return () => {
       scanner.clear().catch(() => {});
@@ -1086,7 +1087,7 @@ useEffect(() => {
 
        {scanning && (
   <div className="mt-4">
-    <div id="reader-check"></div>  {/* ✅ Match the scanner ID */}
+    <div id="reader"></div>
     <button
       onClick={() => setScanning(false)}
       className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
