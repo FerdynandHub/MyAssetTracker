@@ -10,13 +10,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0ZXg17cMDPTCcWZex5
 
 const CATEGORIES = ['Projectors', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
-const MobileWrapper = ({ children }) => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
-      <div className="max-w-4xl mx-auto">{children}</div>
-    </div>
-  );
-};
+
 
 
 
@@ -138,17 +132,18 @@ const App = () => {
 };
 
 const ModeCard = ({ icon, title, description, onClick, color }) => {
-  const colorClasses = {
-    blue: 'bg-gradient-to-br from-blue-500 to-blue-600',
-    green: 'bg-gradient-to-br from-green-500 to-green-600',
-    purple: 'bg-gradient-to-br from-purple-500 to-purple-600',
-    orange: 'bg-gradient-to-br from-orange-500 to-orange-600'
+  const inlineStyles = {
+    blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
+    green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
+    purple: { background: 'linear-gradient(to bottom right, #a855f7, #9333ea)' },
+    orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' }
   };
 
   return (
     <div
       onClick={onClick}
-      className={`${colorClasses[color]} rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white`}
+      style={inlineStyles[color]}
+      className="rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
