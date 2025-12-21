@@ -10,6 +10,13 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0ZXg17cMDPTCcWZex5
 
 const CATEGORIES = ['Projectors', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
+const MobileWrapper = ({ children }) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto">{children}</div>
+    </div>
+  );
+};
 
 
 
@@ -178,8 +185,8 @@ const OverviewMode = ({ onBack }) => {
   const categories = ['All', ...CATEGORIES];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
+    <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-3xl font-bold text-gray-800">Overview</h1>
