@@ -562,16 +562,17 @@ const ExportMode = ({ onBack }) => {
             </button>
           </div>
 
-          {scanning && (
-            <div className="mt-4">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full rounded-lg"
-              />
-            </div>
-          )}
+       {scanning && (
+  <div className="mt-4">
+    <div id="reader"></div>
+    <button
+      onClick={() => setScanning(false)}
+      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
+    >
+      Stop Scanning
+    </button>
+  </div>
+)}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -792,16 +793,17 @@ const SingleUpdateMode = ({ onBack }) => {
             </button>
           </div>
 
-          {scanning && (
-            <div className="mt-4">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full rounded-lg"
-              />
-            </div>
-          )}
+{scanning && (
+  <div className="mt-4">
+    <div id="reader"></div>
+    <button
+      onClick={() => setScanning(false)}
+      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
+    >
+      Stop Scanning
+    </button>
+  </div>
+)}
         </div>
 
         {loading && (
@@ -1045,16 +1047,17 @@ const BatchUpdateMode = ({ onBack }) => {
             </button>
           </div>
 
-          {scanning && (
-            <div className="mt-4">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full rounded-lg"
-              />
-            </div>
-          )}
+       {scanning && (
+  <div className="mt-4">
+    <div id="reader"></div>
+    <button
+      onClick={() => setScanning(false)}
+      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
+    >
+      Stop Scanning
+    </button>
+  </div>
+)}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
