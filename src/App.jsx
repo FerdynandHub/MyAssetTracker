@@ -268,6 +268,7 @@ const OverviewMode = ({ onBack }) => {
 };
 
 const CheckMode = ({ onBack }) => {
+  const streamRef = useRef(null);
   const [assetId, setAssetId] = useState('');
   const [asset, setAsset] = useState(null);
   const [scanning, setScanning] = useState(false);
