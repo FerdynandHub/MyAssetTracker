@@ -136,7 +136,7 @@ if (!mode) {
             onClick={() => setMode('history')}
             color="indigo"
           />
-          {userRole !== ROLES.VIEWER && (
+          
             <ModeCard
               icon={<Edit className="w-12 h-12" />}
               title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
@@ -144,8 +144,8 @@ if (!mode) {
               onClick={() => setMode('update')}
               color="orange"
             />
-          )}
-          {userRole === ROLES.ADMIN && (
+        
+        
             <ModeCard
               icon={<List className="w-12 h-12" />}
               title="Pending Approvals"
@@ -153,7 +153,7 @@ if (!mode) {
               onClick={() => setMode('approvals')}
               color="red"
             />
-          )}
+         
         </div>
       </div>
     </div>
