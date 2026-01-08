@@ -140,12 +140,16 @@ if (!mode) {
   icon={<Edit className="w-12 h-12" />}
   title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
   description={
-    userRole !== ROLES.VIEWER
-      ? userRole === ROLES.ADMIN
-        ? "Update asset information"
-        : "Request asset updates (requires approval)"
-      : "You are not authorized to update assets please contact an Editor or an Admin"
-  }
+  userRole === ROLES.ADMIN
+    ? "Review and approve update requests"
+    : (
+        <>
+          You are not authorized to review approvals
+          <br />
+          Please contact an Editor or an Admin
+        </>
+      )
+}
   onClick={userRole !== ROLES.VIEWER ? () => setMode('update') : undefined}
   color="orange"
   disabled={userRole === ROLES.VIEWER}
@@ -155,10 +159,16 @@ if (!mode) {
   icon={<List className="w-12 h-12" />}
   title="Approvals"
   description={
-    userRole === ROLES.ADMIN
-      ? "Review and approve update requests"
-      : "You are not authorized to review approvals please contact an Admin"
-  }
+  userRole === ROLES.ADMIN
+    ? "Review and approve update requests"
+    : (
+        <>
+          You are not authorized to review approvals
+          <br />
+          Please contact an Admin
+        </>
+      )
+}
   onClick={userRole === ROLES.ADMIN ? () => setMode('approvals') : undefined}
   color="red"
   disabled={userRole !== ROLES.ADMIN}
