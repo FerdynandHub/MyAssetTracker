@@ -151,15 +151,19 @@ if (!mode) {
   disabled={userRole === ROLES.VIEWER}
 />
 
-{userRole === ROLES.ADMIN && (
-  <ModeCard
-    icon={<List className="w-12 h-12" />}
-    title="Pending Approvals"
-    description="Review and approve update requests"
-    onClick={() => setMode('approvals')}
-    color="red"
-  />
-)}
+<ModeCard
+  icon={<List className="w-12 h-12" />}
+  title="Approvals"
+  description={
+    userRole === ROLES.ADMIN
+      ? "Review and approve update requests"
+      : "You are not authorized to review approvals"
+  }
+  onClick={userRole === ROLES.ADMIN ? () => setMode('approvals') : undefined}
+  color="red"
+  disabled={userRole !== ROLES.ADMIN}
+/>
+
 
         </div>
       </div>
