@@ -67,9 +67,10 @@ const App = () => {
 <p className="text-gray-600 mb-6 text-center">
   Dynamic Automated Asset Tracker
 </p>
-<p className="text-sm text-gray-400 mb-3 text-center">
+<p className="text-sm text-gray-400 mb-1 text-center">
   Created by Tim IT GAF
 </p>
+
 
           <input
             type="password"
