@@ -6,7 +6,7 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtr94WUDtBTeOThp9uGAIqSQka9XRLepFg4qO6kB_SdT7watE3fswVXwCWVCC30QDQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxm3pvvCNcZxTpwzK6DzpsyLHzzrAEfHuF-EPxs88EZ4xpJ1JgGO4_o2lqtXEDG61NZ/exec';
 
 const CATEGORIES = ['Projectors', 'Toolkit', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
@@ -268,6 +268,7 @@ const OverviewMode = ({ onBack }) => {
 };
 
 const CheckMode = ({ onBack }) => {
+  const streamRef = useRef(null);
   const [assetId, setAssetId] = useState('');
   const [asset, setAsset] = useState(null);
   const [scanning, setScanning] = useState(false);

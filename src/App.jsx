@@ -3,10 +3,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
+const ROLES = {
+  VIEWER: 'viewer',
+  EDITOR: 'editor',
+  ADMIN: 'admin'
+};
 
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxm3pvvCNcZxTpwzK6DzpsyLHzzrAEfHuF-EPxs88EZ4xpJ1JgGO4_o2lqtXEDG61NZ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8EwzVUdZXsXRAjYi-2OHNyKa2XzV3VJya-V_ZM4UZL9X5tUMfyorCAGZHakOZaXZH/exec';
 
 const CATEGORIES = ['Projectors', 'Toolkit', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
@@ -17,14 +22,24 @@ const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [accessCode, setAccessCode] = useState('');
+  const [userRole, setUserRole] = useState(null);
+  const [userName, setUserName] = useState('');
   const [mode, setMode] = useState(null);
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleLogin = () => {
-    if (accessCode === '123') {
+    const accessCodes = {
+      '123': { role: ROLES.VIEWER, name: 'Viewer User' },
+      '456': { role: ROLES.EDITOR, name: 'Editor User' },
+      '789': { role: ROLES.ADMIN, name: 'Admin User' }
+    };
+
+    if (accessCodes[accessCode]) {
       setIsLoggedIn(true);
+      setUserRole(accessCodes[accessCode].role);
+      setUserName(accessCodes[accessCode].name);
       setError('');
     } else {
       setError('Invalid access code');
@@ -68,65 +83,90 @@ const App = () => {
     );
   }
 
-  if (!mode) {
-    
+if (!mode) {
   return (
-  <div className="min-h-[100vh] bg-gray-100 p-4 sm:p-6">
-    <div className="max-w-6xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
-        <p className="text-gray-600">Select a mode to begin</p>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <ModeCard
-          icon={<Eye className="w-12 h-12" />}
-          title="Overview"
-          description="View all assets by category"
-          onClick={() => setMode('overview')}
-          color="blue"
-        />
-        <ModeCard
-          icon={<Search className="w-12 h-12" />}
-          title="Check Information"
-          description="Scan or search asset details"
-          onClick={() => setMode('check')}
-          color="green"
-        />
-        <ModeCard
-          icon={<Download className="w-12 h-12" />}
-          title="Export"
-          description="Batch scan and export to CSV"
-          onClick={() => setMode('export')}
-          color="purple"
-        />
-        <ModeCard
-          icon={<Edit className="w-12 h-12" />}
-          title="Update Information"
-          description="Update asset information"
-          onClick={() => setMode('update')}
-          color="orange"
-        />
+    <div className="min-h-[100vh] bg-gray-100 p-4 sm:p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to DASTRACK!</h1>
+              <p className="text-gray-600">Select a mode to begin</p>
+              <p className="text-sm text-gray-500 mt-2">Logged in as: {userName} ({userRole})</p>
+            </div>
+            <button
+              onClick={() => {
+                setIsLoggedIn(false);
+                setUserRole(null);
+                setUserName('');
+                setAccessCode('');
+              }}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ModeCard
+            icon={<Eye className="w-12 h-12" />}
+            title="Overview"
+            description="View all assets by category"
+            onClick={() => setMode('overview')}
+            color="blue"
+          />
+          <ModeCard
+            icon={<Search className="w-12 h-12" />}
+            title="Check Information"
+            description="Scan or search asset details"
+            onClick={() => setMode('check')}
+            color="green"
+          />
+          <ModeCard
+            icon={<Download className="w-12 h-12" />}
+            title="Export"
+            description="Batch scan and export to CSV"
+            onClick={() => setMode('export')}
+            color="purple"
+          />
+          <ModeCard
+            icon={<Edit className="w-12 h-12" />}
+            title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
+            description={userRole === ROLES.ADMIN ? "Update asset information" : "Request asset updates (requires approval)"}
+            onClick={() => setMode('update')}
+            color="orange"
+          />
+          {userRole === ROLES.ADMIN && (
+            <ModeCard
+              icon={<List className="w-12 h-12" />}
+              title="Pending Approvals"
+              description="Review and approve update requests"
+              onClick={() => setMode('approvals')}
+              color="red"
+            />
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+}
 
+const renderMode = () => {
+  switch (mode) {
+    case 'overview':
+      return <OverviewMode onBack={() => setMode(null)} />;
+    case 'check':
+      return <CheckMode onBack={() => setMode(null)} />;
+    case 'export':
+      return <ExportMode onBack={() => setMode(null)} />;
+    case 'update':
+      return <UpdateMode onBack={() => setMode(null)} userRole={userRole} userName={userName} />;
+    case 'approvals':
+      return <ApprovalsMode onBack={() => setMode(null)} userName={userName} />;
+    default:
+      return null;
   }
-
-  const renderMode = () => {
-    switch (mode) {
-      case 'overview':
-        return <OverviewMode onBack={() => setMode(null)} />;
-      case 'check':
-        return <CheckMode onBack={() => setMode(null)} />;
-      case 'export':
-        return <ExportMode onBack={() => setMode(null)} />;
-      case 'update':
-        return <UpdateMode onBack={() => setMode(null)} />;
-      default:
-        return null;
-    }
-  };
+};
 
   return renderMode();
 };
@@ -136,7 +176,8 @@ const ModeCard = ({ icon, title, description, onClick, color }) => {
     blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
     green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
     purple: { background: 'linear-gradient(to bottom right, #a855f7, #9333ea)' },
-    orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' }
+    orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' },
+    red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' }
   };
 
   return (
@@ -638,7 +679,7 @@ useEffect(() => {
   );
 };
 
-const UpdateMode = ({ onBack }) => {
+const UpdateMode = ({ onBack, userRole, userName }) => {
   const [updateMode, setUpdateMode] = useState(null);
 
   if (!updateMode) {
@@ -647,7 +688,9 @@ const UpdateMode = ({ onBack }) => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-gray-800">Update Information</h1>
+              <h1 className="text-3xl font-bold text-gray-800">
+                {userRole === ROLES.ADMIN ? 'Update Information' : 'Request Update'}
+              </h1>
               <button
                 onClick={onBack}
                 className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
@@ -664,8 +707,10 @@ const UpdateMode = ({ onBack }) => {
             >
               <Edit className="w-12 h-12 mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2 text-center">Single Update</h2>
-                <h3 className="text-2xl font-bold mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
-              <p className="text-center opacity-90">Update one asset at a time</p>
+              <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
+              <p className="text-center opacity-90">
+                {userRole === ROLES.ADMIN ? 'Update one asset at a time' : 'Request update for one asset'}
+              </p>
             </div>
 
             <div
@@ -674,8 +719,10 @@ const UpdateMode = ({ onBack }) => {
             >
               <List className="w-12 h-12 mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2 text-center">Batch Update</h2>
-              <h3 className="text-2xl font-bold mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
-              <p className="text-center opacity-90">Update multiple assets at once</p>
+              <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
+              <p className="text-center opacity-90">
+                {userRole === ROLES.ADMIN ? 'Update multiple assets at once' : 'Request update for multiple assets'}
+              </p>
             </div>
           </div>
         </div>
@@ -684,13 +731,13 @@ const UpdateMode = ({ onBack }) => {
   }
 
   if (updateMode === 'single') {
-    return <SingleUpdateMode onBack={() => setUpdateMode(null)} />;
+    return <SingleUpdateMode onBack={() => setUpdateMode(null)} userRole={userRole} userName={userName} />;
   }
 
-  return <BatchUpdateMode onBack={() => setUpdateMode(null)} />;
+  return <BatchUpdateMode onBack={() => setUpdateMode(null)} userRole={userRole} userName={userName} />;
 };
 
-const SingleUpdateMode = ({ onBack }) => {
+const SingleUpdateMode = ({ onBack, userRole, userName }) => {
   const [assetId, setAssetId] = useState('');
   const [asset, setAsset] = useState(null);
   const [formData, setFormData] = useState({});
@@ -719,7 +766,7 @@ const SingleUpdateMode = ({ onBack }) => {
     }
   };
 
-  const handleUpdate = async () => {
+const handleUpdate = async () => {
     if (!asset) return;
 
     setLoading(true);
@@ -731,20 +778,41 @@ const SingleUpdateMode = ({ onBack }) => {
         }
       });
 
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'updateAsset',
-          id: asset.id,
-          updates: updates
-        })
-      });
+      if (Object.keys(updates).length === 0) {
+        alert('No changes detected');
+        setLoading(false);
+        return;
+      }
 
-      alert('Asset updated successfully');
-      await fetchAsset(asset.id);
+      if (userRole === ROLES.ADMIN) {
+        // Admin: Direct update
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'updateAsset',
+            id: asset.id,
+            updates: updates
+          })
+        });
+        alert('Asset updated successfully');
+        await fetchAsset(asset.id);
+      } else {
+        // Editor: Submit request
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'submitUpdateRequest',
+            ids: [asset.id],
+            updates: updates,
+            requestedBy: userName,
+            isBatch: false
+          })
+        });
+        alert('Update request submitted for admin approval');
+      }
     } catch (error) {
-      console.error('Error updating asset:', error);
-      alert('Error updating asset');
+      console.error('Error:', error);
+      alert(userRole === ROLES.ADMIN ? 'Error updating asset' : 'Error submitting request');
     }
     setLoading(false);
   };
@@ -961,7 +1029,7 @@ useEffect(() => {
   );
 };
 
-const BatchUpdateMode = ({ onBack }) => {
+const BatchUpdateMode = ({ onBack, userRole, userName }) => {
   const [assetIds, setAssetIds] = useState([]);
   const [currentId, setCurrentId] = useState('');
   const [formData, setFormData] = useState({});
@@ -981,7 +1049,7 @@ const BatchUpdateMode = ({ onBack }) => {
     setAssetIds(assetIds.filter(i => i !== id));
   };
 
-  const handleBatchUpdate = async () => {
+const handleBatchUpdate = async () => {
     if (assetIds.length === 0) {
       alert('No assets to update');
       return;
@@ -1001,21 +1069,36 @@ const BatchUpdateMode = ({ onBack }) => {
 
     setLoading(true);
     try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'batchUpdateAssets',
-          ids: assetIds,
-          updates: updates
-        })
-      });
-
-      alert('Assets updated successfully');
+      if (userRole === ROLES.ADMIN) {
+        // Admin: Direct update
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'batchUpdateAssets',
+            ids: assetIds,
+            updates: updates
+          })
+        });
+        alert('Assets updated successfully');
+      } else {
+        // Editor: Submit request
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'submitUpdateRequest',
+            ids: assetIds,
+            updates: updates,
+            requestedBy: userName,
+            isBatch: true
+          })
+        });
+        alert('Batch update request submitted for admin approval');
+      }
       setAssetIds([]);
       setFormData({});
     } catch (error) {
-      console.error('Error updating assets:', error);
-      alert('Error updating assets');
+      console.error('Error:', error);
+      alert(userRole === ROLES.ADMIN ? 'Error updating assets' : 'Error submitting request');
     }
     setLoading(false);
   };
@@ -1244,6 +1327,157 @@ useEffect(() => {
   );
 };
 
+const ApprovalsMode = ({ onBack, userName }) => {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=getPendingRequests`);
+      const data = await response.json();
+      setRequests(data);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const handleApprove = async (requestId) => {
+    if (!confirm('Are you sure you want to approve this request?')) return;
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'approveRequest',
+          requestId: requestId,
+          approvedBy: userName
+        })
+      });
+      alert('Request approved successfully');
+      fetchRequests();
+    } catch (error) {
+      console.error('Error approving request:', error);
+      alert('Error approving request');
+    }
+  };
+
+  const handleReject = async (requestId) => {
+    if (!confirm('Are you sure you want to reject this request?')) return;
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'rejectRequest',
+          requestId: requestId
+        })
+      });
+      alert('Request rejected');
+      fetchRequests();
+    } catch (error) {
+      console.error('Error rejecting request:', error);
+      alert('Error rejecting request');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold text-gray-800">Pending Approvals</h1>
+            <div className="flex gap-2">
+              <button
+                onClick={fetchRequests}
+                className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Refresh
+              </button>
+              <button
+                onClick={onBack}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        ) : requests.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+            <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600">No pending requests</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {requests.map((request, idx) => (
+              <div key={idx} className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      {request.type === 'batch' ? 'Batch Update Request' : 'Single Update Request'}
+                    </h3>
+                    <p className="text-sm text-gray-600">Request ID: {request.requestId}</p>
+                    <p className="text-sm text-gray-600">Requested by: {request.requestedBy}</p>
+                    <p className="text-sm text-gray-600">
+                      Date: {new Date(request.timestamp).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleApprove(request.requestId)}
+                      className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleReject(request.requestId)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border-t pt-4">
+                  <h4 className="font-semibold text-gray-700 mb-2">Assets to Update:</h4>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {request.ids.map((id, i) => (
+                      <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-mono">
+                        {id}
+                      </span>
+                    ))}
+                  </div>
+
+                  <h4 className="font-semibold text-gray-700 mb-2">Proposed Changes:</h4>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    {Object.entries(request.updates).map(([key, value]) => (
+                      <div key={key} className="flex justify-between py-2 border-b last:border-0">
+                        <span className="font-medium text-gray-700 capitalize">{key}:</span>
+                        <span className="text-gray-900">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 const InfoField = ({ label, value }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
