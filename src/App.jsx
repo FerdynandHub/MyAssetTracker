@@ -108,7 +108,7 @@ if (!mode) {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <ModeCard
+<ModeCard
             icon={<Eye className="w-12 h-12" />}
             title="Overview"
             description="View all assets by category"
@@ -129,13 +129,15 @@ if (!mode) {
             onClick={() => setMode('export')}
             color="purple"
           />
-          <ModeCard
-            icon={<Edit className="w-12 h-12" />}
-            title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
-            description={userRole === ROLES.ADMIN ? "Update asset information" : "Request asset updates (requires approval)"}
-            onClick={() => setMode('update')}
-            color="orange"
-          />
+          {userRole !== ROLES.VIEWER && (
+            <ModeCard
+              icon={<Edit className="w-12 h-12" />}
+              title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
+              description={userRole === ROLES.ADMIN ? "Update asset information" : "Request asset updates (requires approval)"}
+              onClick={() => setMode('update')}
+              color="orange"
+            />
+          )}
           {userRole === ROLES.ADMIN && (
             <ModeCard
               icon={<List className="w-12 h-12" />}
