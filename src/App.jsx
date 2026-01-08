@@ -11,7 +11,7 @@ const ROLES = {
 
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzu47UO44_Sz1j_cW3YyOdtJyXyjtpLSgxUP1U04RXr9qGufmMtFdey2M-PSxZ5mWzR/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo5ccuVntd38f1-YM8xYufEIKrd4d7ibJlmS6Z2sGHGIi06PRbFylP6inLOd4gploc/exec';
 
 const CATEGORIES = ['Projectors', 'Toolkit', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
