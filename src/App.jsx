@@ -189,21 +189,27 @@ const renderMode = () => {
   return renderMode();
 };
 
-const ModeCard = ({ icon, title, description, onClick, color }) => {
+const ModeCard = ({ icon, title, description, onClick, color, disabled }) => {
   const inlineStyles = {
     blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
     green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
     purple: { background: 'linear-gradient(to bottom right, #a855f7, #9333ea)' },
     orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' },
     red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' },
-    indigo: { background: 'linear-gradient(to bottom right, #6366f1, #4f46e5)' }
+    indigo: { background: 'linear-gradient(to bottom right, #6366f1, #4f46e5)' },
+    disabled: { background: '#e5e7eb' } // gray-200
   };
 
   return (
     <div
-      onClick={onClick}
-      style={inlineStyles[color]}
-      className="rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+      onClick={!disabled ? onClick : undefined}
+      style={disabled ? inlineStyles.disabled : inlineStyles[color]}
+      className={`
+        rounded-lg shadow-lg p-8 transition
+        ${disabled
+          ? "cursor-not-allowed text-gray-400"
+          : "cursor-pointer transform hover:scale-105 text-white"}
+      `}
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
@@ -211,6 +217,7 @@ const ModeCard = ({ icon, title, description, onClick, color }) => {
     </div>
   );
 };
+
 
 const OverviewMode = ({ onBack }) => {
   const [assets, setAssets] = useState([]);
