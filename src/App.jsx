@@ -11,7 +11,7 @@ const ROLES = {
 
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8EwzVUdZXsXRAjYi-2OHNyKa2XzV3VJya-V_ZM4UZL9X5tUMfyorCAGZHakOZaXZH/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzu47UO44_Sz1j_cW3YyOdtJyXyjtpLSgxUP1U04RXr9qGufmMtFdey2M-PSxZ5mWzR/exec';
 
 const CATEGORIES = ['Projectors', 'Toolkit', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
@@ -129,6 +129,13 @@ if (!mode) {
             onClick={() => setMode('export')}
             color="purple"
           />
+          <ModeCard
+            icon={<List className="w-12 h-12" />}
+            title="History"
+            description="View asset change history"
+            onClick={() => setMode('history')}
+            color="indigo"
+          />
           {userRole !== ROLES.VIEWER && (
             <ModeCard
               icon={<Edit className="w-12 h-12" />}
@@ -161,6 +168,8 @@ const renderMode = () => {
       return <CheckMode onBack={() => setMode(null)} />;
     case 'export':
       return <ExportMode onBack={() => setMode(null)} />;
+    case 'history':  // ADD THIS
+      return <HistoryMode onBack={() => setMode(null)} />;
     case 'update':
       return <UpdateMode onBack={() => setMode(null)} userRole={userRole} userName={userName} />;
     case 'approvals':
@@ -179,7 +188,8 @@ const ModeCard = ({ icon, title, description, onClick, color }) => {
     green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
     purple: { background: 'linear-gradient(to bottom right, #a855f7, #9333ea)' },
     orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' },
-    red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' }
+    red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' },
+    indigo: { background: 'linear-gradient(to bottom right, #6366f1, #4f46e5)' }
   };
 
   return (
@@ -1480,6 +1490,195 @@ const ApprovalsMode = ({ onBack, userName }) => {
     </div>
   );
 };
+
+const HistoryMode = ({ onBack }) => {
+  const [assetId, setAssetId] = useState('');
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [scanning, setScanning] = useState(false);
+
+  const fetchHistory = async (id) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=getAssetHistory&id=${id}`);
+      const data = await response.json();
+      
+      if (data.error) {
+        alert(data.error);
+        setHistory([]);
+      } else {
+        setHistory(data);
+      }
+    } catch (error) {
+      console.error('Error fetching history:', error);
+      setHistory([]);
+    }
+    setLoading(false);
+  };
+
+  const handleCheck = () => {
+    if (assetId.trim()) {
+      fetchHistory(assetId.trim());
+    }
+  };
+
+  const startScanning = () => {
+    setScanning(true);
+  };
+
+  useEffect(() => {
+    let scanner = null;
+    
+    if (scanning) {
+      scanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: { width: 250, height: 250 } }
+      );
+
+      scanner.render(
+        (decodedText) => {
+          setAssetId(decodedText);
+          fetchHistory(decodedText);
+          scanner.clear().catch(() => {});
+          setScanning(false);
+        },
+        (error) => {
+          // Ignore scanning errors
+        }
+      );
+    }
+
+    return () => {
+      if (scanner) {
+        scanner.clear().catch(() => {});
+      }
+    };
+  }, [scanning]);
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-800">Asset History</h1>
+            <button
+              onClick={onBack}
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+            >
+              Back
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter Asset ID"
+                value={assetId}
+                onChange={(e) => setAssetId(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleCheck()}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={handleCheck}
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
+              >
+                Check
+              </button>
+            </div>
+
+            <button
+              onClick={scanning ? () => setScanning(false) : startScanning}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${
+                scanning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+              } text-white`}
+            >
+              <Camera className="w-5 h-5" />
+              {scanning ? 'Stop Scanning' : 'Scan Barcode'}
+            </button>
+          </div>
+
+          {scanning && (
+            <div className="mt-4">
+              <div id="reader"></div>
+              <button
+                onClick={() => setScanning(false)}
+                className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
+              >
+                Stop Scanning
+              </button>
+            </div>
+          )}
+        </div>
+
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        )}
+
+        {!loading && history.length > 0 && (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              History for Asset: {assetId} ({history.length} records)
+            </h2>
+            
+            <div className="space-y-4">
+              {history.map((record, idx) => (
+                <div key={idx} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold px-2 py-1 rounded">
+                        Record #{history.length - idx}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-700">
+                        {record.lastUpdated || 'N/A'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Updated by: {record.updatedBy || 'Unknown'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {Object.entries(record).map(([key, value]) => {
+                      if (key === 'id' || key === 'lastUpdated' || key === 'updatedBy') return null;
+                      return (
+                        <div key={key}>
+                          <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
+                            {key}
+                          </label>
+                          <p className="text-sm text-gray-900">{value || '-'}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!loading && history.length === 0 && assetId && (
+          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+            <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600">No history found for this asset</p>
+          </div>
+        )}
+
+        {!loading && !assetId && (
+          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+            <Search className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600">Scan or enter an Asset ID to view history</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const InfoField = ({ label, value }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
