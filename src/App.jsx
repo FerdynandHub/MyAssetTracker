@@ -144,7 +144,7 @@ if (!mode) {
       ? userRole === ROLES.ADMIN
         ? "Update asset information"
         : "Request asset updates (requires approval)"
-      : "You are not authorized to update assets"
+      : "You are not authorized to update assets please contact an Editor or an Admin"
   }
   onClick={userRole !== ROLES.VIEWER ? () => setMode('update') : undefined}
   color="orange"
@@ -157,7 +157,7 @@ if (!mode) {
   description={
     userRole === ROLES.ADMIN
       ? "Review and approve update requests"
-      : "You are not authorized to review approvals"
+      : "You are not authorized to review approvals please contact an Admin"
   }
   onClick={userRole === ROLES.ADMIN ? () => setMode('approvals') : undefined}
   color="red"
