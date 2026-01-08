@@ -144,7 +144,7 @@ if (!mode) {
       ? userRole === ROLES.ADMIN
         ? "Update asset information"
         : "Request asset updates (requires approval)"
-      : "Clearance: Editor and Admin"
+      : "Access: Editor and Admin"
   }
   onClick={userRole !== ROLES.VIEWER ? () => setMode('update') : undefined}
   color="orange"
@@ -157,7 +157,7 @@ if (!mode) {
   description={
     userRole === ROLES.ADMIN
       ? "Review and approve update requests"
-      : "Clearance: Admin"
+      : "Access: Admin"
   }
   onClick={userRole === ROLES.ADMIN ? () => setMode('approvals') : undefined}
   color="red"
