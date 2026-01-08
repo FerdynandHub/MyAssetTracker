@@ -62,7 +62,8 @@ const App = () => {
 </form>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">DASTRACK WEB BASED</h1>
-          <p className="text-gray-600 mb-6 text-center">Dynamic Automated Asset Tracker by Ferdynand</p>
+          <p className="text-gray-600 mb-6 text-center">Dynamic Automated Asset Tracker</p>
+          <p className="text-gray-600 mb-3 text-center">Created by Tim IT GAF</p>
           <input
             type="password"
             placeholder="Enter Access Code"
