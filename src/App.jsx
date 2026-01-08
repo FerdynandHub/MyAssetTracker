@@ -168,21 +168,32 @@ const renderMode = () => {
       return <CheckMode onBack={() => setMode(null)} />;
     case 'export':
       return <ExportMode onBack={() => setMode(null)} />;
-    case 'history':  // ADD THIS
+    case 'history':
       return <HistoryMode onBack={() => setMode(null)} />;
     case 'update':
-      return <UpdateMode onBack={() => setMode(null)} userRole={userRole} userName={userName} />;
+      return (
+        <UpdateMode
+          onBack={() => setMode(null)}
+          userRole={userRole}
+          userName={userName}
+        />
+      );
     case 'approvals':
-      return <ApprovalsMode onBack={() => setMode(null)} userName={userName} />;
+      return (
+        <ApprovalsMode
+          onBack={() => setMode(null)}
+          userName={userName}
+        />
+      );
     default:
       return null;
   }
 };
 
-  return renderMode();
+return renderMode();
 };
 
-const ModeCard = ({ icon, title, description, onClick, color }) => {
+const ModeCard = ({ icon, title, description, onClick, color, disabled }) => {
   const inlineStyles = {
     blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
     green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
@@ -194,9 +205,14 @@ const ModeCard = ({ icon, title, description, onClick, color }) => {
 
   return (
     <div
-      onClick={onClick}
-      style={inlineStyles[color]}
-      className="rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+      onClick={disabled ? undefined : onClick}
+      style={{
+        ...inlineStyles[color],
+        opacity: disabled ? 0.35 : 1,
+        filter: disabled ? 'grayscale(100%)' : 'none',
+        cursor: disabled ? 'not-allowed' : 'pointer'
+      }}
+      className="rounded-lg shadow-lg p-8 transform transition text-white"
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
@@ -204,6 +220,7 @@ const ModeCard = ({ icon, title, description, onClick, color }) => {
     </div>
   );
 };
+
 
 const OverviewMode = ({ onBack }) => {
   const [assets, setAssets] = useState([]);
