@@ -354,14 +354,40 @@ const filteredAssets =
 };
 //yes
 const BatteryMode = ({ onBack, userName }) => {
-  const [batteryName, setBatteryName] = useState('');
+  const [batteryId, setBatteryId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [currentStock, setCurrentStock] = useState(0); // <-- NEW: current stock
   const [amount, setAmount] = useState('');
   const [purpose, setPurpose] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  // Fetch current stock whenever batteryId changes
+  useEffect(() => {
+    if (!batteryId) {
+      setCurrentStock(0);
+      return;
+    }
+
+    const fetchStock = async () => {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getBattery&batteryId=${batteryId}`);
+        const data = await res.json();
+        if (data && data.quantity != null) {
+          setCurrentStock(data.quantity); // <-- set the current stock
+        } else {
+          setCurrentStock(0);
+        }
+      } catch (err) {
+        console.error(err);
+        setCurrentStock(0);
+      }
+    };
+
+    fetchStock();
+  }, [batteryId]);
 
   const submitBatteryAction = async (type) => {
-    if (!batteryName.trim()) {
-      alert('Battery name required');
+    if (!batteryId.trim()) {
+      alert('Battery ID required');
       return;
     }
 
@@ -376,7 +402,7 @@ const BatteryMode = ({ onBack, userName }) => {
         method: 'POST',
         body: JSON.stringify({
           action: 'updateBattery',
-          batteryName: batteryName.trim(),
+          batteryId: batteryId.trim(),
           quantity: type === 'take' ? -Number(amount) : Number(amount),
           operator: userName,
           purpose: purpose || ''
@@ -389,7 +415,10 @@ const BatteryMode = ({ onBack, userName }) => {
           : 'Battery stored successfully'
       );
 
-      setBatteryName('');
+      // Update stock immediately after action
+      setCurrentStock(prev => prev + (type === 'take' ? -Number(amount) : Number(amount)));
+
+      setBatteryId('');
       setAmount('');
       setPurpose('');
     } catch (err) {
@@ -417,11 +446,15 @@ const BatteryMode = ({ onBack, userName }) => {
           <div className="space-y-4">
             <input
               type="text"
-              placeholder="Enter Battery Name"
-              value={batteryName}
-              onChange={(e) => setBatteryName(e.target.value)}
+              placeholder="Enter Battery ID"
+              value={batteryId}
+              onChange={(e) => setBatteryId(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
+            <p className="text-gray-700 font-medium">
+              Current Stock: {currentStock}
+            </p>
 
             <input
               type="number"
