@@ -140,6 +140,13 @@ if (!mode) {
             onClick={() => setMode('history')}
             color="indigo"
           />
+            <ModeCard
+            icon={<List className="w-12 h-12" />}
+            title="Battery"
+            description="Take or Store Battery"
+            onClick={() => setMode('history')}
+            color="Red"
+          />
 <ModeCard
   icon={<Edit className="w-12 h-12" />}
   title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
