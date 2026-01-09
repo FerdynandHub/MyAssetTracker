@@ -144,7 +144,7 @@ if (!mode) {
             icon={<List className="w-12 h-12" />}
             title="Battery"
             description="Take or Store Battery"
-            onClick={() => setMode('history')}
+            onClick={() => setMode('battery')}
             color="red"
           />
 <ModeCard
@@ -184,6 +184,8 @@ if (!mode) {
 
 const renderMode = () => {
   switch (mode) {
+    case 'battery':
+  return <BatteryMode onBack={() => setMode(null)} userName={userName} />;
     case 'overview':
       return <OverviewMode onBack={() => setMode(null)} />;
     case 'check':
@@ -350,6 +352,98 @@ const filteredAssets =
     </div>
   );
 };
+
+const BatteryMode = ({ onBack, userName }) => {
+  const [batteryId, setBatteryId] = useState('');
+  const [loading, setLoading] = useState(false);
+
+const submitBatteryAction = async (type) => {
+  if (!batteryName.trim()) {
+    alert('Battery name required');
+    return;
+  }
+
+  if (!amount || Number(amount) <= 0) {
+    alert('Amount must be greater than 0');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'updateBattery',
+        batteryName: batteryName.trim(),
+        quantity: type === 'take' ? -Number(amount) : Number(amount),
+        operator: userName,
+        purpose: purpose || ''
+      })
+    });
+
+    alert(
+      type === 'take'
+        ? 'Battery taken successfully'
+        : 'Battery stored successfully'
+    );
+
+    setBatteryName('');
+    setAmount('');
+    setPurpose('');
+  } catch (err) {
+    console.error(err);
+    alert('Failed to process battery');
+  }
+
+  setLoading(false);
+};
+
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-800">Battery Management</h1>
+            <button
+              onClick={onBack}
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+            >
+              Back
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Enter Battery ID"
+              value={batteryId}
+              onChange={(e) => setBatteryId(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <button
+              disabled={loading}
+              onClick={() => submitBatteryAction('takeBattery')}
+              className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition disabled:bg-gray-300"
+            >
+              Take Battery
+            </button>
+
+            <button
+              disabled={loading}
+              onClick={() => submitBatteryAction('storeBattery')}
+              className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition disabled:bg-gray-300"
+            >
+              Store Battery
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 const CheckMode = ({ onBack }) => {
   const streamRef = useRef(null);
