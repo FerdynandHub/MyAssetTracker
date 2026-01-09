@@ -353,8 +353,6 @@ const filteredAssets =
   );
 };
 
-import { useState } from 'react';
-
 const BatteryMode = ({ onBack, userName }) => {
   const [batteryName, setBatteryName] = useState('');
   const [amount, setAmount] = useState('');
