@@ -353,51 +353,54 @@ const filteredAssets =
   );
 };
 
+import { useState } from 'react';
+
 const BatteryMode = ({ onBack, userName }) => {
-  const [batteryId, setBatteryId] = useState('');
+  const [batteryName, setBatteryName] = useState('');
+  const [amount, setAmount] = useState('');
+  const [purpose, setPurpose] = useState('');
   const [loading, setLoading] = useState(false);
 
-const submitBatteryAction = async (type) => {
-  if (!batteryName.trim()) {
-    alert('Battery name required');
-    return;
-  }
+  const submitBatteryAction = async (type) => {
+    if (!batteryName.trim()) {
+      alert('Battery name required');
+      return;
+    }
 
-  if (!amount || Number(amount) <= 0) {
-    alert('Amount must be greater than 0');
-    return;
-  }
+    if (!amount || Number(amount) <= 0) {
+      alert('Amount must be greater than 0');
+      return;
+    }
 
-  setLoading(true);
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'updateBattery',
-        batteryName: batteryName.trim(),
-        quantity: type === 'take' ? -Number(amount) : Number(amount),
-        operator: userName,
-        purpose: purpose || ''
-      })
-    });
+    setLoading(true);
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateBattery',
+          batteryName: batteryName.trim(),
+          quantity: type === 'take' ? -Number(amount) : Number(amount),
+          operator: userName,
+          purpose: purpose || ''
+        })
+      });
 
-    alert(
-      type === 'take'
-        ? 'Battery taken successfully'
-        : 'Battery stored successfully'
-    );
+      alert(
+        type === 'take'
+          ? 'Battery taken successfully'
+          : 'Battery stored successfully'
+      );
 
-    setBatteryName('');
-    setAmount('');
-    setPurpose('');
-  } catch (err) {
-    console.error(err);
-    alert('Failed to process battery');
-  }
+      setBatteryName('');
+      setAmount('');
+      setPurpose('');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to process battery');
+    }
 
-  setLoading(false);
-};
-
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -416,15 +419,31 @@ const submitBatteryAction = async (type) => {
           <div className="space-y-4">
             <input
               type="text"
-              placeholder="Enter Battery ID"
-              value={batteryId}
-              onChange={(e) => setBatteryId(e.target.value)}
+              placeholder="Enter Battery Name"
+              value={batteryName}
+              onChange={(e) => setBatteryName(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="number"
+              placeholder="Amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Purpose (optional)"
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
             <button
               disabled={loading}
-              onClick={() => submitBatteryAction('takeBattery')}
+              onClick={() => submitBatteryAction('take')}
               className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition disabled:bg-gray-300"
             >
               Take Battery
@@ -432,7 +451,7 @@ const submitBatteryAction = async (type) => {
 
             <button
               disabled={loading}
-              onClick={() => submitBatteryAction('storeBattery')}
+              onClick={() => submitBatteryAction('store')}
               className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition disabled:bg-gray-300"
             >
               Store Battery
