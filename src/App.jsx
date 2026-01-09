@@ -145,7 +145,7 @@ if (!mode) {
             title="Battery"
             description="Take or Store Battery"
             onClick={() => setMode('history')}
-            color="Red"
+            color="red"
           />
 <ModeCard
   icon={<Edit className="w-12 h-12" />}
