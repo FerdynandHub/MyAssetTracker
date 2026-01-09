@@ -352,7 +352,7 @@ const filteredAssets =
     </div>
   );
 };
-
+//yes
 const BatteryMode = ({ onBack, userName }) => {
   const [batteryName, setBatteryName] = useState('');
   const [amount, setAmount] = useState('');
