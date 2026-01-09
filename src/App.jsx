@@ -248,11 +248,13 @@ const OverviewMode = ({ onBack }) => {
     fetchAssets();
   }, []);
 
-  const filteredAssets = selectedCategory === 'All'
+const categories = ['All', ...CATEGORIES];
+
+const filteredAssets =
+  selectedCategory === 'All'
     ? assets
     : assets.filter(a => a.category === selectedCategory);
 
-  const categories = ['All', ...CATEGORIES];
   
 
   return (
