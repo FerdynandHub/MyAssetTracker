@@ -356,23 +356,23 @@ const filteredAssets =
 const BatteryMode = ({ onBack, userName }) => {
   const [batteryId, setBatteryId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentStock, setCurrentStock] = useState(0); // <-- NEW: current stock
+  const [currentStock, setCurrentStock] = useState(0);
   const [amount, setAmount] = useState('');
   const [purpose, setPurpose] = useState('');
 
-  // Fetch current stock whenever batteryId changes
+  // Fetch current stock when batteryId changes
   useEffect(() => {
-    if (!batteryId) {
+    if (!batteryId.trim()) {
       setCurrentStock(0);
       return;
     }
 
     const fetchStock = async () => {
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getBattery&batteryId=${batteryId}`);
+        const res = await fetch(`${SCRIPT_URL}?action=getBattery&batteryId=${batteryId.trim()}`);
         const data = await res.json();
         if (data && data.quantity != null) {
-          setCurrentStock(data.quantity); // <-- set the current stock
+          setCurrentStock(data.quantity);
         } else {
           setCurrentStock(0);
         }
@@ -390,7 +390,6 @@ const BatteryMode = ({ onBack, userName }) => {
       alert('Battery ID required');
       return;
     }
-
     if (!amount || Number(amount) <= 0) {
       alert('Amount must be greater than 0');
       return;
@@ -398,34 +397,33 @@ const BatteryMode = ({ onBack, userName }) => {
 
     setLoading(true);
     try {
-      await fetch(SCRIPT_URL, {
+      const res = await fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({
           action: 'updateBattery',
-          batteryId: batteryId.trim(),
+          batteryName: batteryId.trim(),
           quantity: type === 'take' ? -Number(amount) : Number(amount),
           operator: userName,
           purpose: purpose || ''
         })
       });
 
-      alert(
-        type === 'take'
-          ? 'Battery taken successfully'
-          : 'Battery stored successfully'
-      );
-
-      // Update stock immediately after action
-      setCurrentStock(prev => prev + (type === 'take' ? -Number(amount) : Number(amount)));
-
-      setBatteryId('');
-      setAmount('');
-      setPurpose('');
+      const result = await res.json();
+      if (result.error) {
+        alert(result.error);
+      } else {
+        alert(
+          type === 'take' ? 'Battery taken successfully' : 'Battery stored successfully'
+        );
+        setCurrentStock(result.currentQuantity || 0);
+        setBatteryId('');
+        setAmount('');
+        setPurpose('');
+      }
     } catch (err) {
       console.error(err);
       alert('Failed to process battery');
     }
-
     setLoading(false);
   };
 
@@ -452,9 +450,7 @@ const BatteryMode = ({ onBack, userName }) => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            <p className="text-gray-700 font-medium">
-              Current Stock: {currentStock}
-            </p>
+            <p className="text-gray-700 font-medium">Current Stock: {currentStock}</p>
 
             <input
               type="number"
