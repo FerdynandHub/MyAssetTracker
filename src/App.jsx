@@ -11,7 +11,7 @@ const ROLES = {
 
 
 // Configuration - Replace with your actual Google Apps Script Web App URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo5ccuVntd38f1-YM8xYufEIKrd4d7ibJlmS6Z2sGHGIi06PRbFylP6inLOd4gploc/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNiroTzVYqfh4Dq1vW8zbD74pd6o1EQcx2_RKzTImYHxS3jK8ama33REMMvXC5VumF/exec';
 
 const CATEGORIES = ['Projectors', 'Toolkit', 'Splitter 4HDMI', 'HDMI Cable 15m', 'TV', 'Screen', 'EventPC'];
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
