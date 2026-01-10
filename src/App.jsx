@@ -16,8 +16,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNiroTzVYqfh4Dq1vW8
 const CATEGORIES = [
   'Projectors',
   'Toolkit',
-  'Splitter 4HDMI',
-  'HDMI Cable 15m',
   'TV',
   'Screen',
   'EventPC',
@@ -239,6 +237,7 @@ const ModeCard = ({ icon, title, description, onClick, color, disabled }) => {
     orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' },
     red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' },
     indigo: { background: 'linear-gradient(to bottom right, #6366f1, #4f46e5)' },
+    gray: { background: 'linear-gradient(to bottom right, #aeafd4c4, #a7a4db)' },
     disabled: { background: '#e5e7eb' } // gray-200
   };
 
