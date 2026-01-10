@@ -13,7 +13,34 @@ const ROLES = {
 // Configuration - Replace with your actual Google Apps Script Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNiroTzVYqfh4Dq1vW8zbD74pd6o1EQcx2_RKzTImYHxS3jK8ama33REMMvXC5VumF/exec';
 
-const CATEGORIES = ['Projectors', 'Toolkit', 'Splitter 4HDMI', 'HDMI Cable 15m', 'TV', 'Screen', 'EventPC'];
+const CATEGORIES = [
+  'Projectors',
+  'Toolkit',
+  'Splitter 4HDMI',
+  'HDMI Cable 15m',
+  'TV',
+  'Screen',
+  'EventPC',
+  'Kabel HDMI',
+  'Kabel USB',
+  'Kabel Audio',
+  'HDMI Extender',
+  'DI Box',
+  'Soundcard',
+  'HDMI Splitter',
+  'HDMI Matrix',
+  'HDMI Switcher',
+  'Microphone',
+  'Wireless Microphone',
+  'Wireless Presentation',
+  'Stylus Pen',
+  'Presentation Remote',
+  'Docking Station',
+  'Video Capture',
+  'Power Supply',
+  'PDU'
+];
+
 const GRADES = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
 
 
