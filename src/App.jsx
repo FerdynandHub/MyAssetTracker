@@ -305,7 +305,7 @@ const OverviewMode = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 100;
+  const itemsPerPage = 30;
 
   const fetchAssets = async () => {
     setLoading(true);
