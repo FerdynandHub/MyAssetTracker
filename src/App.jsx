@@ -69,7 +69,7 @@ const App = () => {
       setUserName(accessCodes[accessCode].name);
       setError('');
     } else {
-      setError('Salah bang');
+      setError('Per 10 Januari 2026, semua akun demo telah dihapus kecuali viewer (123). Silahkan contact admin untuk dibuatkan akun');
     }
   };
 
