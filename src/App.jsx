@@ -9,8 +9,6 @@ const ROLES = {
   ADMIN: 'admin'
 };
 
-
-// Configuration - Replace with your actual Google Apps Script Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNiroTzVYqfh4Dq1vW8zbD74pd6o1EQcx2_RKzTImYHxS3jK8ama33REMMvXC5VumF/exec';
 
 const CATEGORIES = [
@@ -60,6 +58,8 @@ const App = () => {
       'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
       'hien456': { role: ROLES.EDITOR, name: 'Hiendarta' },
       'henny456': { role: ROLES.EDITOR, name: 'Henny' },
+      'alfons654': { role: ROLES.EDITOR, name: 'Alfons' },
+      'parmin456': { role: ROLES.EDITOR, name: 'Suparmin' },
       'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' }
     };
 
@@ -186,30 +186,7 @@ if (!mode) {
             onClick={() => setMode('history')}
             color="indigo"
           />
-            <ModeCard          
-            title="Single-Use Item"
-            description="[Coming Soon] Batteries, Mic Covers, Labels etc.."
-                        onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
-            color="gray"
-          />
-           <ModeCard
-            title="Request barang"
-            description="[Coming Soon] Pesan barang untuk operasional"
-            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
-            color="gray"
-          />
-          <ModeCard            
-            title="Space Booking"
-            description="[Coming Soon]"
-            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
-            color="gray"
-          />
-          <ModeCard           
-            title="Progressions"
-            description="[Coming Soon]"
-           onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
-            color="gray"
-          />
+
 <ModeCard
   title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
   description={
@@ -235,6 +212,30 @@ if (!mode) {
   color="red"
   disabled={userRole !== ROLES.ADMIN}
 />
+            <ModeCard          
+            title="Single-Use Item"
+            description="[Coming Soon] Batteries, Mic Covers, Labels etc.."
+                        onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+           <ModeCard
+            title="Request barang"
+            description="[Coming Soon] Pesan barang untuk operasional"
+            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+          <ModeCard            
+            title="Space Booking"
+            description="[Coming Soon]"
+            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+          <ModeCard           
+            title="Progressions"
+            description="[Coming Soon]"
+           onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
 
 
         </div>
