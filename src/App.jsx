@@ -192,7 +192,7 @@ if (!mode) {
             icon={<List className="w-12 h-12" />}
             title="Single-Use Item"
             description="[Coming Soon] Batteries, Mic Covers, Labels etc.."
-            onClick={() => setMode('battery')}
+                        onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
             color="gray"
           />
            <ModeCard
@@ -204,7 +204,7 @@ if (!mode) {
           />
           <ModeCard
             icon={<List className="w-12 h-12" />}
-            title="Spacebooking"
+            title="SpaceBooking"
             description="[Coming Soon]"
             onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
             color="gray"
