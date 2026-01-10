@@ -57,8 +57,10 @@ const App = () => {
   const handleLogin = () => {
     const accessCodes = {
       '123': { role: ROLES.VIEWER, name: 'Viewer User' },
-      '456': { role: ROLES.EDITOR, name: 'Editor User' },
-      'Mingming1234': { role: ROLES.ADMIN, name: 'Admin User' }
+      'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
+      'hien456': { role: ROLES.EDITOR, name: 'Hiendarta' },
+      'henny456': { role: ROLES.EDITOR, name: 'Henny' },
+      'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' }
     };
 
     if (accessCodes[accessCode]) {
@@ -197,16 +199,16 @@ if (!mode) {
             color="gray"
           />
           <ModeCard            
-            title="SpaceBooking"
+            title="Space Booking"
             description="[Coming Soon]"
             onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
             color="gray"
           />
           <ModeCard           
-            title="Classroom & Lab"
-            description="Classrooms and Labs Informations"
-           onClick={() => window.open('https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?usp=sharing', '_blank')}
-            color="indigo"
+            title="Progressions"
+            description="[Coming Soon]"
+           onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
           />
 <ModeCard
   title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
