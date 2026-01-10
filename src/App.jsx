@@ -304,6 +304,8 @@ const OverviewMode = ({ onBack }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 100;
 
   const fetchAssets = async () => {
     setLoading(true);
@@ -370,6 +372,17 @@ const OverviewMode = ({ onBack }) => {
     }
     return 0;
   });
+
+  // Pagination
+  const totalPages = Math.ceil(sortedAssets.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedAssets = sortedAssets.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchTerm, sortConfig]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -446,8 +459,9 @@ const OverviewMode = ({ onBack }) => {
 
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">
-            Showing {sortedAssets.length} of {categoryFiltered.length} assets
+            Showing {startIndex + 1}-{Math.min(endIndex, sortedAssets.length)} of {sortedAssets.length} results
             {selectedCategory !== 'All' && ` in ${selectedCategory}`}
+            {categoryFiltered.length !== sortedAssets.length && ` (filtered from ${categoryFiltered.length})`}
           </div>
         </div>
 
@@ -537,14 +551,14 @@ const OverviewMode = ({ onBack }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedAssets.length === 0 ? (
+                  {paginatedAssets.length === 0 ? (
                     <tr>
                       <td colSpan="10" className="px-4 py-8 text-center text-gray-500">
                         No assets found matching your search criteria
                       </td>
                     </tr>
                   ) : (
-                    sortedAssets.map((asset, idx) => (
+                    paginatedAssets.map((asset, idx) => (
                       <tr key={idx} className="border-b hover:bg-gray-50">
                         <td className="px-4 py-3">{asset.id}</td>
                         <td className="px-4 py-3">{asset.name}</td>
@@ -585,6 +599,35 @@ const OverviewMode = ({ onBack }) => {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="bg-white rounded-lg shadow-lg p-4 mt-4">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
             </div>
           </div>
         )}
