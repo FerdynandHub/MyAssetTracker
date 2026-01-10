@@ -167,10 +167,10 @@ if (!mode) {
           />
             <ModeCard
             icon={<List className="w-12 h-12" />}
-            title="Battery"
-            description="Take or Store Battery"
+            title="Disposeable Items (NOT DONE YET)"
+            description="Batteries, Mic Covers, Labels etc.."
             onClick={() => setMode('battery')}
-            color="red"
+            color="gray"
           />
 <ModeCard
   icon={<Edit className="w-12 h-12" />}
