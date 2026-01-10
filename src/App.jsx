@@ -163,35 +163,35 @@ if (!mode) {
 <ModeCard
             icon={<Eye className="w-12 h-12" />}
             title="Overview"
-            description="View all assets by category"
+            description="Lihat semua aset dari kategori"
             onClick={() => setMode('overview')}
             color="blue"
           />
           <ModeCard
             icon={<Search className="w-12 h-12" />}
             title="Check Information"
-            description="Scan or search asset details"
+            description="Scan atau search detail aset"
             onClick={() => setMode('check')}
             color="green"
           />
           <ModeCard
             icon={<Download className="w-12 h-12" />}
             title="Export"
-            description="Batch scan and export to CSV"
+            description="Batch scan dan export ke sheet"
             onClick={() => setMode('export')}
             color="purple"
           />
           <ModeCard
             icon={<List className="w-12 h-12" />}
             title="History"
-            description="View asset change history"
+            description="Lihat pergerakan dari aset"
             onClick={() => setMode('history')}
             color="indigo"
           />
             <ModeCard
             icon={<List className="w-12 h-12" />}
-            title="Disposeable Items (NOT DONE YET)"
-            description="Batteries, Mic Covers, Labels etc.."
+            title="Barang sekali pakai"
+            description="[Belum selesai] Batteries, Mic Covers, Labels etc.."
             onClick={() => setMode('battery')}
             color="gray"
           />
