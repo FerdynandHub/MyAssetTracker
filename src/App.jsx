@@ -161,63 +161,54 @@ if (!mode) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <ModeCard
-            icon={<Eye className="w-12 h-12" />}
             title="Overview"
             description="Lihat semua aset dari kategori"
             onClick={() => setMode('overview')}
             color="blue"
           />
           <ModeCard
-            icon={<Search className="w-12 h-12" />}
             title="Check Information"
             description="Scan atau search detail aset"
             onClick={() => setMode('check')}
             color="green"
           />
           <ModeCard
-            icon={<Download className="w-12 h-12" />}
             title="Export"
             description="Batch scan dan export ke sheet"
             onClick={() => setMode('export')}
             color="purple"
           />
           <ModeCard
-            icon={<List className="w-12 h-12" />}
             title="History"
             description="Lihat pergerakan dari aset"
             onClick={() => setMode('history')}
             color="indigo"
           />
-            <ModeCard
-            
+            <ModeCard          
             title="Single-Use Item"
             description="[Coming Soon] Batteries, Mic Covers, Labels etc.."
                         onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
             color="gray"
           />
            <ModeCard
-            
             title="Request barang"
             description="[Coming Soon] Pesan barang untuk operasional"
             onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
             color="gray"
           />
-          <ModeCard
-            
+          <ModeCard            
             title="SpaceBooking"
             description="[Coming Soon]"
             onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
             color="gray"
           />
-          <ModeCard
-            
-            title="Portal AVM Classroom & Lab"
-            description="Visit our original C&L portal for more classrooms and Labs Informations"
+          <ModeCard           
+            title="Classroom & Lab"
+            description="Classrooms and Labs Informations"
            onClick={() => window.open('https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?usp=sharing', '_blank')}
             color="indigo"
           />
 <ModeCard
-  icon={<Edit className="w-12 h-12" />}
   title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
   description={
     userRole !== ROLES.VIEWER
@@ -232,7 +223,6 @@ if (!mode) {
 />
 
 <ModeCard
-  icon={<List className="w-12 h-12" />}
   title="Pending Approvals"
   description={
     userRole === ROLES.ADMIN
