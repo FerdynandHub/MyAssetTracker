@@ -296,13 +296,18 @@ const OverviewMode = ({ onBack }) => {
   const searchFiltered = categoryFiltered.filter(asset => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
-    return (
-      asset.id?.toLowerCase().includes(searchLower) ||
-      asset.name?.toLowerCase().includes(searchLower) ||
-      asset.location?.toLowerCase().includes(searchLower) ||
-      asset.owner?.toLowerCase().includes(searchLower) ||
-      asset.status?.toLowerCase().includes(searchLower) ||
-      asset.remarks?.toLowerCase().includes(searchLower)
+    
+    const searchableFields = [
+      asset.id,
+      asset.name,
+      asset.location,
+      asset.owner,
+      asset.status,
+      asset.remarks
+    ];
+    
+    return searchableFields.some(field => 
+      field && String(field).toLowerCase().includes(searchLower)
     );
   });
 
