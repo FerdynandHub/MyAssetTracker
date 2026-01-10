@@ -446,7 +446,8 @@ const OverviewMode = ({ onBack }) => {
 
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">
-            Showing {sortedAssets.length} of {assets.length} assets
+            Showing {sortedAssets.length} of {categoryFiltered.length} assets
+            {selectedCategory !== 'All' && ` in ${selectedCategory}`}
           </div>
         </div>
 
