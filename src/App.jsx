@@ -295,7 +295,9 @@ const OverviewMode = ({ onBack }) => {
   // Filter by search term
   const searchFiltered = categoryFiltered.filter(asset => {
     if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
+    
+    // Split search term into individual words
+    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/);
     
     const searchableFields = [
       asset.id,
@@ -306,9 +308,14 @@ const OverviewMode = ({ onBack }) => {
       asset.remarks
     ];
     
-    return searchableFields.some(field => 
-      field && String(field).toLowerCase().includes(searchLower)
-    );
+    // Combine all searchable fields into one string
+    const combinedText = searchableFields
+      .filter(field => field)
+      .map(field => String(field).toLowerCase())
+      .join(' ');
+    
+    // Check if ALL search words are found in the combined text
+    return searchWords.every(word => combinedText.includes(word));
   });
 
   // Sort filtered results
