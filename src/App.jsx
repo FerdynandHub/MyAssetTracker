@@ -86,12 +86,14 @@ const App = () => {
 <form className="space-y-4">
 </form>
 
-          <h1 className="text-xl font-semibold text-gray-700 text-center">
+<h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
   Portal AVM UPH
 </h1>
-<p className="text-xs text-gray-400 text-center mt-1">
+
+<p className="text-xs text-gray-400 text-center mb-6">
   by Ferdynand
 </p>
+
 
          
 
