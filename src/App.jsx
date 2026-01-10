@@ -73,7 +73,15 @@ const App = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
+      <div 
+  className="min-h-screen flex items-center justify-center p-4"
+  style={{
+    backgroundImage: 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  }}
+>
         <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
           <div className="flex justify-center mb-6">
   <img
@@ -90,8 +98,16 @@ const App = () => {
   Portal AVM UPH
 </h1>
 
-<p className="text-xs text-gray-400 text-center mb-6">
+<p className="text-xs text-gray-400 text-center mb-4">
   by Ferdynand
+</p>
+
+<h2 className="text-lg font-medium text-gray-700 text-center mb-1">
+  Selamat Datang
+</h2>
+
+<p className="text-sm text-gray-500 text-center mb-6">
+  Masukkan Access Code
 </p>
 
 
