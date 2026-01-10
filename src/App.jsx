@@ -1,6 +1,6 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan } from 'lucide-react';
+import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown} from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 const ROLES = {
@@ -265,6 +265,8 @@ const OverviewMode = ({ onBack }) => {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const fetchAssets = async () => {
     setLoading(true);
@@ -282,18 +284,66 @@ const OverviewMode = ({ onBack }) => {
     fetchAssets();
   }, []);
 
-const categories = ['All', ...CATEGORIES];
+  const categories = ['All', ...CATEGORIES];
 
-const filteredAssets =
-  selectedCategory === 'All'
-    ? assets
-    : assets.filter(a => a.category === selectedCategory);
+  // Filter by category
+  const categoryFiltered =
+    selectedCategory === 'All'
+      ? assets
+      : assets.filter(a => a.category === selectedCategory);
 
-  
+  // Filter by search term
+  const searchFiltered = categoryFiltered.filter(asset => {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      asset.id?.toLowerCase().includes(searchLower) ||
+      asset.name?.toLowerCase().includes(searchLower) ||
+      asset.location?.toLowerCase().includes(searchLower) ||
+      asset.owner?.toLowerCase().includes(searchLower) ||
+      asset.status?.toLowerCase().includes(searchLower) ||
+      asset.remarks?.toLowerCase().includes(searchLower)
+    );
+  });
+
+  // Sort filtered results
+  const sortedAssets = [...searchFiltered].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+
+    const aVal = a[sortConfig.key] || '';
+    const bVal = b[sortConfig.key] || '';
+
+    if (aVal < bVal) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aVal > bVal) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) {
+      return <ArrowUpDown className="w-4 h-4 text-gray-400" />;
+    }
+    return sortConfig.direction === 'asc' ? (
+      <ArrowUp className="w-4 h-4 text-blue-500" />
+    ) : (
+      <ArrowDown className="w-4 h-4 text-blue-500" />
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
-    <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-3xl font-bold text-gray-800">Overview</h1>
@@ -313,7 +363,22 @@ const filteredAssets =
               </button>
             </div>
           </div>
-          
+
+          {/* Search Bar */}
+          <div className="mb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by ID, name, location, owner, status, or remarks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Category Filter */}
           <div className="flex gap-2 mb-4 flex-wrap">
             {categories.map(cat => (
               <button
@@ -329,6 +394,11 @@ const filteredAssets =
               </button>
             ))}
           </div>
+
+          {/* Results Count */}
+          <div className="text-sm text-gray-600 mb-2">
+            Showing {sortedAssets.length} of {assets.length} assets
+          </div>
         </div>
 
         {loading ? (
@@ -341,33 +411,128 @@ const filteredAssets =
               <table className="w-full">
                 <thead className="bg-gray-200">
                   <tr>
-                    <th className="px-4 py-3 text-left">ID</th>
-                    <th className="px-4 py-3 text-left">Name</th>
-                    <th className="px-4 py-3 text-left">Location</th>
-                    <th className="px-4 py-3 text-left">Category</th>
-                    <th className="px-4 py-3 text-left">Status</th>
-                    <th className="px-4 py-3 text-left">Owner</th>
-                    <th className="px-4 py-3 text-left">Grade</th>
-                    <th className="px-4 py-3 text-left">Last Updated</th>
-                    <th className="px-4 py-3 text-left">Updated By</th>
+                    <th
+                      onClick={() => handleSort('id')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        ID {getSortIcon('id')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('name')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Name {getSortIcon('name')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('location')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Location {getSortIcon('location')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('category')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Category {getSortIcon('category')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('status')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Status {getSortIcon('status')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('owner')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Owner {getSortIcon('owner')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('grade')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Grade {getSortIcon('grade')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('lastUpdated')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Last Updated {getSortIcon('lastUpdated')}
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('updatedBy')}
+                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        Updated By {getSortIcon('updatedBy')}
+                      </div>
+                    </th>
                     <th className="px-4 py-3 text-left">Remarks</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAssets.map((asset, idx) => (
-                    <tr key={idx} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3">{asset.id}</td>
-                      <td className="px-4 py-3">{asset.name}</td>
-                      <td className="px-4 py-3">{asset.location}</td>
-                      <td className="px-4 py-3">{asset.category}</td>
-                      <td className="px-4 py-3">{asset.status}</td>
-                      <td className="px-4 py-3">{asset.owner}</td>
-                      <td className="px-4 py-3">{asset.grade}</td>
-                      <td className="px-4 py-3">{asset.lastUpdated}</td>
-                      <td className="px-4 py-3">{asset.updatedBy}</td>
-                      <td className="px-4 py-3">{asset.remarks}</td>
+                  {sortedAssets.length === 0 ? (
+                    <tr>
+                      <td colSpan="10" className="px-4 py-8 text-center text-gray-500">
+                        No assets found matching your search criteria
+                      </td>
                     </tr>
-                  ))}
+                  ) : (
+                    sortedAssets.map((asset, idx) => (
+                      <tr key={idx} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3">{asset.id}</td>
+                        <td className="px-4 py-3">{asset.name}</td>
+                        <td className="px-4 py-3">{asset.location}</td>
+                        <td className="px-4 py-3">{asset.category}</td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs ${
+                              asset.status === 'Active'
+                                ? 'bg-green-100 text-green-800'
+                                : asset.status === 'Maintenance'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}
+                          >
+                            {asset.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">{asset.owner}</td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-semibold ${
+                              asset.grade === 'A'
+                                ? 'bg-green-100 text-green-800'
+                                : asset.grade === 'B'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}
+                          >
+                            {asset.grade}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">{asset.lastUpdated}</td>
+                        <td className="px-4 py-3">{asset.updatedBy}</td>
+                        <td className="px-4 py-3">{asset.remarks}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
