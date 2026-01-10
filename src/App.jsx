@@ -58,7 +58,7 @@ const App = () => {
     const accessCodes = {
       '123': { role: ROLES.VIEWER, name: 'Viewer User' },
       '456': { role: ROLES.EDITOR, name: 'Editor User' },
-      '789': { role: ROLES.ADMIN, name: 'Admin User' }
+      'Mingming1234': { role: ROLES.ADMIN, name: 'Admin User' }
     };
 
     if (accessCodes[accessCode]) {
@@ -67,7 +67,7 @@ const App = () => {
       setUserName(accessCodes[accessCode].name);
       setError('');
     } else {
-      setError('Invalid access code');
+      setError('Salah bang');
     }
   };
 
@@ -130,7 +130,7 @@ if (!mode) {
               }}
               className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
             >
-              Logout
+              Keluar
             </button>
           </div>
         </div>
