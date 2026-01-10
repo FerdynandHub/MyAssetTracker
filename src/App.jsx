@@ -190,10 +190,31 @@ if (!mode) {
           />
             <ModeCard
             icon={<List className="w-12 h-12" />}
-            title="Barang sekali pakai"
-            description="[Belum selesai] Batteries, Mic Covers, Labels etc.."
+            title="Single-Use Item"
+            description="[Coming Soon] Batteries, Mic Covers, Labels etc.."
             onClick={() => setMode('battery')}
             color="gray"
+          />
+           <ModeCard
+            icon={<List className="w-12 h-12" />}
+            title="Request barang"
+            description="[Coming Soon] Pesan barang untuk operasional"
+            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+          <ModeCard
+            icon={<List className="w-12 h-12" />}
+            title="Spacebooking"
+            description="[Coming Soon]"
+            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+          <ModeCard
+            icon={<List className="w-12 h-12" />}
+            title="Portal AVM Classroom & Lab"
+            description="Visit our original C&L portal for more classrooms and Labs Informations"
+           onClick={() => window.open('https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?usp=sharing', '_blank')}
+            color="indigo"
           />
 <ModeCard
   icon={<Edit className="w-12 h-12" />}
