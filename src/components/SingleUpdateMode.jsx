@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
+import PhotoUpload from './PhotoUpload';
 
 const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGORIES, GRADES }) => {
   const [assetId, setAssetId] = useState('');
@@ -276,6 +277,12 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
                   rows="3"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                <PhotoUpload
+  currentPhotoUrl={formData.photoUrl}
+  onPhotoUrlChange={(url) => setFormData({...formData, photoUrl: url})}
+  assetId={formData.id}
+  SCRIPT_URL={SCRIPT_URL}
+/>
               </div>
 
               <button

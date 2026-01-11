@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Camera, Search, List } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
+import AssetPhotoButton from './AssetPhotoButton';
 
 const HistoryMode = ({ onBack, SCRIPT_URL }) => {
   const [assetId, setAssetId] = useState('');
@@ -155,7 +156,7 @@ const HistoryMode = ({ onBack, SCRIPT_URL }) => {
                   
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {Object.entries(record).map(([key, value]) => {
-                      if (key === 'id' || key === 'lastUpdated' || key === 'updatedBy') return null;
+                      if (key === 'id' || key === 'lastUpdated' || key === 'updatedBy' || key === 'photoUrl') return null;
                       return (
                         <div key={key}>
                           <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
@@ -166,6 +167,14 @@ const HistoryMode = ({ onBack, SCRIPT_URL }) => {
                       );
                     })}
                   </div>
+                  
+                  {/* Photo section */}
+                  {record.photoUrl && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <label className="block text-xs font-medium text-gray-500 mb-2">Photo</label>
+                      <AssetPhotoButton photoUrl={record.photoUrl} assetId={record.id} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

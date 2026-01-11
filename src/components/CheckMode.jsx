@@ -161,6 +161,18 @@ const CheckMode = ({ onBack, SCRIPT_URL }) => {
               <InfoField label="Last Updated" value={asset.lastUpdated} />
               <InfoField label="Updated By" value={asset.updatedBy} />
               <InfoField label="Remarks" value={asset.remarks} />
+              <InfoField
+  label="Photo"
+  value={
+    <button
+      onClick={() => window.open(asset.photoUrl, "_blank")}
+      className="rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700 transition"
+    >
+      View Photo
+    </button>
+  }
+/>
+
             </div>
           </div>
         )}

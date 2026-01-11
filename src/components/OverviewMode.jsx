@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Search, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import AssetPhotoButton from './AssetPhotoButton';
 
 const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const [assets, setAssets] = useState([]);
@@ -294,12 +295,13 @@ return 'bg-slate-200 text-slate-600';
                       </div>
                     </th>
                     <th className="px-4 py-3 text-left">Remarks</th>
+                    <th className="px-4 py-3 text-left">Photo</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedAssets.length === 0 ? (
                     <tr>
-                      <td colSpan="10" className="px-4 py-8 text-center text-gray-500">
+                      <td colSpan="11" className="px-4 py-8 text-center text-gray-500">
                         No assets found matching your search criteria
                       </td>
                     </tr>
@@ -332,6 +334,9 @@ return 'bg-slate-200 text-slate-600';
                         <td className="px-4 py-3">{asset.lastUpdated}</td>
                         <td className="px-4 py-3">{asset.updatedBy}</td>
                         <td className="px-4 py-3">{asset.remarks}</td>
+                        <td className="px-4 py-3">
+  <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
+</td>
                       </tr>
                     ))
                   )}

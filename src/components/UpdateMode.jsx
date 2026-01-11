@@ -1,86 +1,87 @@
-import React, { useState } from 'react';
-import { Edit, List } from 'lucide-react';
-import SingleUpdateMode from './SingleUpdateMode';
-import BatchUpdateMode from './BatchUpdateMode';
+    import React, { useState } from 'react';
+    import { Edit, List } from 'lucide-react';
+    import SingleUpdateMode from './SingleUpdateMode';
+    import BatchUpdateMode from './BatchUpdateMode';
 
-const UpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGORIES, GRADES }) => {
-  const [updateMode, setUpdateMode] = useState(null);
 
-  if (!updateMode) {
-    return (
-      <div className="min-h-screen bg-gray-100 p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-gray-800">
-                {userRole === ROLES.ADMIN ? 'Update Information' : 'Request Update'}
-              </h1>
-              <button
-                onClick={onBack}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-              >
-                Back
-              </button>
-            </div>
-          </div>
+    const UpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGORIES, GRADES }) => {
+    const [updateMode, setUpdateMode] = useState(null);
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div
-              onClick={() => setUpdateMode('single')}
-              className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
-            >
-              <Edit className="w-12 h-12 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2 text-center">Single Update</h2>
-              <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
-              <p className="text-center opacity-90">
-                {userRole === ROLES.ADMIN ? 'Update one asset at a time' : 'Request update for one asset'}
-              </p>
+    if (!updateMode) {
+        return (
+        <div className="min-h-screen bg-gray-100 p-6">
+            <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-800">
+                    {userRole === ROLES.ADMIN ? 'Update Information' : 'Request Update'}
+                </h1>
+                <button
+                    onClick={onBack}
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                >
+                    Back
+                </button>
+                </div>
             </div>
 
-            <div
-              onClick={() => setUpdateMode('batch')}
-              className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
-            >
-              <List className="w-12 h-12 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2 text-center">Batch Update</h2>
-              <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
-              <p className="text-center opacity-90">
-                {userRole === ROLES.ADMIN ? 'Update multiple assets at once' : 'Request update for multiple assets'}
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                onClick={() => setUpdateMode('single')}
+                className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+                >
+                <Edit className="w-12 h-12 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold mb-2 text-center">Single Update</h2>
+                <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
+                <p className="text-center opacity-90">
+                    {userRole === ROLES.ADMIN ? 'Update one asset at a time' : 'Request update for one asset'}
+                </p>
+                </div>
+
+                <div
+                onClick={() => setUpdateMode('batch')}
+                className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+                >
+                <List className="w-12 h-12 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold mb-2 text-center">Batch Update</h2>
+                <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
+                <p className="text-center opacity-90">
+                    {userRole === ROLES.ADMIN ? 'Update multiple assets at once' : 'Request update for multiple assets'}
+                </p>
+                </div>
             </div>
-          </div>
+            </div>
         </div>
-      </div>
-    );
-  }
+        );
+    }
 
-  if (updateMode === 'single') {
-    return (
-      <SingleUpdateMode
-        onBack={() => setUpdateMode(null)}
-        userRole={userRole}
-        userName={userName}
-        ROLES={ROLES}
-        SCRIPT_URL={SCRIPT_URL}
-        CATEGORIES={CATEGORIES}
-        GRADES={GRADES}
-      />
-    );
-  }
+    if (updateMode === 'single') {
+        return (
+        <SingleUpdateMode
+            onBack={() => setUpdateMode(null)}
+            userRole={userRole}
+            userName={userName}
+            ROLES={ROLES}
+            SCRIPT_URL={SCRIPT_URL}
+            CATEGORIES={CATEGORIES}
+            GRADES={GRADES}
+        />
+        );
+    }
 
-  if (updateMode === 'batch') {
-    return (
-      <BatchUpdateMode
-        onBack={() => setUpdateMode(null)}
-        userRole={userRole}
-        userName={userName}
-        ROLES={ROLES}
-        SCRIPT_URL={SCRIPT_URL}
-        CATEGORIES={CATEGORIES}
-        GRADES={GRADES}
-      />
-    );
-  }
-};
+    if (updateMode === 'batch') {
+        return (
+        <BatchUpdateMode
+            onBack={() => setUpdateMode(null)}
+            userRole={userRole}
+            userName={userName}
+            ROLES={ROLES}
+            SCRIPT_URL={SCRIPT_URL}
+            CATEGORIES={CATEGORIES}
+            GRADES={GRADES}
+        />
+        );
+    }
+    };
 
-export default UpdateMode;
+    export default UpdateMode;

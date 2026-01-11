@@ -45,7 +45,7 @@ export const exportToCSV = async (scannedIds, SCRIPT_URL) => {
       return;
     }
 
-    const headers = ['id', 'name', 'location', 'category', 'status', 'owner', 'grade', 'lastUpdated', 'updatedBy', 'remarks'];
+    const headers = ['id', 'name', 'location', 'category', 'status', 'owner', 'grade', 'lastUpdated', 'updatedBy', 'remarks', 'photoUrl'];
     const csvContent = [
       headers.join(','),
       ...assets.map(asset => 
