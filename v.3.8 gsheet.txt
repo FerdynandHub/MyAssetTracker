@@ -24,6 +24,8 @@ function doGet(e) {
         return getCategories();
       case 'getPendingRequests':
         return getPendingRequests();
+      case 'getAssetHistory':  // ADD THIS
+        return getAssetHistory(e.parameter.id);
       default:
         return json({ error: 'Invalid action' });
     }
@@ -32,12 +34,23 @@ function doGet(e) {
   }
 }
 
+function getBatterySheet() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Batteries');
+}
+
+function getBatteryHistorySheet() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('BatteryHistory');
+}
+
+
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
     const action = body.action;
 
     switch (action) {
+      case 'updateBattery':
+  return updateBattery(body);
       case 'updateAsset':
         return updateAsset(body.id, body.updates);
       case 'batchUpdateAssets':
@@ -57,6 +70,66 @@ function doPost(e) {
 }
 
 // ---------- HELPERS ----------
+
+function updateBattery(body) {
+  const { batteryName, quantity, operator, purpose } = body;
+
+  if (!batteryName || !quantity || !operator) {
+    return json({ error: 'Invalid payload' });
+  }
+
+  const sheet = getBatterySheet();
+  const historySheet = getBatteryHistorySheet();
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const nameIndex = headers.indexOf('batteryName');
+  const qtyIndex = headers.indexOf('quantity');
+
+  let found = false;
+  let currentQty = 0;
+  let rowIndex = -1;
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][nameIndex] === batteryName) {
+      found = true;
+      currentQty = Number(data[i][qtyIndex]) || 0;
+      rowIndex = i + 1;
+      break;
+    }
+  }
+
+  const newQty = currentQty + Number(quantity);
+  if (newQty < 0) {
+    return json({ error: 'Insufficient battery stock' });
+  }
+
+  if (!found) {
+    sheet.appendRow([
+      batteryName,
+      newQty,
+      nowJakarta(),
+      operator,
+      purpose || ''
+    ]);
+  } else {
+    sheet.getRange(rowIndex, qtyIndex + 1).setValue(newQty);
+    sheet.getRange(rowIndex, headers.indexOf('lastUpdated') + 1).setValue(nowJakarta());
+    sheet.getRange(rowIndex, headers.indexOf('lastOperator') + 1).setValue(operator);
+    sheet.getRange(rowIndex, headers.indexOf('lastPurpose') + 1).setValue(purpose || '');
+  }
+
+  historySheet.appendRow([
+    batteryName,
+    quantity,
+    operator,
+    purpose || '',
+    nowJakarta()
+  ]);
+
+  return json({ success: true, currentQuantity: newQty });
+}
+
 
 function getSheet() {
   return SpreadsheetApp
@@ -154,7 +227,7 @@ function getAssetById(id) {
   }
 
   for (let i = 1; i < data.length; i++) {
-    if (String(data[i][idIndex]) === String(id)) {
+    if (String(data[i][idIndex]).toLowerCase() === String(id).toLowerCase()) {  // ← ADD .toLowerCase()
       const asset = {};
 
       headers.forEach((h, j) => {
@@ -210,6 +283,46 @@ function appendHistory(headers, originalRow, updates) {
   historySheet.appendRow(snapshot);
 }
 
+// ---------- HISTORY LOOKUP ----------
+
+function getAssetHistory(id) {
+  if (!id) return json([]);
+
+  const historySheet = getHistorySheet();
+  const data = historySheet.getDataRange().getValues();
+  const headers = data[0];
+  const idIndex = headers.indexOf('id');
+
+  if (idIndex === -1) {
+    return json({ error: 'id column not found in history' });
+  }
+
+  const history = [];
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][idIndex]).toLowerCase() === String(id).toLowerCase()) {  // ← ADD .toLowerCase()
+      const record = {};
+      headers.forEach((h, j) => {
+  if (h === 'lastUpdated' || h === 'timestamp') {
+    record[h] = formatLastUpdated(data[i][j]);
+  } else {
+    record[h] = data[i][j];
+  }
+});
+
+      history.push(record);
+    }
+  }
+
+  history.sort((a, b) => {
+    const dateA = new Date(a.lastUpdated || 0);
+    const dateB = new Date(b.lastUpdated || 0);
+    return dateB - dateA;
+  });
+
+  return json(history);
+}
+
 // ---------- UPDATE ----------
 
 function updateAsset(id, updates) {
@@ -227,7 +340,7 @@ function updateAsset(id, updates) {
   }
 
   for (let i = 1; i < data.length; i++) {
-    if (String(data[i][idIndex]) === String(id)) {
+    if (String(data[i][idIndex]).toLowerCase() === String(id).toLowerCase()) {  // ← ADD .toLowerCase()
 
       Object.keys(updates).forEach(key => {
         const col = headers.indexOf(key);
@@ -265,10 +378,13 @@ function batchUpdateAssets(ids, updates) {
     return json({ error: 'id column not found' });
   }
 
+  // Convert all IDs to lowercase for comparison
+  const lowerIds = ids.map(id => String(id).toLowerCase());  // ← ADD THIS
+  
   let updated = 0;
 
   for (let i = 1; i < data.length; i++) {
-    if (ids.includes(String(data[i][idIndex]))) {
+    if (lowerIds.includes(String(data[i][idIndex]).toLowerCase())) {  // ← MODIFY THIS
 
       Object.keys(updates).forEach(key => {
         const col = headers.indexOf(key);
@@ -345,21 +461,21 @@ function approveRequest(body) {
   
   for (let i = 1; i < requestData.length; i++) {
     if (requestData[i][0] === body.requestId) {
-      // Update request status
       requestSheet.getRange(i + 1, 6).setValue('approved');
       
-      // Get the update details
       const ids = requestData[i][1].split(',');
       const updates = JSON.parse(requestData[i][2]);
       
-      // Apply updates to assets
       const assetData = assetSheet.getDataRange().getValues();
       const headers = assetData[0];
       const idIndex = headers.indexOf('id');
       
+      // Convert all IDs to lowercase for comparison
+      const lowerIds = ids.map(id => String(id).toLowerCase());  // ← ADD THIS
+      
       for (let j = 1; j < assetData.length; j++) {
-        if (ids.includes(String(assetData[j][idIndex]))) {
-          // Update each field
+        if (lowerIds.includes(String(assetData[j][idIndex]).toLowerCase())) {  // ← MODIFY THIS
+          
           Object.keys(updates).forEach(key => {
             const colIndex = headers.indexOf(key);
             if (colIndex !== -1 && updates[key]) {
@@ -367,7 +483,6 @@ function approveRequest(body) {
             }
           });
           
-          // Update metadata
           const lastUpdatedIndex = headers.indexOf('lastUpdated');
           const updatedByIndex = headers.indexOf('updatedBy');
           
@@ -378,7 +493,6 @@ function approveRequest(body) {
             assetSheet.getRange(j + 1, updatedByIndex + 1).setValue(body.approvedBy);
           }
           
-          // Log to history
           appendHistory(headers, assetData[j], updates);
         }
       }

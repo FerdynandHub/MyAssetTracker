@@ -9,8 +9,6 @@ const ROLES = {
   ADMIN: 'admin'
 };
 
-
-// Configuration - Replace with your actual Google Apps Script Web App URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNiroTzVYqfh4Dq1vW8zbD74pd6o1EQcx2_RKzTImYHxS3jK8ama33REMMvXC5VumF/exec';
 
 const CATEGORIES = [
@@ -57,8 +55,12 @@ const App = () => {
   const handleLogin = () => {
     const accessCodes = {
       '123': { role: ROLES.VIEWER, name: 'Viewer User' },
-      '456': { role: ROLES.EDITOR, name: 'Editor User' },
-      'Mingming1234': { role: ROLES.ADMIN, name: 'Admin User' }
+      'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
+      'hien456': { role: ROLES.EDITOR, name: 'Hiendarta' },
+      'henny456': { role: ROLES.EDITOR, name: 'Henny' },
+      'alfons654': { role: ROLES.EDITOR, name: 'Alfons' },
+      'parmin456': { role: ROLES.EDITOR, name: 'Suparmin' },
+      'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' }
     };
 
     if (accessCodes[accessCode]) {
@@ -67,7 +69,7 @@ const App = () => {
       setUserName(accessCodes[accessCode].name);
       setError('');
     } else {
-      setError('Salah bang');
+      setError('Per 10 Januari 2026, semua akun demo telah dihapus kecuali viewer (123). Silahkan contact admin untuk dibuatkan akun');
     }
   };
 
@@ -161,42 +163,31 @@ if (!mode) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <ModeCard
-            icon={<Eye className="w-12 h-12" />}
             title="Overview"
             description="Lihat semua aset dari kategori"
             onClick={() => setMode('overview')}
             color="blue"
           />
           <ModeCard
-            icon={<Search className="w-12 h-12" />}
             title="Check Information"
             description="Scan atau search detail aset"
             onClick={() => setMode('check')}
             color="green"
           />
           <ModeCard
-            icon={<Download className="w-12 h-12" />}
             title="Export"
             description="Batch scan dan export ke sheet"
             onClick={() => setMode('export')}
             color="purple"
           />
           <ModeCard
-            icon={<List className="w-12 h-12" />}
             title="History"
             description="Lihat pergerakan dari aset"
             onClick={() => setMode('history')}
             color="indigo"
           />
-            <ModeCard
-            icon={<List className="w-12 h-12" />}
-            title="Barang sekali pakai"
-            description="[Belum selesai] Batteries, Mic Covers, Labels etc.."
-            onClick={() => setMode('battery')}
-            color="gray"
-          />
+
 <ModeCard
-  icon={<Edit className="w-12 h-12" />}
   title={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
   description={
     userRole !== ROLES.VIEWER
@@ -211,7 +202,6 @@ if (!mode) {
 />
 
 <ModeCard
-  icon={<List className="w-12 h-12" />}
   title="Pending Approvals"
   description={
     userRole === ROLES.ADMIN
@@ -222,6 +212,30 @@ if (!mode) {
   color="red"
   disabled={userRole !== ROLES.ADMIN}
 />
+            <ModeCard          
+            title="Single-Use Item"
+            description="[Coming Soon] Batteries, Mic Covers, Labels etc.."
+                        onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+           <ModeCard
+            title="Request barang"
+            description="[Coming Soon] Pesan barang untuk operasional"
+            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+          <ModeCard            
+            title="Space Booking"
+            description="[Coming Soon]"
+            onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
+          <ModeCard           
+            title="Progressions"
+            description="[Coming Soon]"
+           onClick={() => window.open('https://i.pinimg.com/originals/e2/3a/ae/e23aaef101758ba2d6e06b67597b3377.jpg', '_blank')}
+            color="gray"
+          />
 
 
         </div>
@@ -291,6 +305,8 @@ const OverviewMode = ({ onBack }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
 
   const fetchAssets = async () => {
     setLoading(true);
@@ -357,6 +373,17 @@ const OverviewMode = ({ onBack }) => {
     }
     return 0;
   });
+
+  // Pagination
+  const totalPages = Math.ceil(sortedAssets.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedAssets = sortedAssets.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchTerm, sortConfig]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -433,7 +460,9 @@ const OverviewMode = ({ onBack }) => {
 
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">
-            Showing {sortedAssets.length} of {assets.length} assets
+            Showing {startIndex + 1}-{Math.min(endIndex, sortedAssets.length)} of {sortedAssets.length} results
+            {selectedCategory !== 'All' && ` in ${selectedCategory}`}
+            {categoryFiltered.length !== sortedAssets.length && ` (filtered from ${categoryFiltered.length})`}
           </div>
         </div>
 
@@ -523,14 +552,14 @@ const OverviewMode = ({ onBack }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedAssets.length === 0 ? (
+                  {paginatedAssets.length === 0 ? (
                     <tr>
                       <td colSpan="10" className="px-4 py-8 text-center text-gray-500">
                         No assets found matching your search criteria
                       </td>
                     </tr>
                   ) : (
-                    sortedAssets.map((asset, idx) => (
+                    paginatedAssets.map((asset, idx) => (
                       <tr key={idx} className="border-b hover:bg-gray-50">
                         <td className="px-4 py-3">{asset.id}</td>
                         <td className="px-4 py-3">{asset.name}</td>
@@ -571,6 +600,35 @@ const OverviewMode = ({ onBack }) => {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="bg-white rounded-lg shadow-lg p-4 mt-4">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
             </div>
           </div>
         )}
