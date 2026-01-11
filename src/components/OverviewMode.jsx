@@ -268,13 +268,11 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
                         <td className="px-4 py-3">{asset.location}</td>
                         <td className="px-4 py-3">{asset.category}</td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs ${
-                              asset.status === 'Active'
+                        <span
+                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            asset.status === 'Available'
                                 ? 'bg-green-100 text-green-800'
-                                : asset.status === 'Maintenance'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
+                                : 'bg-red-100 text-red-800'
                             }`}
                           >
                             {asset.status}
