@@ -96,6 +96,7 @@ const App = () => {
       'henny456': { role: ROLES.EDITOR, name: 'Henny' },
       'alfons654': { role: ROLES.EDITOR, name: 'Alfons' },
       'parmin456': { role: ROLES.EDITOR, name: 'Suparmin' },
+      'deni654': { role: ROLES.EDITOR, name: 'Denni' },
       '111': { role: ROLES.ADMIN, name: 'ADMIN' },
       'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' }
     };

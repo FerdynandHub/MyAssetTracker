@@ -95,6 +95,49 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
     setSortConfig({ key, direction });
   };
 
+function getGradeClasses(grade) {
+  if (!grade) return 'bg-gray-100 text-gray-500';
+
+  const g = grade.toUpperCase();
+
+  // S grades
+  if (g === 'S+' || g === 'S' || g === 'S-') {
+    return 'bg-yellow-400 text-yellow-900 font-bold gold-glow';
+  }
+
+  // A grades
+  if (g === 'A+' || g === 'A' || g === 'A-') {
+    return 'bg-green-500 text-white font-semibold grade-a';
+  }
+
+  // B grades
+  if (g === 'B+' || g === 'B' || g === 'B-') {
+    return 'bg-sky-400 text-sky-900 grade-b';
+  }
+
+  // C grades
+  if (g === 'C+' || g === 'C' || g === 'C-') {
+    return 'bg-yellow-300 text-yellow-900 grade-c';
+  }
+
+  // D grades
+  if (g === 'D+' || g === 'D' || g === 'D-') {
+    return 'bg-purple-600 text-purple-200 grade-d';
+  }
+
+  // E (dead)
+  if (g === 'E') {
+    return 'bg-red-900 text-red-300 font-bold dead-grade';
+  }
+
+return 'bg-slate-200 text-slate-600';
+
+
+}
+
+
+
+
   const getSortIcon = (key) => {
     if (sortConfig.key !== key) {
       return <ArrowUpDown className="w-4 h-4 text-gray-400" />;
@@ -280,17 +323,11 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
                         </td>
                         <td className="px-4 py-3">{asset.owner}</td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`px-2 py-1 rounded text-xs font-semibold ${
-                              asset.grade === 'A'
-                                ? 'bg-green-100 text-green-800'
-                                : asset.grade === 'B'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}
-                          >
-                            {asset.grade}
-                          </span>
+                        <span
+                            className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}
+                        >
+                            {asset.grade || '-'}
+                        </span>
                         </td>
                         <td className="px-4 py-3">{asset.lastUpdated}</td>
                         <td className="px-4 py-3">{asset.updatedBy}</td>
