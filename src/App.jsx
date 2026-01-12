@@ -25,7 +25,7 @@ const SCRIPT_URL = (() => {
 })();
 
 
-//Categories List must be updated everytime theres a new category.
+//Categories List must be updated everytime theres a new category. yes its hard coded i know
 const CATEGORIES = [
   'Projectors',
   'Toolkit',
