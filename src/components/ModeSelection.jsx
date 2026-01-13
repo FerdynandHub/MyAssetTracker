@@ -90,7 +90,7 @@ export default function ModeSelection({
             description={
               userRole !== roles.VIEWER
                 ? "Access Knowledge Base"
-                : "Access restricted"
+                : "Access: Editor and Admin"
             }
             onClick={
               userRole !== roles.VIEWER
