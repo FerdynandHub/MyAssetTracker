@@ -74,7 +74,19 @@ export default function ModeSelection({
           />
 
           <ModeCard
-            title="Pending Approvals"
+            title="Knowledge Base"
+            description="Access Knowledge Base"
+            onClick={() =>
+              window.open(
+                "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
+                "_blank"
+              )
+            }
+            color="blue"
+          />
+
+           <ModeCard
+            title="Knowledge Base"
             description={
               userRole === roles.ADMIN
                 ? "Review and approve update requests"
@@ -89,7 +101,6 @@ export default function ModeSelection({
           {[
             "Single-Use Item",
             "Request barang",
-            "Space Booking",
             "Progressions",
           ].map((title) => (
             <ModeCard
