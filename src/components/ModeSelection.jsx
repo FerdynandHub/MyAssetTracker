@@ -74,36 +74,36 @@ export default function ModeSelection({
           />
 
           <ModeCard
-            title="Knowledge Base"
-            description="Access Knowledge Base"
-            onClick={() =>
-              window.open(
-                "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
-                "_blank"
-              )
+            title="Pending Approvals"
+            description={
+              userRole === roles.ADMIN
+                ? "Review and approve update requests"
+                : "Access: Admin"
             }
-            color="blue"
+            onClick={userRole === roles.ADMIN ? () => setMode("approvals") : undefined}
+            color="red"
+            disabled={userRole !== roles.ADMIN}
           />
 
-            <ModeCard
-              title="Knowledge Base"
-              description={
-                userRole !== roles.VIEWER
-                  ? "Access Knowledge Base"
-                  : "Access for viewer is restricted"
-              }
-              onClick={
-                userRole !== roles.VIEWER
-                  ? () =>
-                      window.open(
-                        "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
-                        "_blank"
-                      )
-                  : undefined
-              }
-              disabled={userRole === roles.VIEWER}
-              color="blue"
-            />
+          <ModeCard
+            title="Knowledge Base"
+            description={
+              userRole !== roles.VIEWER
+                ? "Access Knowledge Base"
+                : "Access restricted"
+            }
+            onClick={
+              userRole !== roles.VIEWER
+                ? () =>
+                    window.open(
+                      "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
+                      "_blank"
+                    )
+                : undefined
+            }
+            disabled={userRole === roles.VIEWER}
+            color="blue"
+          />
 
 
           {/* coming soon */}
