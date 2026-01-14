@@ -29,16 +29,13 @@ const SCRIPT_URL = (() => {
 const CATEGORIES = [
   'Projectors',
   'Toolkit',
-  'TV',
-  'Screen',
-  'EventPC',
   'Kabel HDMI',
+  'HDMI SPLITTER',
   'Kabel USB',
   'Kabel Audio',
   'HDMI Extender',
   'DI Box',
   'Soundcard',
-  'HDMI Splitter',
   'HDMI Matrix',
   'HDMI Switcher',
   'Microphone',
@@ -49,8 +46,15 @@ const CATEGORIES = [
   'Docking Station',
   'Video Capture',
   'Power Supply',
-  'PDU'
+  'PDU',
+  'Mixer',
+  'Speaker',
+  'Speaker Stand',
+  'Camera',
+  'XLR Cable',
+  'Power Extension'
 ];
+
 
 //Grades List
 const GRADES = [
