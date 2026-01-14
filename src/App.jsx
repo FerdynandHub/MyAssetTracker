@@ -102,7 +102,8 @@ const App = () => {
       'parmin456': { role: ROLES.EDITOR, name: 'Suparmin' },
       'deni654': { role: ROLES.EDITOR, name: 'Denni' },
       '111': { role: ROLES.ADMIN, name: 'ADMIN' },
-      'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' }
+      'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' },
+      'dwiki123': { role: ROLES.EDITOR, name: 'Dwiki' }
     };
 
     if (accessCodes[accessCode]) {
