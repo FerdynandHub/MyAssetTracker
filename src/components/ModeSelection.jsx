@@ -51,12 +51,6 @@ export default function ModeSelection({
             onClick={() => setMode("export")}
             color="purple"
           />
-<ModeCard
-            title="Export"
-            description="Batch scan dan export ke sheet"
-            onClick={() => setMode("export")}
-            color="purple"
-          />
           <ModeCard
             title="???"
             description="Don't click this..."
@@ -69,33 +63,33 @@ export default function ModeSelection({
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                background: black;
                 z-index: 9999;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                pointer-events: none;
               `;
               
-              const video = document.createElement('video');
-              video.src = 'https://cdn.glitch.global/f0d4a92a-5d6c-4b6e-b0e5-3a0c8f5e7c3d/freddy-jumpscare.mp4'; // FNAF Freddy jumpscare
-              video.style.cssText = `
+              const img = document.createElement('img');
+              img.src = 'https://media.tenor.com/CjoNT93g3OgAAAAM/fnaf-freddy-fazbear.gif'; // FNAF Freddy jumpscare GIF
+              img.style.cssText = `
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                object-fit: contain;
               `;
-              video.autoplay = true;
-              video.volume = 0.7;
               
-              overlay.appendChild(video);
+              overlay.appendChild(img);
               document.body.appendChild(overlay);
               
-              // Remove when video ends
-              video.onended = () => overlay.remove();
+              // Play scream sound
+              const audio = new Audio('https://www.myinstants.com/media/sounds/fnaf-1-scream.mp3');
+              audio.volume = 0.5;
+              audio.play().catch(() => {}); // Catch in case audio doesn't load
               
-              // Backup timeout in case video doesn't load
+              // Remove after 1.5 seconds
               setTimeout(() => {
                 overlay.remove();
-              }, 3000);
+              }, 1500);
             }}
             color="red"
           />
