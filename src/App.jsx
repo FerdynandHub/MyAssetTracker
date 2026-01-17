@@ -179,14 +179,12 @@ const App = () => {
           </button>
 
           <button
-            onClick={() => {
-              setAccessCode(GUEST_CODE);
-              handleLogin(GUEST_CODE);
-            }}
+            onClick={() => handleLogin("123")}
             className="w-full bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition"
           >
             Login as Guest
           </button>
+
         </div>
       </div>
     );
