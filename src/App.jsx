@@ -8,24 +8,21 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import ModeSelection from "./components/ModeSelection";
 import { exportToCSV } from "./components/ExportUtils";
 import CheckMode from "./components/CheckMode";
-import UpdateMode from "./components/UpdateMode"; //imports single+batch internally
+import UpdateMode from "./components/UpdateMode";
 import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 
-//roles assigntment
+//roles assignment
 const ROLES = {
   VIEWER: 'viewer',
   EDITOR: 'editor',
   ADMIN: 'admin'
 };
 
-// Database
-const SCRIPT_URL = (() => {
-  return 'https://script.google.com/macros/s/AKfycbzlBJ3A04_2yryNKZHJcm3cJVK_kffVmlpQGskdMWjC_QUaTn9N8Ia6J1V5_DzTi5Ks/exec';
-})();
 
+const SCRIPT_URL = import.meta.env.VITE_SCRIPT_URL
 
-//Categories List must be updated everytime theres a new category. yes its hard coded i know
+//Categories List
 const CATEGORIES = [
   'Projectors',
   'Toolkit',
@@ -57,32 +54,12 @@ const CATEGORIES = [
   'Power Extension'
 ];
 
-
-//Grades List
 const GRADES = [
-  'S+', 
-  'S', 
-  'S-', 
-  'A+', 
-  'A', 
-  'A-', 
-  'B+', 
-  'B', 
-  'B-', 
-  'C+', 
-  'C', 
-  'C-', 
-  'D+', 
-  'D', 
-  'D-', 
-  'E'
+  'S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 
+  'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'
 ];
 
-/* Root:
-  + credentials and login handler
-  + login page handler
-  + credentials login actuator
-  + mode rendering handler */
+/* Root Component */
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [accessCode, setAccessCode] = useState('');
@@ -92,152 +69,224 @@ const App = () => {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [isLocked, setIsLocked] = useState(false);
 
-  //credentials and login handler
-  const handleLogin = () => {
-    const accessCodes = {
-      '123': { role: ROLES.VIEWER, name: 'Guest' },
-      'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
-      'hien456': { role: ROLES.EDITOR, name: 'Hiendarta' },
-      'henny456': { role: ROLES.EDITOR, name: 'Henny' },
-      'alfons654': { role: ROLES.EDITOR, name: 'Alfons' },
-      'parmin456': { role: ROLES.EDITOR, name: 'Suparmin' },
-      'deni654': { role: ROLES.EDITOR, name: 'Denni' },
-      '111': { role: ROLES.ADMIN, name: 'ADMIN' },
-      'Mingming1234': { role: ROLES.ADMIN, name: 'Ferdynand' },
-      'dwiki123': { role: ROLES.EDITOR, name: 'Dwiki' }
-    };
+  // SECURITY: Backend authentication
+  const handleLogin = async () => {
+    // Rate limiting check
+    if (isLocked) {
+      setError('Terlalu banyak percobaan gagal. Silakan coba lagi dalam 5 menit.');
+      return;
+    }
 
-    if (accessCodes[accessCode]) {
-      setIsLoggedIn(true);
-      setUserRole(accessCodes[accessCode].role);
-      setUserName(accessCodes[accessCode].name);
-      setError('');
-    } else {
-      setError('Per 10 Januari 2026, semua akun demo telah dihapus kecuali viewer (123). Silahkan contact admin untuk dibuatkan akun');
+    if (loginAttempts >= 5) {
+      setIsLocked(true);
+      setError('Terlalu banyak percobaan gagal. Silakan coba lagi dalam 5 menit.');
+      setTimeout(() => {
+        setIsLocked(false);
+        setLoginAttempts(0);
+      }, 300000); // 5 minutes
+      return;
+    }
+
+    if (!accessCode.trim()) {
+      setError('Silakan masukkan access code');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=authenticate&code=${encodeURIComponent(accessCode)}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setIsLoggedIn(true);
+        setUserRole(data.role);
+        setUserName(data.name);
+        setError('');
+        setLoginAttempts(0);
+        
+        // Store session info (not credentials)
+        const sessionToken = generateSessionToken();
+        sessionStorage.setItem('sessionToken', sessionToken);
+        sessionStorage.setItem('userRole', data.role);
+        sessionStorage.setItem('userName', data.name);
+        sessionStorage.setItem('loginTime', Date.now().toString());
+      } else {
+        setLoginAttempts(prev => prev + 1);
+        setError(data.message || 'Access code tidak valid');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Gagal login. Silakan coba lagi.');
+      setLoginAttempts(prev => prev + 1);
+    } finally {
+      setLoading(false);
+      setAccessCode(''); // Clear from memory
     }
   };
 
-  
+  // Generate simple session token (client-side)
+  const generateSessionToken = () => {
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  };
 
-  //login page handler
+  // Check for existing session on mount
+  useEffect(() => {
+    const token = sessionStorage.getItem('sessionToken');
+    const role = sessionStorage.getItem('userRole');
+    const name = sessionStorage.getItem('userName');
+    const loginTime = sessionStorage.getItem('loginTime');
+    
+    if (token && role && name && loginTime) {
+      // Check if session is expired (24 hours)
+      const sessionAge = Date.now() - parseInt(loginTime);
+      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+      
+      if (sessionAge < maxAge) {
+        setIsLoggedIn(true);
+        setUserRole(role);
+        setUserName(name);
+      } else {
+        handleLogout();
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserRole(null);
+    setUserName("");
+    setAccessCode("");
+    sessionStorage.clear();
+  };
+
+  // Login page
   if (!isLoggedIn) {
     return (
       <div 
-  className="min-h-screen flex items-center justify-center p-4"
-  style={{
-    backgroundImage: 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  }}
->
+        className="min-h-screen flex items-center justify-center p-4"
+        style={{
+          backgroundImage: 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
           <div className="flex justify-center mb-6">
-  <img
-    src="https://www.uph.edu/wp-content/uploads/2023/10/cropped-uph-universitas-pelita-harapan-logo.png"
-    alt="UPH Logo"
-    className="h-16 w-auto"
-  />
-</div>
+            <img
+              src="https://www.uph.edu/wp-content/uploads/2023/10/cropped-uph-universitas-pelita-harapan-logo.png"
+              alt="UPH Logo"
+              className="h-16 w-auto"
+            />
+          </div>
 
-<form className="space-y-4">
-</form>
+          <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
+            Portal AVM UPH 4.1
+          </h1>
 
-<h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
-  Portal AVM UPH 4.1
-</h1>
+          <p className="text-xs text-gray-400 text-center mb-4">
+            by Ferdynand
+          </p>
 
-<p className="text-xs text-gray-400 text-center mb-4">
-  by Ferdynand
-</p>
+          <h2 className="text-lg font-medium text-gray-700 text-center mb-1">
+            Selamat Datang
+          </h2>
 
-<h2 className="text-lg font-medium text-gray-700 text-center mb-1">
-  Selamat Datang
-</h2>
+          <p className="text-sm text-gray-500 text-center mb-6">
+            Masukkan Access Code
+          </p>
 
-<p className="text-sm text-gray-500 text-center mb-6">
-  Masukkan Access Code
-</p>
           <input
             type="password"
             placeholder="Enter Access Code"
             value={accessCode}
             onChange={(e) => setAccessCode(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleLogin()}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onKeyPress={(e) => e.key === "Enter" && !loading && !isLocked && handleLogin()}
+            disabled={isLocked || loading}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+            autoComplete="off"
           />
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          
+          {loginAttempts > 0 && !isLocked && (
+            <p className="text-orange-500 text-sm mb-4">
+              {5 - loginAttempts} percobaan tersisa
+            </p>
+          )}
 
           <button
             onClick={handleLogin}
-            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition mb-2"
+            disabled={isLocked || loading}
+            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition mb-2 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            Login
+            {loading ? (
+              <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            ) : (
+              'Login'
+            )}
           </button>
         </div>
       </div>
     );
   }
 
-  //credentials login actuator
-if (!mode) {
-  return (
-    <ModeSelection
-      userName={userName}
-      userRole={userRole}
-      roles={ROLES}
-      ModeCard={ModeCard}
-      setMode={setMode}
-      onLogout={() => {
-        setIsLoggedIn(false);
-        setUserRole(null);
-        setUserName("");
-        setAccessCode("");
-      }}
-    />
-  );
-}
-
-//mode rendering handler
-const renderMode = () => {
-  switch (mode) {
-    case 'battery':
-  return <BatteryMode onBack={() => setMode(null)} userName={userName} />;
-    case 'overview':
-      return <OverviewMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
-    case 'check':
-      return <CheckMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} />;
-    case 'export':
-      return <ExportMode onBack={() => setMode(null)} />;
-    case 'history':
-      return <HistoryMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} />;
-    case 'update':
-      return (
-              <UpdateMode
-              onBack={() => setMode(null)}
-              userRole={userRole}
-               userName={userName}
-               ROLES={ROLES}
-              SCRIPT_URL={SCRIPT_URL}
-              CATEGORIES={CATEGORIES}
-             GRADES={GRADES}
-         />
-     );
-    case 'approvals':
-      return <ApprovalsMode onBack={() => setMode(null)} userName={userName} />;
-    default:
-      return null;
+  // Mode selection
+  if (!mode) {
+    return (
+      <ModeSelection
+        userName={userName}
+        userRole={userRole}
+        roles={ROLES}
+        ModeCard={ModeCard}
+        setMode={setMode}
+        onLogout={handleLogout}
+      />
+    );
   }
-};
+
+  // Mode rendering
+  const renderMode = () => {
+    const sessionToken = sessionStorage.getItem('sessionToken');
+    
+    switch (mode) {
+      case 'battery':
+        return <BatteryMode onBack={() => setMode(null)} userName={userName} />;
+      case 'overview':
+        return <OverviewMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
+      case 'check':
+        return <CheckMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} />;
+      case 'export':
+        return <ExportMode onBack={() => setMode(null)} />;
+      case 'history':
+        return <HistoryMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} />;
+      case 'update':
+        return (
+          <UpdateMode
+            onBack={() => setMode(null)}
+            userRole={userRole}
+            userName={userName}
+            ROLES={ROLES}
+            SCRIPT_URL={SCRIPT_URL}
+            CATEGORIES={CATEGORIES}
+            GRADES={GRADES}
+          />
+        );
+      case 'approvals':
+        return <ApprovalsMode onBack={() => setMode(null)} userName={userName} />;
+      default:
+        return null;
+    }
+  };
 
   return renderMode();
 };
 
-//modecard colors
-const ModeCard = ({ 
-  icon, title, description, onClick, color, disabled }) => {
+// Mode card component
+const ModeCard = ({ icon, title, description, onClick, color, disabled }) => {
   const inlineStyles = {
     blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
     green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
@@ -246,7 +295,7 @@ const ModeCard = ({
     red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' },
     indigo: { background: 'linear-gradient(to bottom right, #6366f1, #4f46e5)' },
     gray: { background: 'linear-gradient(to bottom right, #aeafd4c4, #a7a4db)' },
-    disabled: { background: '#e5e7eb' } // gray-200
+    disabled: { background: '#e5e7eb' }
   };
 
   return (
@@ -267,13 +316,11 @@ const ModeCard = ({
   );
 };
 
-//export mode
+// Export Mode
 const ExportMode = ({ onBack }) => {
   const [scannedIds, setScannedIds] = useState([]);
   const [currentId, setCurrentId] = useState('');
   const [scanning, setScanning] = useState(false);
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
 
   const addId = () => {
     if (currentId.trim() && !scannedIds.includes(currentId.trim())) {
@@ -286,58 +333,39 @@ const ExportMode = ({ onBack }) => {
     setScannedIds(scannedIds.filter(i => i !== id));
   };
 
-
-  //exportCSV
-const handleExportToCSV = async () => {
-  console.log('scannedIds in ExportMode:', scannedIds);
-  console.log('Is array?', Array.isArray(scannedIds));
-  await exportToCSV(scannedIds, SCRIPT_URL);
-};
-
-const startScanning = () => {
-  setScanning(true);
-};
-
-useEffect(() => {
-  let scanner = null;
-  
-  if (scanning) {
-    scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } }
-    );
-
-    scanner.render(
-      (decodedText) => {
-        if (decodedText.trim() && !scannedIds.includes(decodedText.trim())) {
-          setScannedIds([...scannedIds, decodedText.trim()]);
-        }
-        scanner.clear().catch(() => {});
-        setScanning(false);
-      },
-      (error) => {
-        // Ignore scanning errors
-      }
-    );
-  }
-
-  return () => {
-    if (scanner) {
-      scanner.clear().catch(() => {});
-    }
-  };
-}, [scanning, scannedIds]);
-
-  const stopScanning = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
-    setScanning(false);
+  const handleExportToCSV = async () => {
+    await exportToCSV(scannedIds, SCRIPT_URL);
   };
 
   useEffect(() => {
-    return () => stopScanning();
-  }, []);
+    let scanner = null;
+    
+    if (scanning) {
+      scanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: { width: 250, height: 250 } }
+      );
+
+      scanner.render(
+        (decodedText) => {
+          if (decodedText.trim() && !scannedIds.includes(decodedText.trim())) {
+            setScannedIds([...scannedIds, decodedText.trim()]);
+          }
+          scanner.clear().catch(() => {});
+          setScanning(false);
+        },
+        (error) => {
+          // Ignore scanning errors
+        }
+      );
+    }
+
+    return () => {
+      if (scanner) {
+        scanner.clear().catch(() => {});
+      }
+    };
+  }, [scanning, scannedIds]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -372,7 +400,7 @@ useEffect(() => {
             </div>
 
             <button
-              onClick={scanning ? stopScanning : startScanning}
+              onClick={() => setScanning(!scanning)}
               className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${
                 scanning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
               } text-white`}
@@ -382,17 +410,11 @@ useEffect(() => {
             </button>
           </div>
 
-       {scanning && (
-  <div className="mt-4">
-    <div id="reader"></div>
-    <button
-      onClick={() => setScanning(false)}
-      className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
-    >
-      Stop Scanning
-    </button>
-  </div>
-)}
+          {scanning && (
+            <div className="mt-4">
+              <div id="reader"></div>
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -401,7 +423,7 @@ useEffect(() => {
               Scanned Assets ({scannedIds.length})
             </h2>
             <button
-              onClick={handleExportToCSV} //exporttocsv
+              onClick={handleExportToCSV}
               disabled={scannedIds.length === 0}
               className="flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
@@ -432,7 +454,7 @@ useEffect(() => {
   );
 };
 
-//admin approvals mode
+// Approvals Mode
 const ApprovalsMode = ({ onBack, userName }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -584,8 +606,5 @@ const ApprovalsMode = ({ onBack, userName }) => {
     </div>
   );
 };
-
-
-
 
 export default App;

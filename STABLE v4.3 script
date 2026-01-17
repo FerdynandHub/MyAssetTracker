@@ -1,0 +1,602 @@
+// ================================
+// Dastrack - Google Apps Script Backend
+// Sheet1 = current data (update only)
+// Sheet2 = history log (append only)
+// UpdateRequests = pending approval requests
+// ================================
+
+const SPREADSHEET_ID = '1uHTV9NX4mTrRGd-VTB_aIzMtfkuCUSu9-8JkfVvs2po';
+const SHEET_NAME = 'Sheet1';
+const HISTORY_SHEET_NAME = 'Sheet2';
+
+// ---------- ENTRY POINTS ----------
+
+function doGet(e) {
+  try {
+    const action = e.parameter.action;
+
+    switch (action) {
+      case 'getAssets':
+        return getAssets();
+      case 'getAsset':
+        return getAssetById(e.parameter.id);
+      case 'getCategories':
+        return getCategories();
+      case 'getPendingRequests':
+        return getPendingRequests();
+      case 'getAssetHistory':  // ADD THIS
+        return getAssetHistory(e.parameter.id);
+      default:
+        return json({ error: 'Invalid action' });
+    }
+  } catch (err) {
+    return json({ error: err.toString() });
+  }
+}
+
+function getBatterySheet() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Batteries');
+}
+
+function getBatteryHistorySheet() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('BatteryHistory');
+}
+
+function createAssetPhotosFolder() {
+  const folderName = 'Asset Photos - Portal AVM';
+  const folders = DriveApp.getFoldersByName(folderName);
+  
+  if (folders.hasNext()) {
+    Logger.log('Folder already exists');
+    return folders.next().getId();
+  } else {
+    const folder = DriveApp.createFolder(folderName);
+    // Make it publicly viewable (anyone with link can view)
+    folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    Logger.log('Created folder with ID: ' + folder.getId());
+    return folder.getId();
+  }
+}
+
+// Get or create the photos folder
+function getPhotosFolder() {
+  const folderName = 'Asset Photos - Portal AVM';
+  const folders = DriveApp.getFoldersByName(folderName);
+  
+  if (folders.hasNext()) {
+    return folders.next();
+  } else {
+    const folder = DriveApp.createFolder(folderName);
+    folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return folder;
+  }
+}
+
+// Upload photo to Google Drive
+function uploadPhoto(body) {
+  try {
+    const { fileName, base64Data, mimeType, assetId } = body;
+    
+    if (!fileName || !base64Data) {
+      return json({ error: 'Missing fileName or base64Data' });
+    }
+    
+    // Get the photos folder
+    const folder = getPhotosFolder();
+    
+    // Decode base64 to blob
+    const blob = Utilities.newBlob(
+      Utilities.base64Decode(base64Data),
+      mimeType || 'image/jpeg',
+      fileName
+    );
+    
+    // Delete old photos for this asset (optional - keeps only latest)
+    const existingFiles = folder.getFilesByName(fileName);
+    while (existingFiles.hasNext()) {
+      existingFiles.next().setTrashed(true);
+    }
+    
+    // Upload new file
+    const file = folder.createFile(blob);
+    
+    // Make file publicly accessible
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    
+    // Get the public URL
+    const fileId = file.getId();
+    const url = `https://drive.google.com/uc?export=view&id=${fileId}`;
+    
+    return json({
+      success: true,
+      url: url,
+      fileId: fileId
+    });
+    
+  } catch (error) {
+    return json({ error: error.toString() });
+  }
+}
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const action = body.action;
+
+    switch (action) {
+      case 'updateBattery':
+  return updateBattery(body);
+      case 'updateAsset':
+        return updateAsset(body.id, body.updates);
+      case 'batchUpdateAssets':
+        return batchUpdateAssets(body.ids, body.updates);
+      case 'submitUpdateRequest':
+        return submitUpdateRequest(body);
+      case 'approveRequest':
+        return approveRequest(body);
+      case 'rejectRequest':
+        return rejectRequest(body);
+        case 'uploadPhoto':
+   return uploadPhoto(body);
+      default:
+        return json({ error: 'Invalid action' });
+    }
+  } catch (err) {
+    return json({ error: err.toString() });
+  }
+}
+
+// ---------- HELPERS ----------
+
+function updateBattery(body) {
+  const { batteryName, quantity, operator, purpose } = body;
+
+  if (!batteryName || !quantity || !operator) {
+    return json({ error: 'Invalid payload' });
+  }
+
+  const sheet = getBatterySheet();
+  const historySheet = getBatteryHistorySheet();
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const nameIndex = headers.indexOf('batteryName');
+  const qtyIndex = headers.indexOf('quantity');
+
+  let found = false;
+  let currentQty = 0;
+  let rowIndex = -1;
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][nameIndex] === batteryName) {
+      found = true;
+      currentQty = Number(data[i][qtyIndex]) || 0;
+      rowIndex = i + 1;
+      break;
+    }
+  }
+
+  const newQty = currentQty + Number(quantity);
+  if (newQty < 0) {
+    return json({ error: 'Insufficient battery stock' });
+  }
+
+  if (!found) {
+    sheet.appendRow([
+      batteryName,
+      newQty,
+      nowJakarta(),
+      operator,
+      purpose || ''
+    ]);
+  } else {
+    sheet.getRange(rowIndex, qtyIndex + 1).setValue(newQty);
+    sheet.getRange(rowIndex, headers.indexOf('lastUpdated') + 1).setValue(nowJakarta());
+    sheet.getRange(rowIndex, headers.indexOf('lastOperator') + 1).setValue(operator);
+    sheet.getRange(rowIndex, headers.indexOf('lastPurpose') + 1).setValue(purpose || '');
+  }
+
+  historySheet.appendRow([
+    batteryName,
+    quantity,
+    operator,
+    purpose || '',
+    nowJakarta()
+  ]);
+
+  return json({ success: true, currentQuantity: newQty });
+}
+
+
+function getSheet() {
+  return SpreadsheetApp
+    .openById(SPREADSHEET_ID)
+    .getSheetByName(SHEET_NAME);
+}
+
+function getHistorySheet() {
+  return SpreadsheetApp
+    .openById(SPREADSHEET_ID)
+    .getSheetByName(HISTORY_SHEET_NAME);
+}
+
+function getRequestSheet() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName('UpdateRequests');
+  
+  if (!sheet) {
+    sheet = ss.insertSheet('UpdateRequests');
+    sheet.appendRow(['requestId', 'ids', 'updates', 'requestedBy', 'timestamp', 'status', 'type']);
+  }
+  
+  return sheet;
+}
+
+function json(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function nowJakarta() {
+  return Utilities.formatDate(
+    new Date(),
+    "Asia/Jakarta",
+    "yyyy-MM-dd HH:mm:ss"
+  );
+}
+
+function formatLastUpdated(value) {
+  if (!value) return value;
+
+  const d = (value instanceof Date)
+    ? value
+    : new Date(value);
+
+  if (isNaN(d)) return value;
+
+  return Utilities.formatDate(
+    d,
+    "Asia/Jakarta",
+    "yyyy-MM-dd HH:mm:ss"
+  );
+}
+
+// ---------- READ ----------
+
+function getAssets() {
+  const sheet = getSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const assets = [];
+
+  const lastUpdatedIndex = headers.indexOf('lastUpdated');
+
+  for (let i = 1; i < data.length; i++) {
+    const obj = {};
+
+    headers.forEach((h, j) => {
+      if (j === lastUpdatedIndex) {
+        obj[h] = formatLastUpdated(data[i][j]);
+      } else {
+        obj[h] = data[i][j];
+      }
+    });
+
+    assets.push(obj);
+  }
+
+  return json(assets);
+}
+
+function getAssetById(id) {
+  if (!id) return json(null);
+
+  const sheet = getSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+
+  const idIndex = headers.indexOf('id');
+  const lastUpdatedIndex = headers.indexOf('lastUpdated');
+
+  if (idIndex === -1) {
+    return json({ error: 'id column not found' });
+  }
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][idIndex]).toLowerCase() === String(id).toLowerCase()) {  // ← ADD .toLowerCase()
+      const asset = {};
+
+      headers.forEach((h, j) => {
+        if (j === lastUpdatedIndex) {
+          asset[h] = formatLastUpdated(data[i][j]);
+        } else {
+          asset[h] = data[i][j];
+        }
+      });
+
+      return json(asset);
+    }
+  }
+
+  return json(null);
+}
+
+function getCategories() {
+  const sheet = getSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const categoryIndex = headers.indexOf('category');
+
+  if (categoryIndex === -1) return json([]);
+
+  const categories = [];
+
+  for (let i = 1; i < data.length; i++) {
+    const value = data[i][categoryIndex];
+    if (value && !categories.includes(value)) {
+      categories.push(value);
+    }
+  }
+
+  return json(categories);
+}
+
+// ---------- HISTORY ----------
+
+function appendHistory(headers, originalRow, updates) {
+  const historySheet = getHistorySheet();
+
+  const snapshot = headers.map((h, index) => {
+    if (h === 'lastUpdated') {
+      return nowJakarta();
+    }
+    if (updates.hasOwnProperty(h)) {
+      return updates[h];
+    }
+    return originalRow[index];
+  });
+
+  historySheet.appendRow(snapshot);
+}
+
+// ---------- HISTORY LOOKUP ----------
+
+function getAssetHistory(id) {
+  if (!id) return json([]);
+
+  const historySheet = getHistorySheet();
+  const data = historySheet.getDataRange().getValues();
+  const headers = data[0];
+  const idIndex = headers.indexOf('id');
+
+  if (idIndex === -1) {
+    return json({ error: 'id column not found in history' });
+  }
+
+  const history = [];
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][idIndex]).toLowerCase() === String(id).toLowerCase()) {  // ← ADD .toLowerCase()
+      const record = {};
+      headers.forEach((h, j) => {
+  if (h === 'lastUpdated' || h === 'timestamp') {
+    record[h] = formatLastUpdated(data[i][j]);
+  } else {
+    record[h] = data[i][j];
+  }
+});
+
+      history.push(record);
+    }
+  }
+
+  history.sort((a, b) => {
+    const dateA = new Date(a.lastUpdated || 0);
+    const dateB = new Date(b.lastUpdated || 0);
+    return dateB - dateA;
+  });
+
+  return json(history);
+}
+
+// ---------- UPDATE ----------
+
+function updateAsset(id, updates) {
+  if (!id || !updates) {
+    return json({ error: 'Invalid payload' });
+  }
+
+  const sheet = getSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const idIndex = headers.indexOf('id');
+
+  if (idIndex === -1) {
+    return json({ error: 'id column not found' });
+  }
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][idIndex]).toLowerCase() === String(id).toLowerCase()) {  // ← ADD .toLowerCase()
+
+      Object.keys(updates).forEach(key => {
+        const col = headers.indexOf(key);
+        if (col !== -1) {
+          sheet.getRange(i + 1, col + 1).setValue(updates[key]);
+        }
+      });
+
+      const lastUpdatedIndex = headers.indexOf('lastUpdated');
+      if (lastUpdatedIndex !== -1) {
+        sheet.getRange(i + 1, lastUpdatedIndex + 1)
+          .setValue(nowJakarta());
+      }
+
+      appendHistory(headers, data[i], updates);
+
+      return json({ success: true });
+    }
+  }
+
+  return json({ error: 'Asset not found' });
+}
+
+function batchUpdateAssets(ids, updates) {
+  if (!Array.isArray(ids) || !updates) {
+    return json({ error: 'Invalid payload' });
+  }
+
+  const sheet = getSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const idIndex = headers.indexOf('id');
+
+  if (idIndex === -1) {
+    return json({ error: 'id column not found' });
+  }
+
+  // Convert all IDs to lowercase for comparison
+  const lowerIds = ids.map(id => String(id).toLowerCase());  // ← ADD THIS
+  
+  let updated = 0;
+
+  for (let i = 1; i < data.length; i++) {
+    if (lowerIds.includes(String(data[i][idIndex]).toLowerCase())) {  // ← MODIFY THIS
+
+      Object.keys(updates).forEach(key => {
+        const col = headers.indexOf(key);
+        if (col !== -1) {
+          sheet.getRange(i + 1, col + 1).setValue(updates[key]);
+        }
+      });
+
+      const lastUpdatedIndex = headers.indexOf('lastUpdated');
+      if (lastUpdatedIndex !== -1) {
+        sheet.getRange(i + 1, lastUpdatedIndex + 1)
+          .setValue(nowJakarta());
+      }
+
+      appendHistory(headers, data[i], updates);
+      updated++;
+    }
+  }
+
+  return json({ success: true, updatedCount: updated });
+}
+
+// ---------- UPDATE REQUESTS ----------
+
+function submitUpdateRequest(body) {
+  const sheet = getRequestSheet();
+  
+  const timestamp = nowJakarta();
+  const requestId = 'REQ-' + Utilities.formatDate(
+    new Date(),
+    "Asia/Jakarta",
+    "yyyyMMddHHmmss"
+  );
+  
+  sheet.appendRow([
+    requestId,
+    body.ids.join(','),
+    JSON.stringify(body.updates),
+    body.requestedBy,
+    timestamp,
+    'pending',
+    body.isBatch ? 'batch' : 'single'
+  ]);
+  
+  return json({ success: true, requestId: requestId });
+}
+
+function getPendingRequests() {
+  const sheet = getRequestSheet();
+  const data = sheet.getDataRange().getValues();
+  const requests = [];
+  
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][5] === 'pending') {
+      requests.push({
+        requestId: data[i][0],
+        ids: data[i][1].split(','),
+        updates: JSON.parse(data[i][2]),
+        requestedBy: data[i][3],
+        timestamp: data[i][4],
+        type: data[i][6]
+      });
+    }
+  }
+  
+  return json(requests);
+}
+
+function approveRequest(body) {
+  const requestSheet = getRequestSheet();
+  const assetSheet = getSheet();
+  
+  const requestData = requestSheet.getDataRange().getValues();
+  
+  for (let i = 1; i < requestData.length; i++) {
+    if (requestData[i][0] === body.requestId) {
+      requestSheet.getRange(i + 1, 6).setValue('approved');
+      
+      const ids = requestData[i][1].split(',');
+      const updates = JSON.parse(requestData[i][2]);
+      
+      const assetData = assetSheet.getDataRange().getValues();
+      const headers = assetData[0];
+      const idIndex = headers.indexOf('id');
+      
+      // Convert all IDs to lowercase for comparison
+      const lowerIds = ids.map(id => String(id).toLowerCase());  // ← ADD THIS
+      
+      for (let j = 1; j < assetData.length; j++) {
+        if (lowerIds.includes(String(assetData[j][idIndex]).toLowerCase())) {  // ← MODIFY THIS
+          
+          Object.keys(updates).forEach(key => {
+            const colIndex = headers.indexOf(key);
+            if (colIndex !== -1 && updates[key]) {
+              assetSheet.getRange(j + 1, colIndex + 1).setValue(updates[key]);
+            }
+          });
+          
+          const lastUpdatedIndex = headers.indexOf('lastUpdated');
+          const updatedByIndex = headers.indexOf('updatedBy');
+          
+          if (lastUpdatedIndex !== -1) {
+            assetSheet.getRange(j + 1, lastUpdatedIndex + 1).setValue(nowJakarta());
+          }
+          if (updatedByIndex !== -1) {
+            assetSheet.getRange(j + 1, updatedByIndex + 1).setValue(body.approvedBy);
+          }
+          
+          appendHistory(headers, assetData[j], updates);
+        }
+      }
+      break;
+    }
+  }
+  
+  return json({ success: true });
+}
+
+function rejectRequest(body) {
+  const sheet = getRequestSheet();
+  const requestData = sheet.getDataRange().getValues();
+  
+  for (let i = 1; i < requestData.length; i++) {
+    if (requestData[i][0] === body.requestId) {
+      sheet.getRange(i + 1, 6).setValue('rejected');
+      break;
+    }
+  }
+  
+  return json({ success: true });
+}
+
+// ---------- DEBUG ----------
+
+function debugHeaders() {
+  const sheet = getSheet();
+  Logger.log(sheet.getDataRange().getValues()[0]);
+}
