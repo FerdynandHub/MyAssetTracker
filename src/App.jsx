@@ -92,7 +92,6 @@ const App = () => {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const GUEST_CODE = "123";
 
   //credentials and login handler
   const handleLogin = () => {
@@ -177,22 +176,6 @@ const App = () => {
           >
             Login
           </button>
-
-<button
-  onClick={() => {
-    setAccessCode("123");
-
-    setTimeout(() => {
-      handleLogin();
-      setAccessCode(""); // clear again so user never sees it
-    }, 0);
-  }}
-  className="w-full bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition"
->
-  Login as Guest
-</button>
-
-
         </div>
       </div>
     );
