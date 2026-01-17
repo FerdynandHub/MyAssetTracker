@@ -174,6 +174,13 @@ const App = () => {
           >
             Login
           </button>
+          <button
+            onClick={() => handleLogin('123')}
+            className="w-full mt-2 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition"
+          >
+            Sign in as Guest
+          </button>
+
         </div>
       </div>
     );
