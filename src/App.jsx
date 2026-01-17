@@ -165,27 +165,34 @@ const App = () => {
 <p className="text-sm text-gray-500 text-center mb-6">
   Masukkan Access Code
 </p>
-          <input
+                    <input
             type="password"
             placeholder="Enter Access Code"
             value={accessCode}
             onChange={(e) => setAccessCode(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4"
           />
+
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
           <button
             onClick={handleLogin}
             className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition"
           >
             Login
           </button>
+
           <button
-  onClick={() => handleLoginWithCode('123')}
-  className="w-full mt-2 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition"
->
-  Sign in as Guest
-</button>
+            onClick={() => {
+              setAccessCode('123');
+              handleLogin();
+            }}
+            className="w-full mt-2 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition"
+          >
+            Sign in as Guest
+          </button>
+
 
         </div>
       </div>
