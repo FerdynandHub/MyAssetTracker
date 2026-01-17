@@ -178,12 +178,20 @@ const App = () => {
             Login
           </button>
 
-          <button
-            onClick={() => handleLogin("123")}
-            className="w-full bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition"
-          >
-            Login as Guest
-          </button>
+<button
+  onClick={() => {
+    setAccessCode("123");
+
+    setTimeout(() => {
+      handleLogin();
+      setAccessCode(""); // clear again so user never sees it
+    }, 0);
+  }}
+  className="w-full bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition"
+>
+  Login as Guest
+</button>
+
 
         </div>
       </div>
