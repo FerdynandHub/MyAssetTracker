@@ -51,7 +51,13 @@ export default function ModeSelection({
             onClick={() => setMode("export")}
             color="purple"
           />
- <ModeCard
+<ModeCard
+            title="Export"
+            description="Batch scan dan export ke sheet"
+            onClick={() => setMode("export")}
+            color="purple"
+          />
+          <ModeCard
             title="???"
             description="Don't click this..."
             onClick={() => {
@@ -68,11 +74,10 @@ export default function ModeSelection({
                 align-items: center;
                 justify-content: center;
                 pointer-events: none;
-                background: black;
               `;
               
               const img = document.createElement('img');
-              img.src = 'https://media.tenor.com/O5En5nELi_UAAAAj/fnaf-foxy-jumpscare.gif?' + Date.now(); // Add timestamp to force reload
+              img.src = 'https://media.tenor.com/O5En5nELi_UAAAAj/fnaf-foxy-jumpscare.gif';
               img.style.cssText = `
                 width: 100%;
                 height: 100%;
@@ -87,10 +92,10 @@ export default function ModeSelection({
               audio.volume = 0.7;
               audio.play().catch(() => {}); // Catch in case audio doesn't load
               
-              // Remove after GIF completes (~1 second)
+              // Remove after 1.5 seconds
               setTimeout(() => {
                 overlay.remove();
-              }, 1000);
+              }, 900);
             }}
             color="red"
           />
