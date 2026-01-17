@@ -51,6 +51,12 @@ export default function ModeSelection({
             onClick={() => setMode("export")}
             color="purple"
           />
+<ModeCard
+            title="Export"
+            description="Batch scan dan export ke sheet"
+            onClick={() => setMode("export")}
+            color="purple"
+          />
           <ModeCard
             title="???"
             description="Don't click this..."
@@ -71,7 +77,7 @@ export default function ModeSelection({
               `;
               
               const video = document.createElement('video');
-              video.src = 'https://www.youtube.com/watch?v=5dZ_lvDpmY4'; // FNAF Freddy jumpscare
+              video.src = 'https://cdn.glitch.global/f0d4a92a-5d6c-4b6e-b0e5-3a0c8f5e7c3d/freddy-jumpscare.mp4'; // FNAF Freddy jumpscare
               video.style.cssText = `
                 width: 100%;
                 height: 100%;
@@ -83,10 +89,13 @@ export default function ModeSelection({
               overlay.appendChild(video);
               document.body.appendChild(overlay);
               
-              // Remove after video ends or 2 seconds
+              // Remove when video ends
+              video.onended = () => overlay.remove();
+              
+              // Backup timeout in case video doesn't load
               setTimeout(() => {
                 overlay.remove();
-              }, 2000);
+              }, 3000);
             }}
             color="red"
           />
