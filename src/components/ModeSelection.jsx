@@ -51,7 +51,7 @@ export default function ModeSelection({
             onClick={() => setMode("export")}
             color="purple"
           />
-          <ModeCard
+ <ModeCard
             title="???"
             description="Don't click this..."
             onClick={() => {
@@ -68,10 +68,11 @@ export default function ModeSelection({
                 align-items: center;
                 justify-content: center;
                 pointer-events: none;
+                background: black;
               `;
               
               const img = document.createElement('img');
-              img.src = 'https://media.tenor.com/O5En5nELi_UAAAAj/fnaf-foxy-jumpscare.gif';
+              img.src = 'https://media.tenor.com/O5En5nELi_UAAAAj/fnaf-foxy-jumpscare.gif?' + Date.now(); // Add timestamp to force reload
               img.style.cssText = `
                 width: 100%;
                 height: 100%;
@@ -82,14 +83,14 @@ export default function ModeSelection({
               document.body.appendChild(overlay);
               
               // Play scream sound
-              const audio = new Audio('https://static.wikia.nocookie.net/super-fnaf/images/d/d6/Jackoscare1.ogg/revision/latest?cb=20180129175530');
+              const audio = new Audio('https://cdn.freesound.org/previews/369/369249_5614036-lq.mp3');
               audio.volume = 0.7;
               audio.play().catch(() => {}); // Catch in case audio doesn't load
               
-              // Remove after 1.5 seconds
+              // Remove after GIF completes (~1 second)
               setTimeout(() => {
                 overlay.remove();
-              }, 1500);
+              }, 1000);
             }}
             color="red"
           />
