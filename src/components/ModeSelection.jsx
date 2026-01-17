@@ -71,7 +71,7 @@ export default function ModeSelection({
               `;
               
               const img = document.createElement('img');
-              img.src = 'https://media.tenor.com/CjoNT93g3OgAAAAM/fnaf-freddy-fazbear.gif'; // FNAF Freddy jumpscare GIF
+              img.src = 'https://media.tenor.com/O5En5nELi_UAAAAj/fnaf-foxy-jumpscare.gif';
               img.style.cssText = `
                 width: 100%;
                 height: 100%;
@@ -82,8 +82,8 @@ export default function ModeSelection({
               document.body.appendChild(overlay);
               
               // Play scream sound
-              const audio = new Audio('https://www.myinstants.com/media/sounds/fnaf-1-scream.mp3');
-              audio.volume = 0.5;
+              const audio = new Audio('https://static.wikia.nocookie.net/super-fnaf/images/d/d6/Jackoscare1.ogg/revision/latest?cb=20180129175530');
+              audio.volume = 0.7;
               audio.play().catch(() => {}); // Catch in case audio doesn't load
               
               // Remove after 1.5 seconds
