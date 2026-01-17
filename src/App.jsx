@@ -94,7 +94,8 @@ const App = () => {
   const [error, setError] = useState('');
 
   //credentials and login handler
-  const handleLogin = () => {
+  const handleLogin = (code = accessCode) => {
+
     const accessCodes = {
       '123': { role: ROLES.VIEWER, name: 'Guest' },
       'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
