@@ -96,7 +96,7 @@ const App = () => {
   //credentials and login handler
   const handleLogin = () => {
     const accessCodes = {
-      '123': { role: ROLES.VIEWER, name: 'Viewer User' },
+      '123': { role: ROLES.VIEWER, name: 'Guest' },
       'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
       'hien456': { role: ROLES.EDITOR, name: 'Hiendarta' },
       'henny456': { role: ROLES.EDITOR, name: 'Henny' },
@@ -117,6 +117,14 @@ const App = () => {
       setError('Per 10 Januari 2026, semua akun demo telah dihapus kecuali viewer (123). Silahkan contact admin untuk dibuatkan akun');
     }
   };
+
+
+  //guest login handler
+  const handleGuestLogin = () => {
+  setAccessCode('123');
+  handleLoginWithCode('123');
+};
+
 
   //login page handler
   if (!isLoggedIn) {
@@ -172,6 +180,13 @@ const App = () => {
           >
             Login
           </button>
+          <button
+  onClick={() => handleLoginWithCode('123')}
+  className="w-full mt-2 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition"
+>
+  Sign in as Guest
+</button>
+
         </div>
       </div>
     );
