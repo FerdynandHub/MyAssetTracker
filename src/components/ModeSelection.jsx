@@ -51,12 +51,7 @@ export default function ModeSelection({
             onClick={() => setMode("export")}
             color="purple"
           />
-<ModeCard
-            title="Export"
-            description="Batch scan dan export ke sheet"
-            onClick={() => setMode("export")}
-            color="purple"
-          />
+
           <ModeCard
             title="???"
             description="Don't click this..."
@@ -95,7 +90,7 @@ export default function ModeSelection({
               // Remove after 1.5 seconds
               setTimeout(() => {
                 overlay.remove();
-              }, 900);
+              }, 340);
             }}
             color="red"
           />
