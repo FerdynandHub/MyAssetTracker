@@ -5,12 +5,12 @@ import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 //components
-import ModeSelection from "./components/ModeSelection";
-import { exportToCSV } from "./components/ExportUtils";
-import CheckMode from "./components/CheckMode";
-import UpdateMode from "./components/UpdateMode"; //imports single+batch internally
-import OverviewMode from "./components/OverviewMode";
-import HistoryMode from "./components/HistoryMode";
+import ModeSelection from "../src/components/ModeSelection";
+import { exportToCSV } from "../src/components/ExportUtils";
+import CheckMode from "../src/components/CheckMode";
+import UpdateMode from "../src/components/UpdateMode"; //imports single+batch internally
+import OverviewMode from "../src/components/OverviewMode";
+import HistoryMode from "../src/components/HistoryMode";
 
 //roles assigntment
 const ROLES = {

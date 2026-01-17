@@ -5,8 +5,8 @@ import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 //components
-import ModeSelection from "./components/ModeSelection";
-import { exportToCSV } from "./components/ExportUtils";
+import ModeSelection from "../src/components/ModeSelection";
+import { exportToCSV } from "../src/components/ExportUtils";
 
 
 //roles assigntment

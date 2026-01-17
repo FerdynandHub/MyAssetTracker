@@ -52,6 +52,8 @@ const CATEGORIES = [
   'Speaker Stand',
   'Camera',
   'XLR Cable',
+  'TV Auditorium',
+  'Bracket TV',
   'Power Extension'
 ];
 
