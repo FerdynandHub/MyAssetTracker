@@ -51,7 +51,45 @@ export default function ModeSelection({
             onClick={() => setMode("export")}
             color="purple"
           />
-
+          <ModeCard
+            title="???"
+            description="Don't click this..."
+            onClick={() => {
+              // Create jumpscare overlay
+              const overlay = document.createElement('div');
+              overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: black;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              `;
+              
+              const video = document.createElement('video');
+              video.src = 'https://www.youtube.com/watch?v=5dZ_lvDpmY4'; // FNAF Freddy jumpscare
+              video.style.cssText = `
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              `;
+              video.autoplay = true;
+              video.volume = 0.7;
+              
+              overlay.appendChild(video);
+              document.body.appendChild(overlay);
+              
+              // Remove after video ends or 2 seconds
+              setTimeout(() => {
+                overlay.remove();
+              }, 2000);
+            }}
+            color="red"
+          />
           <ModeCard
             title="History"
             description="Lihat pergerakan dari aset"
