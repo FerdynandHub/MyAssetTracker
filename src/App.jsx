@@ -94,8 +94,7 @@ const App = () => {
   const [error, setError] = useState('');
 
   //credentials and login handler
-  const handleLogin = (code = accessCode) => {
-
+  const handleLogin = () => {
     const accessCodes = {
       '123': { role: ROLES.VIEWER, name: 'Guest' },
       'ivan456': { role: ROLES.EDITOR, name: 'Ivan' },
@@ -165,23 +164,28 @@ const App = () => {
             placeholder="Enter Access Code"
             value={accessCode}
             onChange={(e) => setAccessCode(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+            onKeyPress={(e) => e.key === "Enter" && handleLogin()}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
           <button
             onClick={handleLogin}
-            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition"
+            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition mb-2"
           >
             Login
           </button>
-          <button
-            onClick={() => handleLogin('123')}
-            className="w-full mt-2 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition"
-          >
-            Sign in as Guest
-          </button>
 
+          <button
+            onClick={() => {
+              setAccessCode(GUEST_CODE);
+              handleLogin(GUEST_CODE);
+            }}
+            className="w-full bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition"
+          >
+            Login as Guest
+          </button>
         </div>
       </div>
     );
