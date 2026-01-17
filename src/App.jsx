@@ -92,6 +92,7 @@ const App = () => {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const GUEST_CODE = "123";
 
   //credentials and login handler
   const handleLogin = () => {
