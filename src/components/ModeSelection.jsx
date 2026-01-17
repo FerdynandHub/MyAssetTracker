@@ -90,7 +90,7 @@ export default function ModeSelection({
               // Remove after 1.5 seconds
               setTimeout(() => {
                 overlay.remove();
-              }, 340);
+              }, 600);
             }}
             color="red"
           />
