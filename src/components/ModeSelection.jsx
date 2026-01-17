@@ -52,7 +52,7 @@ export default function ModeSelection({
             color="purple"
           />
 
-          <ModeCard
+<ModeCard
             title="???"
             description="Don't click this..."
             onClick={() => {
@@ -85,11 +85,88 @@ export default function ModeSelection({
               // Play scream sound
               const audio = new Audio('https://cdn.freesound.org/previews/369/369249_5614036-lq.mp3');
               audio.volume = 0.7;
-              audio.play().catch(() => {}); // Catch in case audio doesn't load
+              audio.play().catch(() => {});
               
-              // Remove after 1.5 seconds
+              // After jumpscare, show sparkle explosion
               setTimeout(() => {
                 overlay.remove();
+                
+                // Create sparkle overlay
+                const sparkleOverlay = document.createElement('div');
+                sparkleOverlay.style.cssText = `
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100vw;
+                  height: 100vh;
+                  z-index: 9999;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  pointer-events: none;
+                  background: white;
+                `;
+                
+                const sparkle = document.createElement('img');
+                sparkle.src = 'https://media.tenor.com/wpR3ęCiSLC0AAAAM/sparkle-sparkles.gif';
+                sparkle.style.cssText = `
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                `;
+                
+                sparkleOverlay.appendChild(sparkle);
+                document.body.appendChild(sparkleOverlay);
+                
+                // After sparkles, fade in sad Patrick
+                setTimeout(() => {
+                  sparkleOverlay.remove();
+                  
+                  const sadOverlay = document.createElement('div');
+                  sadOverlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    pointer-events: none;
+                    background: black;
+                    opacity: 0;
+                    transition: opacity 2s;
+                  `;
+                  
+                  const sadPatrick = document.createElement('img');
+                  sadPatrick.src = 'https://media.tenor.com/JAJEdIBuT_gAAAAM/diegopatricio-patricio.gif';
+                  sadPatrick.style.cssText = `
+                    width: 50%;
+                    height: auto;
+                    object-fit: contain;
+                  `;
+                  
+                  sadOverlay.appendChild(sadPatrick);
+                  document.body.appendChild(sadOverlay);
+                  
+                  // Play sad music
+                  const sadMusic = new Audio('https://www.myinstants.com/media/sounds/spongebob-sad-song.mp3');
+                  sadMusic.volume = 0.5;
+                  sadMusic.play().catch(() => {});
+                  
+                  // Fade in
+                  setTimeout(() => {
+                    sadOverlay.style.opacity = '1';
+                  }, 50);
+                  
+                  // Remove after 5 seconds
+                  setTimeout(() => {
+                    sadOverlay.style.opacity = '0';
+                    setTimeout(() => sadOverlay.remove(), 2000);
+                  }, 5000);
+                  
+                }, 800);
               }, 600);
             }}
             color="red"
