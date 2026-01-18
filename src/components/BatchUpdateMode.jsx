@@ -213,23 +213,23 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
           <p className="text-sm text-gray-600 mb-4">Leave fields empty to keep existing values</p>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nama aset</label>
               <input
                 type="text"
                 value={formData.name || ''}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                placeholder="Leave empty to keep existing"
+                placeholder="Nama Tidak Berubah"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi terkini</label>
               <input
                 type="text"
                 value={formData.location || ''}
                 onChange={(e) => setFormData({...formData, location: e.target.value})}
-                placeholder="Leave empty to keep existing"
+                placeholder="Lokasi Tidak Berubah"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -260,7 +260,7 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">
-                    Leave empty to keep existing
+                    Tidak berubah
                   </option>
                   {STATUSES.map(status => (
                     <option key={status} value={status}>
@@ -272,12 +272,12 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
 
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Owner</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Pemunya aset kelas atau event?</label>
               <input
                 type="text"
                 value={formData.owner || ''}
                 onChange={(e) => setFormData({...formData, owner: e.target.value})}
-                placeholder="Leave empty to keep existing"
+                placeholder="Pemunya Aset Tidak Berubah"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -289,7 +289,7 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
                 onChange={(e) => setFormData({...formData, grade: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Keep existing</option>
+                <option value="">Tidak Berubah</option>
                 {GRADES.map(grade => (
                   <option key={grade} value={grade}>{grade}</option>
                 ))}
@@ -297,12 +297,12 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
               <textarea
                 value={formData.remarks || ''}
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 rows="3"
-                placeholder="Leave empty to keep existing"
+                placeholder="Catatan Tidak Berubah"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <PhotoUpload
