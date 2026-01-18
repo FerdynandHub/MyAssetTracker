@@ -209,7 +209,7 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Aset</label>
                 <input
                   type="text"
                   value={formData.name || ''}
@@ -219,7 +219,7 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi Terkini</label>
                 <input
                   type="text"
                   value={formData.location || ''}
@@ -229,7 +229,7 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
                 <select
                   value={formData.category || ''}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
@@ -264,7 +264,7 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
 
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Owner</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Pemunya aset</label>
                 <input
                   type="text"
                   value={formData.owner || ''}
@@ -288,7 +288,7 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
                 <textarea
                   value={formData.remarks || ''}
                   onChange={(e) => setFormData({...formData, remarks: e.target.value})}
