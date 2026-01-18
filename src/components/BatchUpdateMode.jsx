@@ -241,7 +241,7 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Keep existing</option>
+                <option value="">Tidak Berubah</option>
                 {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
