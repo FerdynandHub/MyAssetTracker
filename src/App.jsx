@@ -392,6 +392,7 @@ return (
     setMode('battery');
     setSidebarOpen(false);
   }}
+  disabled={userRole === ROLES.VIEWER}
 />
           <SidebarItem
             icon={<RefreshCw className="w-5 h-5" />}
