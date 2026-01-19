@@ -160,3 +160,18 @@
   font-size: 0.9rem;
   animation: thumbsUpFloat 2.8s ease-in-out infinite;
 }
+
+/* Hide html5-qrcode default UI */
+#reader__dashboard,
+#reader__dashboard_section,
+#reader__footer,
+#reader__status_span,
+#reader__camera_selection,
+#reader__file_selection {
+  display: none !important;
+}
+
+#reader {
+  border: none !important;
+  padding: 0 !important;
+}
