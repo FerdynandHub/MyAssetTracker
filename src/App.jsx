@@ -529,12 +529,6 @@ const ExportMode = ({ onBack }) => {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800">Export Mode</h1>
-            <button
-              onClick={onBack}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-            >
-              Back
-            </button>
           </div>
 
           <div className="space-y-4">
@@ -686,12 +680,6 @@ const ApprovalsMode = ({ onBack, userName }) => {
               >
                 <RefreshCw className="w-4 h-4" />
                 Refresh
-              </button>
-              <button
-                onClick={onBack}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-              >
-                Back
               </button>
             </div>
           </div>
