@@ -2,7 +2,7 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X, BookOpenText, History} from 'lucide-react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 
 
 //components
