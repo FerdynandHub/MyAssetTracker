@@ -13,7 +13,7 @@ import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import { Battery } from 'lucide-react'; 
-import QRScanner from './components/QRScanner.jsx';
+import QRScanner from './components/QRScanner';
 
 //roles assignment
 const ROLES = {
