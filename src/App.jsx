@@ -265,7 +265,7 @@ const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
 const renderMode = () => {
   switch (mode) {
     case 'battery':
-      return <BatteryMode userName={userName} />;
+  return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'overview':
       return <OverviewMode SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
     case 'check':
