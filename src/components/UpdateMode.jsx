@@ -1,5 +1,5 @@
     import React, { useState } from 'react';
-    import { Edit, List } from 'lucide-react';
+    import { Edit, List, Boxes, Package } from 'lucide-react';
     import SingleUpdateMode from './SingleUpdateMode';
     import BatchUpdateMode from './BatchUpdateMode';
 
@@ -20,29 +20,38 @@
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div
-                onClick={() => setUpdateMode('single')}
-                className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
-                >
-                <Edit className="w-12 h-12 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold mb-2 text-center">Single Update</h2>
-                <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
-                <p className="text-center opacity-90">
-                    {userRole === ROLES.ADMIN ? 'Update one asset at a time' : 'Request update for one asset'}
-                </p>
-                </div>
+               <div
+  onClick={() => setUpdateMode('single')}
+  className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+>
+  <Package className="w-12 h-12 mx-auto mb-4" />
+  <h2 className="text-2xl font-bold mb-2 text-center">Update Satuan</h2>
+  <h3 className="text-xl mb-2 text-center">
+    Pastikan ID sudah benar (case-sensitive)
+  </h3>
+  <p className="text-center opacity-90">
+    {userRole === ROLES.ADMIN
+      ? 'Perbarui satu data aset'
+      : 'Ajukan pembaruan untuk satu aset'}
+  </p>
+</div>
 
-                <div
-                onClick={() => setUpdateMode('batch')}
-                className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
-                >
-                <List className="w-12 h-12 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold mb-2 text-center">Batch Update</h2>
-                <h3 className="text-xl mb-2 text-center">Please make sure the ID is correct (case sensitive)</h3>
-                <p className="text-center opacity-90">
-                    {userRole === ROLES.ADMIN ? 'Update multiple assets at once' : 'Request update for multiple assets'}
-                </p>
-                </div>
+<div
+  onClick={() => setUpdateMode('batch')}
+  className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+>
+  <Boxes className="w-12 h-12 mx-auto mb-4" />
+  <h2 className="text-2xl font-bold mb-2 text-center">Update Massal</h2>
+  <h3 className="text-xl mb-2 text-center">
+    Pastikan semua ID sudah benar (case-sensitive)
+  </h3>
+  <p className="text-center opacity-90">
+    {userRole === ROLES.ADMIN
+      ? 'Perbarui banyak data sekaligus'
+      : 'Ajukan pembaruan untuk beberapa aset'}
+  </p>
+</div>
+
             </div>
             </div>
         </div>
