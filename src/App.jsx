@@ -13,7 +13,7 @@ import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import { Battery } from 'lucide-react'; 
-import QRScanner from './components/QRScanner';
+import QRScanner from './components/QRScanner.jsx';
 
 //roles assignment
 const ROLES = {
@@ -486,7 +486,7 @@ return (
 
 
 
-// Export Mode
+
 // Export Mode
 const ExportMode = () => {
   const [scannedIds, setScannedIds] = useState([]);
@@ -508,23 +508,30 @@ const ExportMode = () => {
     await exportToCSV(scannedIds, SCRIPT_URL);
   };
 
-  const handleScanResult = (result) => {
-    if (result.trim() && !scannedIds.includes(result.trim())) {
-      setScannedIds([...scannedIds, result.trim()]);
-    }
-    setShowScanner(false);
-  };
-
   if (showScanner) {
     return (
-      <div className="relative">
-        <button
-          onClick={() => setShowScanner(false)}
-          className="absolute top-4 right-4 z-50 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-lg"
-        >
-          Close Scanner
-        </button>
-        <QRScannerIntegrated onScanSuccess={handleScanResult} />
+      <div className="relative min-h-screen">
+        <div className="absolute top-4 left-4 right-4 z-50 flex justify-between items-center">
+          <div className="bg-white rounded-lg shadow-lg px-4 py-2">
+            <p className="text-sm font-semibold text-gray-700">
+              Scanned: {scannedIds.length} items
+            </p>
+          </div>
+          <button
+            onClick={() => setShowScanner(false)}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-lg flex items-center gap-2"
+          >
+            <X className="w-4 h-4" />
+            Done Scanning
+          </button>
+        </div>
+        <QRScannerWrapper 
+          onScanSuccess={(result) => {
+            if (result.trim() && !scannedIds.includes(result.trim())) {
+              setScannedIds([...scannedIds, result.trim()]);
+            }
+          }} 
+        />
       </div>
     );
   }
@@ -600,6 +607,11 @@ const ExportMode = () => {
       </div>
     </div>
   );
+};
+
+// Simple wrapper to handle scan results
+const QRScannerWrapper = ({ onScanSuccess }) => {
+  return <QRScanner onScanResult={onScanSuccess} />;
 };
 
 // QR Scanner component for integration (add this before ExportMode or at the end before export)
