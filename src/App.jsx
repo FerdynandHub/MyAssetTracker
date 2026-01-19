@@ -296,7 +296,7 @@ return (
     {/* Overlay for mobile */}
     {sidebarOpen && (
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+        className="fixed inset-0 bg-black bg-opacity-15 z-40"
         onClick={() => setSidebarOpen(false)}
       />
     )}
@@ -306,7 +306,7 @@ return (
       fixed lg:static inset-y-0 left-0 z-50
       w-64 bg-white shadow-lg flex flex-col
       transform transition-transform duration-300 ease-in-out
-      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
     `}>
       {/* Header */}
       <div className="p-6 border-b flex justify-between items-start">
@@ -318,7 +318,7 @@ return (
         {/* Close button for mobile */}
         <button
           onClick={() => setSidebarOpen(false)}
-          className="lg:hidden text-gray-500 hover:text-gray-700"
+          className="text-gray-500 hover:text-gray-700"
         >
           <X className="w-6 h-6" />
         </button>
@@ -456,7 +456,7 @@ return (
               <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Welcome to Portal AVM!
               </h1>
-              <p className="text-gray-600">Select a mode from the menu to begin</p>
+              <p className="text-gray-600">Pilih Mode Di Menu Kiri ☰ Untuk Mulai</p>
             </div>
           </div>
         ) : (
