@@ -10,6 +10,8 @@ import CheckMode from "./components/CheckMode";
 import UpdateMode from "./components/UpdateMode";
 import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
+import BatteryMode from "./components/BatteryMode";
+import { Battery } from 'lucide-react'; // Add Battery to imports
 
 //roles assignment
 const ROLES = {
@@ -283,6 +285,8 @@ const renderMode = () => {
           GRADES={GRADES}
         />
       );
+      case 'battery':
+  return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals':
       return <ApprovalsMode userName={userName} />;
     default:
@@ -369,17 +373,15 @@ return (
             }}
             disabled={userRole === ROLES.VIEWER}
           />
-
-          <SidebarItem
-            icon={<RefreshCw className="w-5 h-5" />}
-            label="Pending Approvals"
-            active={mode === 'approvals'}
-            onClick={() => {
-              setMode('approvals');
-              setSidebarOpen(false);
-            }}
-            disabled={userRole !== ROLES.ADMIN}
-          />
+            {['Single-Use Item', 'Request Barang', 'Progressions'].map((label) => (
+              <SidebarItem
+                key={label}
+                icon={<span className="w-5 h-5 text-gray-400">•</span>}
+                label={label}
+                active={false}
+                disabled={true}
+              />
+            ))}
 
           <SidebarItem
             icon={<List className="w-5 h-5" />}
@@ -391,19 +393,19 @@ return (
             }}
             disabled={userRole === ROLES.VIEWER}
           />
-
+          <SidebarItem
+            icon={<RefreshCw className="w-5 h-5" />}
+            label="Pending Approvals"
+            active={mode === 'approvals'}
+            onClick={() => {
+              setMode('approvals');
+              setSidebarOpen(false);
+            }}
+            disabled={userRole !== ROLES.ADMIN}
+          />
           {/* Coming Soon Section */}
           <div className="pt-4 mt-4 border-t">
             <p className="text-xs text-gray-500 uppercase mb-2 px-3">Coming Soon</p>
-            {['Single-Use Item', 'Request Barang', 'Progressions'].map((label) => (
-              <SidebarItem
-                key={label}
-                icon={<span className="w-5 h-5 text-gray-400">•</span>}
-                label={label}
-                active={false}
-                disabled={true}
-              />
-            ))}
           </div>
         </div>
       </nav>
@@ -435,6 +437,7 @@ return (
           {mode === 'export' && 'Export Data'}
           {mode === 'history' && 'History'}
           {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
+          {mode === 'battery' && 'Single-Use Item'}
           {mode === 'approvals' && 'Pending Approvals'}
           {!mode && 'Portal AVM'}
         </h1>
