@@ -321,7 +321,7 @@ return (
         <div className="space-y-2">
           <SidebarItem
             icon={<Eye className="w-5 h-5" />}
-            label="Overview"
+            label="Overview Data"
             active={mode === 'overview'}
             onClick={() => {
               setMode('overview');
@@ -331,7 +331,7 @@ return (
 
           <SidebarItem
             icon={<Search className="w-5 h-5" />}
-            label="Check Information"
+            label="Check Data"
             active={mode === 'check'}
             onClick={() => {
               setMode('check');
@@ -341,7 +341,7 @@ return (
 
           <SidebarItem
             icon={<Download className="w-5 h-5" />}
-            label="Export"
+            label="Export Data"
             active={mode === 'export'}
             onClick={() => {
               setMode('export');
@@ -351,7 +351,7 @@ return (
 
           <SidebarItem
             icon={<List className="w-5 h-5" />}
-            label="History"
+            label="History Data"
             active={mode === 'history'}
             onClick={() => {
               setMode('history');
@@ -430,9 +430,9 @@ return (
           <Menu className="w-6 h-6" />
         </button>
         <h1 className="text-xl font-bold text-gray-800">
-          {mode === 'overview' && 'Overview'}
-          {mode === 'check' && 'Check Information'}
-          {mode === 'export' && 'Export Data'}
+          {mode === 'overview Data' && 'Overview Data'}
+          {mode === 'check Data' && 'Check Information'}
+          {mode === 'export Data' && 'Export Data'}
           {mode === 'history' && 'History'}
           {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
           {mode === 'approvals' && 'Pending Approvals'}
