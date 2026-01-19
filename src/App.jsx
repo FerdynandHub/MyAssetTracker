@@ -373,15 +373,6 @@ return (
             }}
             disabled={userRole === ROLES.VIEWER}
           />
-            {['Single-Use Item', 'Request Barang', 'Progressions'].map((label) => (
-              <SidebarItem
-                key={label}
-                icon={<span className="w-5 h-5 text-gray-400">•</span>}
-                label={label}
-                active={false}
-                disabled={true}
-              />
-            ))}
 
           <SidebarItem
             icon={<List className="w-5 h-5" />}
@@ -393,6 +384,15 @@ return (
             }}
             disabled={userRole === ROLES.VIEWER}
           />
+          <SidebarItem
+  icon={<Battery className="w-5 h-5" />}
+  label="Single-Use Item"
+  active={mode === 'battery'}
+  onClick={() => {
+    setMode('battery');
+    setSidebarOpen(false);
+  }}
+/>
           <SidebarItem
             icon={<RefreshCw className="w-5 h-5" />}
             label="Pending Approvals"
@@ -406,6 +406,15 @@ return (
           {/* Coming Soon Section */}
           <div className="pt-4 mt-4 border-t">
             <p className="text-xs text-gray-500 uppercase mb-2 px-3">Coming Soon</p>
+                        {['Request Barang', 'Progressions'].map((label) => (
+              <SidebarItem
+                key={label}
+                icon={<span className="w-5 h-5 text-gray-400">•</span>}
+                label={label}
+                active={false}
+                disabled={false}
+              />
+            ))}
           </div>
         </div>
       </nav>
