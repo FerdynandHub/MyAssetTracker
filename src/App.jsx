@@ -412,7 +412,7 @@ return (
                 icon={<span className="w-5 h-5 text-gray-400">•</span>}
                 label={label}
                 active={false}
-                disabled={false}
+                disabled={true}
               />
             ))}
           </div>
