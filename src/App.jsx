@@ -1,11 +1,10 @@
 //base imports essentials + components
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 //components
-import ModeSelection from "./components/ModeSelection";
 import { exportToCSV } from "./components/ExportUtils";
 import CheckMode from "./components/CheckMode";
 import UpdateMode from "./components/UpdateMode";
@@ -71,6 +70,7 @@ const App = () => {
   const [error, setError] = useState('');
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // SECURITY: Backend authentication
   const handleLogin = async () => {
@@ -184,7 +184,7 @@ const App = () => {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
-            Portal AVM UPH 5.5
+            Portal AVM UPH 5.6
           </h1>
 
           <p className="text-xs text-gray-400 text-center mb-4">
@@ -234,6 +234,30 @@ const App = () => {
     );
   }
 
+const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
+  return (
+    <button
+      onClick={!disabled ? onClick : undefined}
+      disabled={disabled}
+      className={`
+        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
+        ${active 
+          ? 'bg-blue-500 text-white' 
+          : disabled
+            ? 'text-gray-400 cursor-not-allowed'
+            : 'text-gray-700 hover:bg-gray-100'
+        }
+      `}
+    >
+      {icon}
+      <span className="text-sm font-medium">{label}</span>
+    </button>
+  );
+};
+
+
+
+
   // Mode selection
   // Mode rendering
 const renderMode = () => {
@@ -268,14 +292,36 @@ const renderMode = () => {
 
 // After login, show sidebar layout
 return (
-  <div className="flex h-screen bg-gray-100">
+  <div className="flex h-screen bg-gray-100 overflow-hidden">
+    {/* Overlay for mobile */}
+    {sidebarOpen && (
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+        onClick={() => setSidebarOpen(false)}
+      />
+    )}
+
     {/* Sidebar */}
-    <aside className="w-64 bg-white shadow-lg flex flex-col">
+    <aside className={`
+      fixed lg:static inset-y-0 left-0 z-50
+      w-64 bg-white shadow-lg flex flex-col
+      transform transition-transform duration-300 ease-in-out
+      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+    `}>
       {/* Header */}
-      <div className="p-6 border-b">
-        <h2 className="text-xl font-bold text-gray-800">Portal AVM</h2>
-        <p className="text-sm text-gray-600 mt-1">{userName}</p>
-        <p className="text-xs text-gray-500">({userRole})</p>
+      <div className="p-6 border-b flex justify-between items-start">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Portal AVM</h2>
+          <p className="text-sm text-gray-600 mt-1">{userName}</p>
+          <p className="text-xs text-gray-500">({userRole})</p>
+        </div>
+        {/* Close button for mobile */}
+        <button
+          onClick={() => setSidebarOpen(false)}
+          className="lg:hidden text-gray-500 hover:text-gray-700"
+        >
+          <X className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -285,35 +331,50 @@ return (
             icon={<Eye className="w-5 h-5" />}
             label="Overview"
             active={mode === 'overview'}
-            onClick={() => setMode('overview')}
+            onClick={() => {
+              setMode('overview');
+              setSidebarOpen(false); // Close sidebar on mobile after selection
+            }}
           />
 
           <SidebarItem
             icon={<Search className="w-5 h-5" />}
             label="Check Information"
             active={mode === 'check'}
-            onClick={() => setMode('check')}
+            onClick={() => {
+              setMode('check');
+              setSidebarOpen(false);
+            }}
           />
 
           <SidebarItem
             icon={<Download className="w-5 h-5" />}
             label="Export"
             active={mode === 'export'}
-            onClick={() => setMode('export')}
+            onClick={() => {
+              setMode('export');
+              setSidebarOpen(false);
+            }}
           />
 
           <SidebarItem
             icon={<List className="w-5 h-5" />}
             label="History"
             active={mode === 'history'}
-            onClick={() => setMode('history')}
+            onClick={() => {
+              setMode('history');
+              setSidebarOpen(false);
+            }}
           />
 
           <SidebarItem
             icon={<Edit className="w-5 h-5" />}
             label={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
             active={mode === 'update'}
-            onClick={() => setMode('update')}
+            onClick={() => {
+              setMode('update');
+              setSidebarOpen(false);
+            }}
             disabled={userRole === ROLES.VIEWER}
           />
 
@@ -321,7 +382,10 @@ return (
             icon={<RefreshCw className="w-5 h-5" />}
             label="Pending Approvals"
             active={mode === 'approvals'}
-            onClick={() => setMode('approvals')}
+            onClick={() => {
+              setMode('approvals');
+              setSidebarOpen(false);
+            }}
             disabled={userRole !== ROLES.ADMIN}
           />
 
@@ -329,7 +393,10 @@ return (
             icon={<List className="w-5 h-5" />}
             label="Knowledge Base"
             active={false}
-            onClick={() => window.open("https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j", "_blank")}
+            onClick={() => {
+              window.open("https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j", "_blank");
+              setSidebarOpen(false);
+            }}
             disabled={userRole === ROLES.VIEWER}
           />
 
@@ -361,81 +428,49 @@ return (
     </aside>
 
     {/* Main Content Area */}
-    <main className="flex-1 overflow-auto">
-      {!mode ? (
-        // Welcome screen when no mode is selected
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              Welcome to Portal AVM!
-            </h1>
-            <p className="text-gray-600">Select a mode from the sidebar to begin</p>
+    <main className="flex-1 overflow-auto flex flex-col">
+      {/* Top bar with hamburger menu */}
+      <div className="bg-white shadow-sm p-4 flex items-center gap-4">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="text-gray-600 hover:text-gray-800 transition"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+        <h1 className="text-xl font-bold text-gray-800">
+          {mode === 'overview' && 'Overview'}
+          {mode === 'check' && 'Check Information'}
+          {mode === 'export' && 'Export'}
+          {mode === 'history' && 'History'}
+          {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Information' : 'Request Update')}
+          {mode === 'approvals' && 'Pending Approvals'}
+          {!mode && 'Portal AVM'}
+        </h1>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-auto">
+        {!mode ? (
+          <div className="flex items-center justify-center h-full p-4">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                Welcome to Portal AVM!
+              </h1>
+              <p className="text-gray-600">Select a mode from the menu to begin</p>
+            </div>
           </div>
-        </div>
-      ) : (
-        // Render the selected mode
-        renderMode()
-      )}
+        ) : (
+          renderMode()
+        )}
+      </div>
     </main>
   </div>
 );
 
-
-  return renderMode();
 };
 
-// Mode card component
-const ModeCard = ({ icon, title, description, onClick, color, disabled }) => {
-  const inlineStyles = {
-    blue: { background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)' },
-    green: { background: 'linear-gradient(to bottom right, #22c55e, #16a34a)' },
-    purple: { background: 'linear-gradient(to bottom right, #a855f7, #9333ea)' },
-    orange: { background: 'linear-gradient(to bottom right, #f97316, #ea580c)' },
-    red: { background: 'linear-gradient(to bottom right, #ef4444, #dc2626)' },
-    indigo: { background: 'linear-gradient(to bottom right, #6366f1, #4f46e5)' },
-    gray: { background: 'linear-gradient(to bottom right, #aeafd4c4, #a7a4db)' },
-    disabled: { background: '#e5e7eb' }
-  };
 
-  return (
-    <div
-      onClick={!disabled ? onClick : undefined}
-      style={disabled ? inlineStyles.disabled : inlineStyles[color]}
-      className={`
-        rounded-lg shadow-lg p-8 transition
-        ${disabled
-          ? "cursor-not-allowed text-gray-400"
-          : "cursor-pointer transform hover:scale-105 text-white"}
-      `}
-    >
-      <div className="flex justify-center mb-4">{icon}</div>
-      <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
-      <p className="text-center opacity-90">{description}</p>
-    </div>
-  );
-};
 
-// Sidebar Item Component
-const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
-  return (
-    <button
-      onClick={!disabled ? onClick : undefined}
-      disabled={disabled}
-      className={`
-        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
-        ${active 
-          ? 'bg-blue-500 text-white' 
-          : disabled
-            ? 'text-gray-400 cursor-not-allowed'
-            : 'text-gray-700 hover:bg-gray-100'
-        }
-      `}
-    >
-      {icon}
-      <span className="text-sm font-medium">{label}</span>
-    </button>
-  );
-};
 
 // Export Mode
 const ExportMode = ({ onBack }) => {
