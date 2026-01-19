@@ -386,7 +386,7 @@ return (
           />
           <SidebarItem
   icon={<Battery className="w-5 h-5" />}
-  label="Single-Use Item"
+  label="Single-Use Item (Battery)"
   active={mode === 'battery'}
   onClick={() => {
     setMode('battery');
