@@ -184,7 +184,7 @@ const App = () => {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
-            Portal AVM UPH 5.6
+            Portal AVM UPH 6.0
           </h1>
 
           <p className="text-xs text-gray-400 text-center mb-4">
@@ -303,7 +303,7 @@ return (
 
     {/* Sidebar */}
     <aside className={`
-      fixed lg:static inset-y-0 left-0 z-50
+      fixed lg:static inset-y-0 left-0 z-[60]
       w-64 bg-white shadow-lg flex flex-col
       transform transition-transform duration-300 ease-in-out
       ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
