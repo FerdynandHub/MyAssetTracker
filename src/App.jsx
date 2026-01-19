@@ -2,7 +2,7 @@
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X, BookOpenText, History} from 'lucide-react';
-import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 //components
@@ -13,7 +13,6 @@ import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import { Battery } from 'lucide-react'; 
-import QRScanner from './components/QRScanner.jsx';
 
 //roles assignment
 const ROLES = {
@@ -262,7 +261,7 @@ const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
 
 
 
-  // Mode selection
+
   // Mode rendering
 const renderMode = () => {
   switch (mode) {
@@ -488,10 +487,10 @@ return (
 
 
 // Export Mode
-const ExportMode = () => {
+const ExportMode = ({ onBack }) => {
   const [scannedIds, setScannedIds] = useState([]);
   const [currentId, setCurrentId] = useState('');
-  const [showScanner, setShowScanner] = useState(false);
+  const [scanning, setScanning] = useState(false);
 
   const addId = () => {
     if (currentId.trim() && !scannedIds.includes(currentId.trim())) {
@@ -508,33 +507,35 @@ const ExportMode = () => {
     await exportToCSV(scannedIds, SCRIPT_URL);
   };
 
-  if (showScanner) {
-    return (
-      <div className="relative min-h-screen">
-        <div className="absolute top-4 left-4 right-4 z-50 flex justify-between items-center">
-          <div className="bg-white rounded-lg shadow-lg px-4 py-2">
-            <p className="text-sm font-semibold text-gray-700">
-              Scanned: {scannedIds.length} items
-            </p>
-          </div>
-          <button
-            onClick={() => setShowScanner(false)}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-lg flex items-center gap-2"
-          >
-            <X className="w-4 h-4" />
-            Done Scanning
-          </button>
-        </div>
-        <QRScannerWrapper 
-          onScanSuccess={(result) => {
-            if (result.trim() && !scannedIds.includes(result.trim())) {
-              setScannedIds([...scannedIds, result.trim()]);
-            }
-          }} 
-        />
-      </div>
-    );
-  }
+  useEffect(() => {
+    let scanner = null;
+    
+    if (scanning) {
+      scanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: { width: 250, height: 250 } }
+      );
+
+      scanner.render(
+        (decodedText) => {
+          if (decodedText.trim() && !scannedIds.includes(decodedText.trim())) {
+            setScannedIds([...scannedIds, decodedText.trim()]);
+          }
+          scanner.clear().catch(() => {});
+          setScanning(false);
+        },
+        (error) => {
+          // Ignore scanning errors
+        }
+      );
+    }
+
+    return () => {
+      if (scanner) {
+        scanner.clear().catch(() => {});
+      }
+    };
+  }, [scanning, scannedIds]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -563,13 +564,21 @@ const ExportMode = () => {
             </div>
 
             <button
-              onClick={() => setShowScanner(true)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition bg-green-500 hover:bg-green-600 text-white"
+              onClick={() => setScanning(!scanning)}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${
+                scanning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+              } text-white`}
             >
               <Camera className="w-5 h-5" />
-              Scan QR Code
+              {scanning ? 'Stop Scanning' : 'Scan Barcode'}
             </button>
           </div>
+
+          {scanning && (
+            <div className="mt-4">
+              <div id="reader"></div>
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -609,100 +618,6 @@ const ExportMode = () => {
   );
 };
 
-// Simple wrapper to handle scan results
-const QRScannerWrapper = ({ onScanSuccess }) => {
-  return <QRScanner onScanResult={onScanSuccess} />;
-};
-
-// QR Scanner component for integration (add this before ExportMode or at the end before export)
-const QRScannerIntegrated = ({ onScanSuccess }) => {
-  const [scanning, setScanning] = useState(false);
-  const [error, setError] = useState(null);
-  const html5QrCodeRef = useRef(null);
-
-  const startScanning = async () => {
-    try {
-      setError(null);
-      
-      if (!html5QrCodeRef.current) {
-        html5QrCodeRef.current = new Html5Qrcode("qr-reader-integrated");
-      }
-
-      await html5QrCodeRef.current.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 }
-        },
-        (decodedText) => {
-          onScanSuccess(decodedText);
-          stopScanning();
-        },
-        (errorMessage) => {
-          // Silent error handling
-        }
-      );
-      
-      setScanning(true);
-    } catch (err) {
-      setError("Unable to access camera. Please check permissions.");
-      console.error(err);
-    }
-  };
-
-  const stopScanning = async () => {
-    if (html5QrCodeRef.current && scanning) {
-      try {
-        await html5QrCodeRef.current.stop();
-        setScanning(false);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
-
-  useEffect(() => {
-    startScanning();
-    return () => {
-      if (html5QrCodeRef.current) {
-        html5QrCodeRef.current.stop().catch(console.error);
-      }
-    };
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
-            <div className="flex items-center justify-center gap-3">
-              <Camera size={32} />
-              <h1 className="text-2xl font-bold">Scan QR Code</h1>
-            </div>
-          </div>
-
-          <div className="p-6">
-            {error ? (
-              <div className="bg-red-50 border-2 border-red-500 rounded-xl p-6 text-center">
-                <p className="text-sm text-gray-700">{error}</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div 
-                  id="qr-reader-integrated"
-                  className="rounded-xl overflow-hidden border-4 border-blue-500"
-                ></div>
-                <p className="text-center text-sm text-gray-500">
-                  Position the QR code within the frame
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Approvals Mode
 const ApprovalsMode = ({ onBack, userName }) => {
