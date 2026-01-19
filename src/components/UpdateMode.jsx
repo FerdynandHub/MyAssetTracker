@@ -26,13 +26,10 @@
 >
   <Package className="w-12 h-12 mx-auto mb-4" />
   <h2 className="text-2xl font-bold mb-2 text-center">Update Satuan</h2>
-  <h3 className="text-xl mb-2 text-center">
-    Pastikan ID sudah benar (case-sensitive)
-  </h3>
   <p className="text-center opacity-90">
     {userRole === ROLES.ADMIN
-      ? 'Perbarui satu data aset'
-      : 'Ajukan pembaruan untuk satu aset'}
+      ? 'Perbarui satu data aset. Pastikan ID sudah benar (case-sensitive)'
+      : 'Ajukan pembaruan untuk satu aset. Pastikan ID sudah benar (case-sensitive)'}
   </p>
 </div>
 
@@ -42,13 +39,10 @@
 >
   <Boxes className="w-12 h-12 mx-auto mb-4" />
   <h2 className="text-2xl font-bold mb-2 text-center">Update Massal</h2>
-  <h3 className="text-xl mb-2 text-center">
-    Pastikan semua ID sudah benar (case-sensitive)
-  </h3>
   <p className="text-center opacity-90">
     {userRole === ROLES.ADMIN
-      ? 'Perbarui banyak data sekaligus'
-      : 'Ajukan pembaruan untuk beberapa aset'}
+      ? 'Perbarui banyak data sekaligus. Pastikan semua ID sudah benar (case-sensitive)'
+      : 'Ajukan pembaruan untuk beberapa aset. Pastikan semua ID sudah benar (case-sensitive)'}
   </p>
 </div>
 
