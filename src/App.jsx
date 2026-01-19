@@ -293,14 +293,6 @@ const renderMode = () => {
 // After login, show sidebar layout
 return (
   <div className="flex h-screen bg-gray-100 overflow-hidden">
-    {/* Overlay for mobile */}
-    {sidebarOpen && (
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-        onClick={() => setSidebarOpen(false)}
-      />
-    )}
-
     {/* Sidebar */}
     <aside className={`
       fixed lg:static inset-y-0 left-0 z-[60]
