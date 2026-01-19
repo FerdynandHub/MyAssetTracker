@@ -321,104 +321,113 @@ return (
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-2">
-          <SidebarItem
-            icon={<Eye className="w-5 h-5" />}
-            label="Overview Data"
-            active={mode === 'overview'}
-            onClick={() => {
-              setMode('overview');
-              setSidebarOpen(false); // Close sidebar on mobile after selection
-            }}
-          />
+<nav className="flex-1 overflow-y-auto p-4">
+  <div className="space-y-2">
+    <SidebarItem
+      icon={<Eye className="w-5 h-5" />}
+      label="Daftar Data"
+      active={mode === 'overview'}
+      onClick={() => {
+        setMode('overview');
+        setSidebarOpen(false);
+      }}
+    />
 
-          <SidebarItem
-            icon={<Search className="w-5 h-5" />}
-            label="Check Data"
-            active={mode === 'check'}
-            onClick={() => {
-              setMode('check');
-              setSidebarOpen(false);
-            }}
-          />
+    <SidebarItem
+      icon={<Search className="w-5 h-5" />}
+      label="Cek Data"
+      active={mode === 'check'}
+      onClick={() => {
+        setMode('check');
+        setSidebarOpen(false);
+      }}
+    />
 
-          <SidebarItem
-            icon={<Download className="w-5 h-5" />}
-            label="Export Data"
-            active={mode === 'export'}
-            onClick={() => {
-              setMode('export');
-              setSidebarOpen(false);
-            }}
-          />
+    <SidebarItem
+      icon={<Download className="w-5 h-5" />}
+      label="Unduh Data"
+      active={mode === 'export'}
+      onClick={() => {
+        setMode('export');
+        setSidebarOpen(false);
+      }}
+    />
 
-          <SidebarItem
-            icon={<History className="w-5 h-5" />}
-            label="History Data"
-            active={mode === 'history'}
-            onClick={() => {
-              setMode('history');
-              setSidebarOpen(false);
-            }}
-          />
+    <SidebarItem
+      icon={<History className="w-5 h-5" />}
+      label="Riwayat Data"
+      active={mode === 'history'}
+      onClick={() => {
+        setMode('history');
+        setSidebarOpen(false);
+      }}
+    />
 
-          <SidebarItem
-            icon={<Edit className="w-5 h-5" />}
-            label={userRole === ROLES.ADMIN ? "Update Data" : "Request Update Data"}
-            active={mode === 'update'}
-            onClick={() => {
-              setMode('update');
-              setSidebarOpen(false);
-            }}
-            disabled={userRole === ROLES.VIEWER}
-          />
+    <SidebarItem
+      icon={<Edit className="w-5 h-5" />}
+      label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Pembaruan Data"}
+      active={mode === 'update'}
+      onClick={() => {
+        setMode('update');
+        setSidebarOpen(false);
+      }}
+      disabled={userRole === ROLES.VIEWER}
+    />
 
-          <SidebarItem
-            icon={<BookOpenText className="w-5 h-5" />}
-            label="Knowledge Base"
-            active={false}
-            onClick={() => {
-              window.open("https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j", "_blank");
-              setSidebarOpen(false);
-            }}
-            disabled={userRole === ROLES.VIEWER}
-          />
-          <SidebarItem
-  icon={<Battery className="w-5 h-5" />}
-  label="Battery"
-  active={mode === 'battery'}
-  onClick={() => {
-    setMode('battery');
-    setSidebarOpen(false);
-  }}
-  disabled={userRole === ROLES.VIEWER}
-/>
-          <SidebarItem
-            icon={<RefreshCw className="w-5 h-5" />}
-            label="Pending Approvals"
-            active={mode === 'approvals'}
-            onClick={() => {
-              setMode('approvals');
-              setSidebarOpen(false);
-            }}
-            disabled={userRole !== ROLES.ADMIN}
-          />
-          {/* Coming Soon Section */}
-          <div className="pt-4 mt-4 border-t">
-            <p className="text-xs text-gray-500 uppercase mb-2 px-3">Coming Soon</p>
-                        {['Request Barang', 'Progressions'].map((label) => (
-              <SidebarItem
-                key={label}
-                icon={<span className="w-5 h-5 text-gray-400">•</span>}
-                label={label}
-                active={false}
-                disabled={true}
-              />
-            ))}
-          </div>
-        </div>
-      </nav>
+    <SidebarItem
+      icon={<BookOpenText className="w-5 h-5" />}
+      label="Pusat Pengetahuan"
+      active={false}
+      onClick={() => {
+        window.open(
+          "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
+          "_blank"
+        );
+        setSidebarOpen(false);
+      }}
+      disabled={userRole === ROLES.VIEWER}
+    />
+
+    <SidebarItem
+      icon={<Battery className="w-5 h-5" />}
+      label="Baterai"
+      active={mode === 'battery'}
+      onClick={() => {
+        setMode('battery');
+        setSidebarOpen(false);
+      }}
+      disabled={userRole === ROLES.VIEWER}
+    />
+
+    <SidebarItem
+      icon={<RefreshCw className="w-5 h-5" />}
+      label="Persetujuan Pending"
+      active={mode === 'approvals'}
+      onClick={() => {
+        setMode('approvals');
+        setSidebarOpen(false);
+      }}
+      disabled={userRole !== ROLES.ADMIN}
+    />
+
+    {/* Coming Soon Section */}
+    <div className="pt-4 mt-4 border-t">
+      <p className="text-xs text-gray-500 uppercase mb-2 px-3">
+        Segera Hadir
+      </p>
+      {['Permintaan Barang', 'Progres'].map((label) => (
+        <SidebarItem
+          key={label}
+          icon={<span className="w-5 h-5 text-gray-400">•</span>}
+          label={label}
+          active={false}
+          disabled={true}
+        />
+      ))}
+    </div>
+  </div>
+</nav>
+
 
       {/* Logout Button */}
       <div className="p-4 border-t">
