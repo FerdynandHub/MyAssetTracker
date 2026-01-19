@@ -430,9 +430,9 @@ return (
           <Menu className="w-6 h-6" />
         </button>
         <h1 className="text-xl font-bold text-gray-800">
-          {mode === 'overview Data' && 'Overview Data'}
-          {mode === 'check Data' && 'Check Information'}
-          {mode === 'export Data' && 'Export Data'}
+          {mode === 'overview' && 'Overview Data'}
+          {mode === 'check' && 'Check Information'}
+          {mode === 'export' && 'Export Data'}
           {mode === 'history' && 'History'}
           {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
           {mode === 'approvals' && 'Pending Approvals'}
