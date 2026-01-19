@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { Camera, X, CheckCircle, AlertCircle } from 'lucide-react';
 
-export default function QRScanner() {
+export default function QRScanner({ onScanResult }) {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const scannerRef = useRef(null);
   const html5QrCodeRef = useRef(null);
+  const isMountedRef = useRef(true);
 
   const startScanning = async () => {
     try {
@@ -25,8 +26,14 @@ export default function QRScanner() {
           qrbox: { width: 250, height: 250 }
         },
         (decodedText) => {
-          setResult(decodedText);
-          stopScanning();
+          if (isMountedRef.current) {
+            setResult(decodedText);
+            // Call the callback if provided (for ExportMode integration)
+            if (onScanResult) {
+              onScanResult(decodedText);
+            }
+            stopScanning();
+          }
         },
         (errorMessage) => {
           // Silent error handling for continuous scanning
@@ -35,26 +42,43 @@ export default function QRScanner() {
       
       setScanning(true);
     } catch (err) {
-      setError("Unable to access camera. Please check permissions.");
-      console.error(err);
-    }
-  };
-
-  const stopScanning = async () => {
-    if (html5QrCodeRef.current && scanning) {
-      try {
-        await html5QrCodeRef.current.stop();
-        setScanning(false);
-      } catch (err) {
+      if (isMountedRef.current) {
+        setError("Unable to access camera. Please check permissions.");
         console.error(err);
       }
     }
   };
 
+  const stopScanning = async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        const state = html5QrCodeRef.current.getState();
+        // Only stop if scanner is actually running (state 2 = SCANNING)
+        if (state === 2) {
+          await html5QrCodeRef.current.stop();
+        }
+        setScanning(false);
+      } catch (err) {
+        console.log("Scanner stop (safe to ignore):", err);
+        setScanning(false);
+      }
+    }
+  };
+
   useEffect(() => {
+    isMountedRef.current = true;
+    
     return () => {
+      isMountedRef.current = false;
       if (html5QrCodeRef.current) {
-        html5QrCodeRef.current.stop().catch(console.error);
+        try {
+          const state = html5QrCodeRef.current.getState();
+          if (state === 2) {
+            html5QrCodeRef.current.stop().catch(() => {});
+          }
+        } catch (err) {
+          // Ignore cleanup errors
+        }
       }
     };
   }, []);
