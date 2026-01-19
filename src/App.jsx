@@ -1,8 +1,8 @@
 //base imports essentials + components
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X } from 'lucide-react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X, BookOpenText, History} from 'lucide-react';
+import { Html5QrcodeScanner } from 'html5-qrcode'; 
 
 //components
 import { exportToCSV } from "./components/ExportUtils";
@@ -354,7 +354,7 @@ return (
           />
 
           <SidebarItem
-            icon={<List className="w-5 h-5" />}
+            icon={<History className="w-5 h-5" />}
             label="History Data"
             active={mode === 'history'}
             onClick={() => {
@@ -375,7 +375,7 @@ return (
           />
 
           <SidebarItem
-            icon={<List className="w-5 h-5" />}
+            icon={<BookOpenText className="w-5 h-5" />}
             label="Knowledge Base"
             active={false}
             onClick={() => {
