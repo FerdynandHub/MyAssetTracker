@@ -1,7 +1,7 @@
 //base imports essentials + components
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown} from 'lucide-react';
+import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 //components
@@ -235,52 +235,151 @@ const App = () => {
   }
 
   // Mode selection
-  if (!mode) {
-    return (
-      <ModeSelection
-        userName={userName}
-        userRole={userRole}
-        roles={ROLES}
-        ModeCard={ModeCard}
-        setMode={setMode}
-        onLogout={handleLogout}
-      />
-    );
-  }
-
   // Mode rendering
-  const renderMode = () => {
-    const sessionToken = sessionStorage.getItem('sessionToken');
-    
-    switch (mode) {
-      case 'battery':
-        return <BatteryMode onBack={() => setMode(null)} userName={userName} />;
-      case 'overview':
-        return <OverviewMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
-      case 'check':
-        return <CheckMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} />;
-      case 'export':
-        return <ExportMode onBack={() => setMode(null)} />;
-      case 'history':
-        return <HistoryMode onBack={() => setMode(null)} SCRIPT_URL={SCRIPT_URL} />;
-      case 'update':
-        return (
-          <UpdateMode
-            onBack={() => setMode(null)}
-            userRole={userRole}
-            userName={userName}
-            ROLES={ROLES}
-            SCRIPT_URL={SCRIPT_URL}
-            CATEGORIES={CATEGORIES}
-            GRADES={GRADES}
+const renderMode = () => {
+  switch (mode) {
+    case 'battery':
+      return <BatteryMode userName={userName} />;
+    case 'overview':
+      return <OverviewMode SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
+    case 'check':
+      return <CheckMode SCRIPT_URL={SCRIPT_URL} />;
+    case 'export':
+      return <ExportMode />;
+    case 'history':
+      return <HistoryMode SCRIPT_URL={SCRIPT_URL} />;
+    case 'update':
+      return (
+        <UpdateMode
+          userRole={userRole}
+          userName={userName}
+          ROLES={ROLES}
+          SCRIPT_URL={SCRIPT_URL}
+          CATEGORIES={CATEGORIES}
+          GRADES={GRADES}
+        />
+      );
+    case 'approvals':
+      return <ApprovalsMode userName={userName} />;
+    default:
+      return null;
+  }
+};
+
+// After login, show sidebar layout
+return (
+  <div className="flex h-screen bg-gray-100">
+    {/* Sidebar */}
+    <aside className="w-64 bg-white shadow-lg flex flex-col">
+      {/* Header */}
+      <div className="p-6 border-b">
+        <h2 className="text-xl font-bold text-gray-800">Portal AVM</h2>
+        <p className="text-sm text-gray-600 mt-1">{userName}</p>
+        <p className="text-xs text-gray-500">({userRole})</p>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-2">
+          <SidebarItem
+            icon={<Eye className="w-5 h-5" />}
+            label="Overview"
+            active={mode === 'overview'}
+            onClick={() => setMode('overview')}
           />
-        );
-      case 'approvals':
-        return <ApprovalsMode onBack={() => setMode(null)} userName={userName} />;
-      default:
-        return null;
-    }
-  };
+
+          <SidebarItem
+            icon={<Search className="w-5 h-5" />}
+            label="Check Information"
+            active={mode === 'check'}
+            onClick={() => setMode('check')}
+          />
+
+          <SidebarItem
+            icon={<Download className="w-5 h-5" />}
+            label="Export"
+            active={mode === 'export'}
+            onClick={() => setMode('export')}
+          />
+
+          <SidebarItem
+            icon={<List className="w-5 h-5" />}
+            label="History"
+            active={mode === 'history'}
+            onClick={() => setMode('history')}
+          />
+
+          <SidebarItem
+            icon={<Edit className="w-5 h-5" />}
+            label={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
+            active={mode === 'update'}
+            onClick={() => setMode('update')}
+            disabled={userRole === ROLES.VIEWER}
+          />
+
+          <SidebarItem
+            icon={<RefreshCw className="w-5 h-5" />}
+            label="Pending Approvals"
+            active={mode === 'approvals'}
+            onClick={() => setMode('approvals')}
+            disabled={userRole !== ROLES.ADMIN}
+          />
+
+          <SidebarItem
+            icon={<List className="w-5 h-5" />}
+            label="Knowledge Base"
+            active={false}
+            onClick={() => window.open("https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j", "_blank")}
+            disabled={userRole === ROLES.VIEWER}
+          />
+
+          {/* Coming Soon Section */}
+          <div className="pt-4 mt-4 border-t">
+            <p className="text-xs text-gray-500 uppercase mb-2 px-3">Coming Soon</p>
+            {['Single-Use Item', 'Request Barang', 'Progressions'].map((label) => (
+              <SidebarItem
+                key={label}
+                icon={<span className="w-5 h-5 text-gray-400">•</span>}
+                label={label}
+                active={false}
+                disabled={true}
+              />
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Logout Button */}
+      <div className="p-4 border-t">
+        <button
+          onClick={handleLogout}
+          className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          Keluar
+        </button>
+      </div>
+    </aside>
+
+    {/* Main Content Area */}
+    <main className="flex-1 overflow-auto">
+      {!mode ? (
+        // Welcome screen when no mode is selected
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+              Welcome to Portal AVM!
+            </h1>
+            <p className="text-gray-600">Select a mode from the sidebar to begin</p>
+          </div>
+        </div>
+      ) : (
+        // Render the selected mode
+        renderMode()
+      )}
+    </main>
+  </div>
+);
+
 
   return renderMode();
 };
@@ -313,6 +412,28 @@ const ModeCard = ({ icon, title, description, onClick, color, disabled }) => {
       <h2 className="text-2xl font-bold mb-2 text-center">{title}</h2>
       <p className="text-center opacity-90">{description}</p>
     </div>
+  );
+};
+
+// Sidebar Item Component
+const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
+  return (
+    <button
+      onClick={!disabled ? onClick : undefined}
+      disabled={disabled}
+      className={`
+        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
+        ${active 
+          ? 'bg-blue-500 text-white' 
+          : disabled
+            ? 'text-gray-400 cursor-not-allowed'
+            : 'text-gray-700 hover:bg-gray-100'
+        }
+      `}
+    >
+      {icon}
+      <span className="text-sm font-medium">{label}</span>
+    </button>
   );
 };
 
