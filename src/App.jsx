@@ -361,7 +361,7 @@ return (
 
           <SidebarItem
             icon={<Edit className="w-5 h-5" />}
-            label={userRole === ROLES.ADMIN ? "Update Information" : "Request Update"}
+            label={userRole === ROLES.ADMIN ? "Update Data" : "Request Update Data"}
             active={mode === 'update'}
             onClick={() => {
               setMode('update');
@@ -432,9 +432,9 @@ return (
         <h1 className="text-xl font-bold text-gray-800">
           {mode === 'overview' && 'Overview'}
           {mode === 'check' && 'Check Information'}
-          {mode === 'export' && 'Export'}
+          {mode === 'export' && 'Export Data'}
           {mode === 'history' && 'History'}
-          {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Information' : 'Request Update')}
+          {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
           {mode === 'approvals' && 'Pending Approvals'}
           {!mode && 'Portal AVM'}
         </h1>
@@ -448,7 +448,7 @@ return (
               <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Welcome to Portal AVM!
               </h1>
-              <p className="text-gray-600">Select a mode from the menu to begin</p>
+              <p className="text-gray-600">Select a mode from the menu ☰ on the left to begin</p>
             </div>
           </div>
         ) : (
