@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Camera, X, CheckCircle, AlertCircle, RefreshCw, Video } from 'lucide-react';
+import { Camera, X, CheckCircle, AlertCircle, RefreshCw, Video, Settings } from 'lucide-react';
 
 export default function QRScanner({ onScanResult }) {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [permissionDenied, setPermissionDenied] = useState(false);
   const [cameras, setCameras] = useState([]);
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [showCameraSelect, setShowCameraSelect] = useState(false);
@@ -18,6 +19,7 @@ export default function QRScanner({ onScanResult }) {
     try {
       const devices = await Html5Qrcode.getCameras();
       setCameras(devices);
+      setPermissionDenied(false);
       if (devices.length > 0 && !selectedCamera) {
         // Default to back camera if available
         const backCamera = devices.find(device => 
@@ -28,7 +30,12 @@ export default function QRScanner({ onScanResult }) {
       }
     } catch (err) {
       console.error("Error getting cameras:", err);
-      setError("Unable to access cameras. Please check permissions.");
+      if (err.name === 'NotAllowedError' || err.message.includes('Permission denied')) {
+        setPermissionDenied(true);
+        setError("Camera permission denied. Please enable camera access in your browser settings.");
+      } else {
+        setError("Unable to access cameras. Please check permissions.");
+      }
     }
   };
 
@@ -40,6 +47,7 @@ export default function QRScanner({ onScanResult }) {
     try {
       setError(null);
       setResult(null);
+      setPermissionDenied(false);
       
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("qr-reader");
@@ -71,7 +79,12 @@ export default function QRScanner({ onScanResult }) {
       setShowCameraSelect(false);
     } catch (err) {
       if (isMountedRef.current) {
-        setError("Unable to access camera. Please check permissions and try again.");
+        if (err.name === 'NotAllowedError' || err.message.includes('Permission denied')) {
+          setPermissionDenied(true);
+          setError("Camera permission denied. Please enable camera access in your browser settings.");
+        } else {
+          setError("Unable to access camera. Please check permissions and try again.");
+        }
         console.error(err);
       }
     }
@@ -102,8 +115,9 @@ export default function QRScanner({ onScanResult }) {
 
   const requestCameraPermission = async () => {
     setError(null);
+    setPermissionDenied(false);
     await getCameras();
-    if (cameras.length > 0) {
+    if (cameras.length > 0 && !permissionDenied) {
       startScanning();
     }
   };
@@ -126,6 +140,53 @@ export default function QRScanner({ onScanResult }) {
     };
   }, []);
 
+  // Get browser-specific instructions
+  const getBrowserInstructions = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    
+    if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
+      return (
+        <ol className="text-left text-sm space-y-1 list-decimal list-inside">
+          <li>Click the lock icon 🔒 in the address bar</li>
+          <li>Find "Camera" and change to "Allow"</li>
+          <li>Reload the page</li>
+        </ol>
+      );
+    } else if (userAgent.includes('firefox')) {
+      return (
+        <ol className="text-left text-sm space-y-1 list-decimal list-inside">
+          <li>Click the lock icon 🔒 in the address bar</li>
+          <li>Click "X" next to "Blocked Temporarily"</li>
+          <li>Reload the page</li>
+        </ol>
+      );
+    } else if (userAgent.includes('safari')) {
+      return (
+        <ol className="text-left text-sm space-y-1 list-decimal list-inside">
+          <li>Go to Safari → Settings for This Website</li>
+          <li>Set Camera to "Allow"</li>
+          <li>Reload the page</li>
+        </ol>
+      );
+    } else if (userAgent.includes('edg')) {
+      return (
+        <ol className="text-left text-sm space-y-1 list-decimal list-inside">
+          <li>Click the lock icon 🔒 in the address bar</li>
+          <li>Find "Camera" and change to "Allow"</li>
+          <li>Reload the page</li>
+        </ol>
+      );
+    } else {
+      return (
+        <ol className="text-left text-sm space-y-1 list-decimal list-inside">
+          <li>Click the lock/info icon in the address bar</li>
+          <li>Allow camera access</li>
+          <li>Reload the page</li>
+        </ol>
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -140,7 +201,7 @@ export default function QRScanner({ onScanResult }) {
 
           {/* Scanner Area */}
           <div className="p-6">
-            {!scanning && !result && (
+            {!scanning && !result && !permissionDenied && (
               <div className="text-center space-y-6">
                 <div className="w-48 h-48 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
                   <Camera size={80} className="text-gray-400" />
@@ -262,19 +323,31 @@ export default function QRScanner({ onScanResult }) {
               </div>
             )}
 
-            {error && (
-              <div className="bg-red-50 border-2 border-red-500 rounded-xl p-6 text-center">
-                <AlertCircle size={48} className="text-red-500 mx-auto mb-3" />
-                <h3 className="font-semibold text-lg text-gray-800 mb-2">
-                  Camera Access Error
-                </h3>
-                <p className="text-sm text-gray-700 mb-4">{error}</p>
+            {(error || permissionDenied) && (
+              <div className="bg-red-50 border-2 border-red-500 rounded-xl p-6">
+                <div className="text-center mb-4">
+                  <Settings size={48} className="text-red-500 mx-auto mb-3" />
+                  <h3 className="font-semibold text-lg text-gray-800 mb-2">
+                    Camera Permission Required
+                  </h3>
+                  <p className="text-sm text-gray-700 mb-4">{error}</p>
+                </div>
+
+                {permissionDenied && (
+                  <div className="bg-white rounded-lg p-4 mb-4">
+                    <p className="font-semibold text-gray-800 mb-2 text-sm">
+                      To enable camera access:
+                    </p>
+                    {getBrowserInstructions()}
+                  </div>
+                )}
+
                 <button
                   onClick={requestCameraPermission}
                   className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
                 >
                   <RefreshCw size={20} />
-                  Request Camera Permission
+                  Try Again
                 </button>
               </div>
             )}
