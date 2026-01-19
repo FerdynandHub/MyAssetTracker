@@ -475,25 +475,28 @@ const ApprovalsMode = ({ onBack, userName }) => {
     fetchRequests();
   }, []);
 
-  const handleApprove = async (requestId) => {
-    if (!confirm('Are you sure you want to approve this request?')) return;
+    const handleApprove = async (requestId) => {
+      if (!confirm('Are you sure you want to approve this request?')) return;
 
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'approveRequest',
-          requestId: requestId,
-          approvedBy: userName
-        })
-      });
-      alert('Request approved successfully');
-      fetchRequests();
-    } catch (error) {
-      console.error('Error approving request:', error);
-      alert('Error approving request');
-    }
-  };
+      // Find the request to get the requester's name
+      const request = requests.find(r => r.requestId === requestId);
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'approveRequest',
+            requestId: requestId,
+            approvedBy: request.requestedBy  // Use requester instead of approver
+          })
+        });
+        alert('Request approved successfully');
+        fetchRequests();
+      } catch (error) {
+        console.error('Error approving request:', error);
+        alert('Error approving request');
+      }
+    };
 
   const handleReject = async (requestId) => {
     if (!confirm('Are you sure you want to reject this request?')) return;
