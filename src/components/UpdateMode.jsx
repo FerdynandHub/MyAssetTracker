@@ -16,12 +16,6 @@
                 <h1 className="text-3xl font-bold text-gray-800">
                     {userRole === ROLES.ADMIN ? 'Update Information' : 'Request Update'}
                 </h1>
-                <button
-                    onClick={onBack}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                >
-                    Back
-                </button>
                 </div>
             </div>
 

@@ -433,7 +433,7 @@ return (
       <div className="bg-white shadow-sm p-4 flex items-center gap-4">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="text-gray-600 hover:text-gray-800 transition"
+          className="lg:hidden text-gray-600 hover:text-gray-800 transition"
         >
           <Menu className="w-6 h-6" />
         </button>
