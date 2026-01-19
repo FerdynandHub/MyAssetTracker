@@ -143,18 +143,17 @@ const BatteryMode = ({ userName, SCRIPT_URL }) => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nama <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your name"
-                required
-              />
-            </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Nama <span className="text-red-500">*</span>
+  </label>
+  <input
+    type="text"
+    value={formData.name}
+    readOnly
+    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+    placeholder="Enter your name"
+  />
+</div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
