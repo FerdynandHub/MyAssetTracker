@@ -12,6 +12,14 @@ const BatteryMode = ({ userName, SCRIPT_URL }) => {
   const [inventory, setInventory] = useState({ AA: 0, '9V': 0 });
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addFormData, setAddFormData] = useState({
+    batteryType: 'AA',
+    quantity: ''
+  });
+
+  // Check if user can add batteries
+  const canAddBattery = userName === 'Ivan' || userName === 'Dwiki';
 
   // Fetch current battery inventory
   const fetchInventory = async () => {
@@ -97,6 +105,46 @@ const BatteryMode = ({ userName, SCRIPT_URL }) => {
     setSubmitting(false);
   };
 
+  const handleAddBattery = async (e) => {
+    e.preventDefault();
+    
+    const qty = parseInt(addFormData.quantity);
+    if (isNaN(qty) || qty <= 0) {
+      alert('Please enter a valid quantity');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'checkoutBattery',
+          name: userName || 'Admin',
+          batteryType: addFormData.batteryType,
+          quantity: qty,  // Positive to ADD to inventory
+          eventName: 'Inventory Restock',
+          eventLocation: 'Warehouse'
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Battery added successfully!');
+        setAddFormData({ batteryType: 'AA', quantity: '' });
+        setShowAddForm(false);
+        fetchInventory();
+      } else {
+        alert(data.error || 'Error adding battery');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error submitting request');
+    }
+    setSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -128,32 +176,101 @@ const BatteryMode = ({ userName, SCRIPT_URL }) => {
           </div>
         </div>
 
+        {/* Add Battery Form */}
+        {showAddForm && (
+          <div className="bg-green-50 border-2 border-green-200 rounded-lg shadow-lg p-6 mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Add Battery to Inventory</h2>
+            
+            <form onSubmit={handleAddBattery} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Jenis Baterai <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={addFormData.batteryType}
+                  onChange={(e) => setAddFormData({ ...addFormData, batteryType: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="AA">AA</option>
+                  <option value="9V">9V</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Qty to Add <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  value={addFormData.quantity}
+                  onChange={(e) => setAddFormData({ ...addFormData, quantity: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter quantity to add"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition disabled:bg-gray-400"
+                >
+                  {submitting ? 'Adding...' : 'Add to Inventory'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  className="px-6 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         {/* Checkout Form */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Battery Checkout</h2>
-            <button
-              onClick={fetchInventory}
-              className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Refresh
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => canAddBattery && setShowAddForm(!showAddForm)}
+                disabled={!canAddBattery}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+                  canAddBattery 
+                    ? 'bg-green-500 text-white hover:bg-green-600' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+                title={!canAddBattery ? 'Only Ivan and Dwiki can add batteries' : ''}
+              >
+                Add Battery
+              </button>
+              <button
+                onClick={fetchInventory}
+                className="flex items-center gap-2 text-blue-500 hover:text-blue-600 transition"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Refresh
+              </button>
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-  <label className="block text-sm font-medium text-gray-700 mb-2">
-    Nama <span className="text-red-500">*</span>
-  </label>
-  <input
-    type="text"
-    value={formData.name}
-    readOnly
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
-    placeholder="Enter your name"
-  />
-</div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nama <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                readOnly
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                placeholder="Enter your name"
+              />
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
