@@ -398,6 +398,19 @@ return (
       disabled={userRole === ROLES.VIEWER}
     />
 
+        <SidebarItem
+      icon={<BookOpenText className="w-5 h-5" />}
+      label="Tata Cara Memakai Scanner"
+      active={false}
+      onClick={() => {
+        window.open(
+          "https://docs.google.com/document/d/1fUivFvMW9HVQ_ht3nKEDjVCSI4Pq2G-dlQD7cCDKtjo/edit?tab=t.0",
+          "_blank"
+        );
+        setSidebarOpen(false);
+      }}
+    />
+
     <SidebarItem
       icon={<RefreshCw className="w-5 h-5" />}
       label="Persetujuan Pending"
