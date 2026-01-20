@@ -374,6 +374,31 @@ return (
     />
 
     <SidebarItem
+      icon={<Battery className="w-5 h-5" />}
+      label="Baterai"
+      active={mode === 'battery'}
+      onClick={() => {
+        setMode('battery');
+        setSidebarOpen(false);
+      }}
+      disabled={userRole === ROLES.VIEWER}
+    />
+
+
+
+{userRole === ROLES.ADMIN && (
+  <SidebarItem
+    icon={<RefreshCw className="w-5 h-5" />}
+    label="Persetujuan Pending"
+    active={mode === 'approvals'}
+    onClick={() => {
+      setMode('approvals');
+      setSidebarOpen(false);
+    }}
+  />
+)}
+
+        <SidebarItem
       icon={<BookOpenText className="w-5 h-5" />}
       label="Pusat Classroom"
       active={false}
@@ -398,30 +423,6 @@ return (
         );
         setSidebarOpen(false);
       }}
-    />
-
-    <SidebarItem
-      icon={<Battery className="w-5 h-5" />}
-      label="Baterai"
-      active={mode === 'battery'}
-      onClick={() => {
-        setMode('battery');
-        setSidebarOpen(false);
-      }}
-      disabled={userRole === ROLES.VIEWER}
-    />
-
-
-
-    <SidebarItem
-      icon={<RefreshCw className="w-5 h-5" />}
-      label="Persetujuan Pending"
-      active={mode === 'approvals'}
-      onClick={() => {
-        setMode('approvals');
-        setSidebarOpen(false);
-      }}
-      disabled={userRole !== ROLES.ADMIN}
     />
 
     {/* Coming Soon Section */}
