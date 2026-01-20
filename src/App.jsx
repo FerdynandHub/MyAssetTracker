@@ -4,18 +4,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, 
   X, 
-  LayoutDashboard, 
+  Eye,
   Search, 
-  FileDown, 
+  Download,
   History, 
   Edit, 
-  LogOut, 
   Battery, 
   RefreshCw, 
   BookOpenText,
-  FileText  // Add this if it's not there
-} 
-from 'lucide-react';import { Html5QrcodeScanner } from 'html5-qrcode';
+  FileText,
+  Camera,
+  List
+} from 'lucide-react';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 //components
@@ -506,6 +507,7 @@ return (
           {mode === 'history' && 'History'}
           {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
           {mode === 'battery' && 'Single-Use Item'}
+          {mode === 'myRequests' && 'Permintaan Saya'} 
           {mode === 'approvals' && 'Pending Approvals'}
           {!mode && 'Portal AVM'}
         </h1>
