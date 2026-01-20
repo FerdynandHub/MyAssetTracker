@@ -379,18 +379,7 @@ return (
       }}
     />
 
-{/* Update Data - Hidden from VIEWER */}
-{userRole !== ROLES.VIEWER && (
-  <SidebarItem
-    icon={<Edit className="w-5 h-5" />}
-    label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Pembaruan Data"}
-    active={mode === 'update'}
-    onClick={() => {
-      setMode('update');
-      setSidebarOpen(false);
-    }}
-  />
-)}
+
 
 {/* Battery - Hidden from VIEWER */}
 {userRole !== ROLES.VIEWER && (
@@ -413,6 +402,19 @@ return (
     active={mode === 'approvals'}
     onClick={() => {
       setMode('approvals');
+      setSidebarOpen(false);
+    }}
+  />
+)}
+
+{/* Update Data - Hidden from VIEWER */}
+{userRole !== ROLES.VIEWER && (
+  <SidebarItem
+    icon={<Edit className="w-5 h-5" />}
+    label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Pembaruan Data"}
+    active={mode === 'update'}
+    onClick={() => {
+      setMode('update');
       setSidebarOpen(false);
     }}
   />
