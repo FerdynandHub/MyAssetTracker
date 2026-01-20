@@ -1,3 +1,6 @@
+//base imports essentials + components
+import './index.css';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, 
   X, 
@@ -11,7 +14,8 @@ import {
   RefreshCw, 
   BookOpenText,
   FileText  // Add this if it's not there
-} from 'lucide-react';
+} 
+from 'lucide-react';import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 //components
