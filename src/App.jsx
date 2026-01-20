@@ -295,7 +295,7 @@ const renderMode = () => {
 
 // After login, show sidebar layout
 return (
-  <div className="flex h-screen bg-gray-100 overflow-hidden">
+  <div className="flex bg-gray-100 overflow-hidden" style={{ height: '100dvh' }}>
     {/* Sidebar */}
     <aside className={`
       fixed lg:static inset-y-0 left-0 z-[60]
