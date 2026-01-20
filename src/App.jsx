@@ -400,7 +400,7 @@ return (
 
         <SidebarItem
       icon={<BookOpenText className="w-5 h-5" />}
-      label="Tata Cara Memakai Scanner"
+      label="Cara Pakai Scanner"
       active={false}
       onClick={() => {
         window.open(
