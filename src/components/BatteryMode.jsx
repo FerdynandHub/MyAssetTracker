@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 
-const BatteryMode = ({ userName, SCRIPT_URL }) => {
+const ROLES = {
+  ADMIN: 'admin',
+  USER: 'user'
+};
+
+const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
   const [formData, setFormData] = useState({
     name: userName || '',
     batteryType: 'AA',
@@ -19,7 +24,7 @@ const BatteryMode = ({ userName, SCRIPT_URL }) => {
   });
 
   // Check if user can add batteries
-  const canAddBattery = userName === 'Ivan' || userName === 'Dwiki';
+  const canAddBattery = userName === 'Ivan' || userName === 'Dwiki' || userRole === ROLES.ADMIN;
 
   // Fetch current battery inventory
   const fetchInventory = async () => {
