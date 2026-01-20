@@ -12,7 +12,7 @@ import UpdateMode from "./components/UpdateMode";
 import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
-import MyRequestsMode from './MyRequestsMode';
+import MyRequestsMode from './components/MyRequestsMode';
 
 
 //roles assignment
