@@ -1,8 +1,17 @@
-//base imports essentials + components
-import './index.css';
-import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X, BookOpenText, History, Battery} from 'lucide-react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { 
+  Menu, 
+  X, 
+  LayoutDashboard, 
+  Search, 
+  FileDown, 
+  History, 
+  Edit, 
+  LogOut, 
+  Battery, 
+  RefreshCw, 
+  BookOpenText,
+  FileText  // Add this if it's not there
+} from 'lucide-react';
 
 
 //components
