@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, FileText, CheckCircle, XCircle, Clock } from 'lucide-react';
 
+
 const MyRequestsMode = ({ userName, SCRIPT_URL }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchMyRequests = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${SCRIPT_URL}?action=getMyRequests&userName=${encodeURIComponent(userName)}`);
-      const data = await response.json();
+ const fetchMyRequests = async () => {
+  setLoading(true);
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getMyRequests&userName=${encodeURIComponent(userName)}`);
+    const data = await response.json();
+    
+    // Make sure data is an array
+    if (Array.isArray(data)) {
       setRequests(data);
-    } catch (error) {
-      console.error('Error fetching my requests:', error);
+    } else {
+      console.error('Expected array but got:', data);
+      setRequests([]); // Set empty array as fallback
     }
-    setLoading(false);
-  };
+  } catch (error) {
+    console.error('Error fetching my requests:', error);
+    setRequests([]); // Set empty array on error
+  }
+  setLoading(false);
+};
 
   useEffect(() => {
     fetchMyRequests();
