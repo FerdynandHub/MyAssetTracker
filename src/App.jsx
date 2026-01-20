@@ -362,30 +362,33 @@ return (
       }}
     />
 
-    <SidebarItem
-      icon={<Edit className="w-5 h-5" />}
-      label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Pembaruan Data"}
-      active={mode === 'update'}
-      onClick={() => {
-        setMode('update');
-        setSidebarOpen(false);
-      }}
-      disabled={userRole === ROLES.VIEWER}
-    />
+{/* Update Data - Hidden from VIEWER */}
+{userRole !== ROLES.VIEWER && (
+  <SidebarItem
+    icon={<Edit className="w-5 h-5" />}
+    label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Pembaruan Data"}
+    active={mode === 'update'}
+    onClick={() => {
+      setMode('update');
+      setSidebarOpen(false);
+    }}
+  />
+)}
 
-    <SidebarItem
-      icon={<Battery className="w-5 h-5" />}
-      label="Baterai"
-      active={mode === 'battery'}
-      onClick={() => {
-        setMode('battery');
-        setSidebarOpen(false);
-      }}
-      disabled={userRole === ROLES.VIEWER}
-    />
+{/* Battery - Hidden from VIEWER */}
+{userRole !== ROLES.VIEWER && (
+  <SidebarItem
+    icon={<Battery className="w-5 h-5" />}
+    label="Baterai"
+    active={mode === 'battery'}
+    onClick={() => {
+      setMode('battery');
+      setSidebarOpen(false);
+    }}
+  />
+)}
 
-
-
+{/* Pending Approvals - ADMIN only */}
 {userRole === ROLES.ADMIN && (
   <SidebarItem
     icon={<RefreshCw className="w-5 h-5" />}
@@ -398,19 +401,21 @@ return (
   />
 )}
 
-        <SidebarItem
-      icon={<BookOpenText className="w-5 h-5" />}
-      label="Pusat Classroom"
-      active={false}
-      onClick={() => {
-        window.open(
-          "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
-          "_blank"
-        );
-        setSidebarOpen(false);
-      }}
-      disabled={userRole === ROLES.VIEWER}
-    />
+{/* Classroom Center - Hidden from VIEWER */}
+{userRole !== ROLES.VIEWER && (
+  <SidebarItem
+    icon={<BookOpenText className="w-5 h-5" />}
+    label="Pusat Classroom"
+    active={false}
+    onClick={() => {
+      window.open(
+        "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
+        "_blank"
+      );
+      setSidebarOpen(false);
+    }}
+  />
+)}
 
             <SidebarItem
       icon={<BookOpenText className="w-5 h-5" />}
