@@ -1,7 +1,7 @@
 //base imports essentials + components
 import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X, BookOpenText, History} from 'lucide-react';
+import { Camera, RefreshCw, Search, Download, Edit, List, Eye, Scan, ArrowUpDown, ArrowUp, ArrowDown, Menu, X, BookOpenText, History, Battery} from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
@@ -12,7 +12,8 @@ import UpdateMode from "./components/UpdateMode";
 import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
-import { Battery } from 'lucide-react'; 
+import MyRequestsMode from './MyRequestsMode';
+
 
 //roles assignment
 const ROLES = {
@@ -288,6 +289,8 @@ const renderMode = () => {
   return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals':
       return <ApprovalsMode userName={userName} />;
+case 'myRequests':
+  return <MyRequestsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     default:
       return null;
   }
@@ -396,6 +399,19 @@ return (
     active={mode === 'approvals'}
     onClick={() => {
       setMode('approvals');
+      setSidebarOpen(false);
+    }}
+  />
+)}
+
+{/* My Requests - For EDITOR only */}
+{userRole === ROLES.EDITOR && (
+  <SidebarItem
+    icon={<FileText className="w-5 h-5" />}
+    label="Permintaan Saya"
+    active={mode === 'myRequests'}
+    onClick={() => {
+      setMode('myRequests');
       setSidebarOpen(false);
     }}
   />
