@@ -210,61 +210,6 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
           </div>
         </div>
 
-        {/* Recent Transactions Log */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-gray-800">Recent Transactions</h3>
-            <button
-              onClick={fetchRecentTransactions}
-              className="text-sm text-blue-500 hover:text-blue-600 transition"
-            >
-              Refresh
-            </button>
-          </div>
-          
-          <div className="space-y-2">
-            {recentTransactions.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">No recent transactions</p>
-            ) : (
-              recentTransactions.map((transaction, index) => {
-                const isCheckout = transaction.quantity < 0;
-                const absQty = Math.abs(transaction.quantity);
-                
-                return (
-                  <div 
-                    key={index} 
-                    className={`p-3 rounded-lg border-l-4 ${
-                      isCheckout ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-800">{transaction.name}</span>
-                          <span className={`text-sm px-2 py-0.5 rounded ${
-                            isCheckout ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'
-                          }`}>
-                            {isCheckout ? 'Checkout' : 'Restock'}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {absQty}x {transaction.batteryType} • {transaction.eventName}
-                        </p>
-                        {transaction.eventLocation && (
-                          <p className="text-xs text-gray-500">{transaction.eventLocation}</p>
-                        )}
-                      </div>
-                      <div className="text-right text-xs text-gray-500">
-                        {formatDate(transaction.timestamp)}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-
         {/* Add Battery Form */}
         {showAddForm && (
           <div className="bg-green-50 border-2 border-green-200 rounded-lg shadow-lg p-6 mb-6">
@@ -321,7 +266,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
         )}
 
         {/* Checkout Form */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Battery Checkout</h2>
             <div className="flex gap-2">
@@ -433,6 +378,61 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
               )}
             </button>
           </form>
+        </div>
+
+        {/* Recent Transactions Log - Now at the bottom */}
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-gray-800">Recent Transactions</h3>
+            <button
+              onClick={fetchRecentTransactions}
+              className="text-sm text-blue-500 hover:text-blue-600 transition"
+            >
+              Refresh
+            </button>
+          </div>
+          
+          <div className="space-y-2">
+            {recentTransactions.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">No recent transactions</p>
+            ) : (
+              recentTransactions.map((transaction, index) => {
+                const isCheckout = transaction.quantity < 0;
+                const absQty = Math.abs(transaction.quantity);
+                
+                return (
+                  <div 
+                    key={index} 
+                    className={`p-3 rounded-lg border-l-4 ${
+                      isCheckout ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-800">{transaction.name}</span>
+                          <span className={`text-sm px-2 py-0.5 rounded ${
+                            isCheckout ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'
+                          }`}>
+                            {isCheckout ? 'Checkout' : 'Restock'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {absQty}x {transaction.batteryType} • {transaction.eventName}
+                        </p>
+                        {transaction.eventLocation && (
+                          <p className="text-xs text-gray-500">{transaction.eventLocation}</p>
+                        )}
+                      </div>
+                      <div className="text-right text-xs text-gray-500">
+                        {formatDate(transaction.timestamp)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       </div>
     </div>
