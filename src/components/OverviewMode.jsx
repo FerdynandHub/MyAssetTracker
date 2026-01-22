@@ -183,21 +183,17 @@ return 'bg-slate-200 text-slate-600';
           </div>
 
           {/* Category Filter */}
-          <div className="flex gap-2 mb-4 flex-wrap">
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-lg transition ${
-                  selectedCategory === cat
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
+            <div className="mb-4">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {cat}
-              </button>
-            ))}
-          </div>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
 
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">

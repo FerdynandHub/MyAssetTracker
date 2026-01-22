@@ -202,7 +202,7 @@ const App = () => {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
-            Portal AVM UPH 6.5
+            Portal AVM UPH 6.6
           </h1>
 
           <p className="text-xs text-gray-400 text-center mb-4">
@@ -411,7 +411,7 @@ return (
 {userRole !== ROLES.VIEWER && (
   <SidebarItem
     icon={<Edit className="w-5 h-5" />}
-    label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Pembaruan Data"}
+    label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Ubah Data"}
     active={mode === 'update'}
     onClick={() => {
       setMode('update');
