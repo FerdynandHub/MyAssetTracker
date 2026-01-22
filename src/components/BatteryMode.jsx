@@ -22,6 +22,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
     batteryType: 'AA',
     quantity: ''
   });
+  const [recentTransactions, setRecentTransactions] = useState([]);
 
   // Check if user can add batteries
   const canAddBattery = userName === 'Ivan' || userName === 'Dwiki' || userRole === ROLES.ADMIN;
@@ -48,8 +49,23 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
     setLoading(false);
   };
 
+  // Fetch recent battery transactions
+  const fetchRecentTransactions = async () => {
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=getBatteryHistory&limit=5`);
+      const data = await response.json();
+      
+      if (data.history) {
+        setRecentTransactions(data.history);
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
+
   useEffect(() => {
     fetchInventory();
+    fetchRecentTransactions();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -98,8 +114,9 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
           eventName: '',
           eventLocation: ''
         });
-        // Refresh inventory
+        // Refresh inventory and transactions
         fetchInventory();
+        fetchRecentTransactions();
       } else {
         alert(data.error || 'Error checking out battery');
       }
@@ -140,6 +157,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
         setAddFormData({ batteryType: 'AA', quantity: '' });
         setShowAddForm(false);
         fetchInventory();
+        fetchRecentTransactions();
       } else {
         alert(data.error || 'Error adding battery');
       }
@@ -148,6 +166,17 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
       alert('Error submitting request');
     }
     setSubmitting(false);
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'N/A';
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
@@ -177,6 +206,61 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 <span className="text-4xl font-bold text-green-600">{inventory['9V']}</span>
                 <span className="text-gray-500">units</span>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* Recent Transactions Log */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-gray-800">Recent Transactions</h3>
+            <button
+              onClick={fetchRecentTransactions}
+              className="text-sm text-blue-500 hover:text-blue-600 transition"
+            >
+              Refresh
+            </button>
+          </div>
+          
+          <div className="space-y-2">
+            {recentTransactions.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">No recent transactions</p>
+            ) : (
+              recentTransactions.map((transaction, index) => {
+                const isCheckout = transaction.quantity < 0;
+                const absQty = Math.abs(transaction.quantity);
+                
+                return (
+                  <div 
+                    key={index} 
+                    className={`p-3 rounded-lg border-l-4 ${
+                      isCheckout ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-800">{transaction.name}</span>
+                          <span className={`text-sm px-2 py-0.5 rounded ${
+                            isCheckout ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'
+                          }`}>
+                            {isCheckout ? 'Checkout' : 'Restock'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {absQty}x {transaction.batteryType} • {transaction.eventName}
+                        </p>
+                        {transaction.eventLocation && (
+                          <p className="text-xs text-gray-500">{transaction.eventLocation}</p>
+                        )}
+                      </div>
+                      <div className="text-right text-xs text-gray-500">
+                        {formatDate(transaction.timestamp)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
