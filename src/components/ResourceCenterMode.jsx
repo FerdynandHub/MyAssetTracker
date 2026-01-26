@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, ExternalLink } from 'lucide-react';
 
-const RESOURCE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw59qhRICTOVvxeLzCTLoe9_U80P3Wjkf4zK1dstoO9CFfjv6dqnw0GFgpjSYPVTm5y/exec';
+const RESOURCE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcGLO5nIcqbqO3Hcobuf9GP8j9hoXxnY2D46OSFr03Pzimr93vwtoWhEU4486La74l/exec';
 
 const ResourceCenterMode = () => {
   const [elements, setElements] = useState([]);
