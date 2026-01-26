@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, ExternalLink } from 'lucide-react';
 
-const RESOURCE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcGLO5nIcqbqO3Hcobuf9GP8j9hoXxnY2D46OSFr03Pzimr93vwtoWhEU4486La74l/exec';
+const RESOURCE_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbwcGLO5nIcqbqO3Hcobuf9GP8j9hoXxnY2D46OSFr03Pzimr93vwtoWhEU4486La74l/exec';
 
 const ResourceCenterMode = () => {
   const [elements, setElements] = useState([]);
@@ -11,7 +12,12 @@ const ResourceCenterMode = () => {
   const fetchContent = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${RESOURCE_SCRIPT_URL}?action=getResourceContent`);
+      const proxyUrl = 'https://corsproxy.io/?';
+      const url = `${proxyUrl}${encodeURIComponent(
+        `${RESOURCE_SCRIPT_URL}?action=getResourceContent`
+      )}`;
+
+      const response = await fetch(url);
       const data = await response.json();
 
       if (data.success) {
@@ -34,12 +40,13 @@ const ResourceCenterMode = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-5xl mx-auto">
-
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">📚 Resource Center</h1>
-              <p className="text-gray-600 italic mt-2">"We don't react. We anticipate. We hunt."</p>
+              <p className="text-gray-600 italic mt-2">
+                "We don't react. We anticipate. We hunt."
+              </p>
               {lastUpdated && (
                 <p className="text-sm text-gray-500 mt-1">
                   Last updated: {new Date(lastUpdated).toLocaleString()}
@@ -63,6 +70,8 @@ const ResourceCenterMode = () => {
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
               <p className="text-gray-600">Loading...</p>
             </div>
+          ) : elements.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No resources found...</p>
           ) : (
             <div className="space-y-2">
               {elements.map((element, idx) => {
