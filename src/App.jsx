@@ -27,6 +27,7 @@ import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import MyRequestsMode from './components/MyRequestsMode.jsx';
+import ResourceCenterMode from './components/ResourceCenterMode';
 
 
 //roles assignment
@@ -284,6 +285,8 @@ const renderMode = () => {
       return <OverviewMode SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
     case 'check':
       return <CheckMode SCRIPT_URL={SCRIPT_URL} />;
+      case 'resourceCenter':
+  return <ResourceCenterMode />;
     case 'export':
       return <ExportMode />;
     case 'history':
@@ -433,6 +436,18 @@ return (
   />
 )}
 
+{userRole !== ROLES.VIEWER && (
+  <SidebarItem
+    icon={<BookOpen className="w-5 h-5" />}
+    label="Resource Center"
+    active={mode === 'resourceCenter'}
+    onClick={() => {
+      setMode('resourceCenter');
+      setSidebarOpen(false);
+    }}
+  />
+)}
+
 {/* Classroom Center - Hidden from VIEWER */}
 {userRole !== ROLES.VIEWER && (
   <SidebarItem
@@ -511,6 +526,7 @@ return (
           {mode === 'battery' && 'Single-Use Item'}
           {mode === 'myRequests' && 'Permintaan Saya'} 
           {mode === 'approvals' && 'Pending Approvals'}
+          {mode === 'resourceCenter' && 'Resource Center'}
           {!mode && 'Portal AVM'}
         </h1>
       </div>
