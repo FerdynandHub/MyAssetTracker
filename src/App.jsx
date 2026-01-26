@@ -12,6 +12,7 @@ import {
   Battery, 
   RefreshCw, 
   BookOpenText,
+    BookOpen,
   FileText,
   Camera,
   List
