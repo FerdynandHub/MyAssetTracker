@@ -8,6 +8,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
+  const [selectedGrade, setSelectedGrade] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +38,16 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   // Get unique locations from assets
   const locations = ['All', ...Array.from(new Set(assets.map(a => a.location).filter(Boolean))).sort()];
 
+  // Get unique grades from assets (in proper order)
+  const allGrades = Array.from(new Set(assets.map(a => a.grade).filter(Boolean)));
+  const gradeOrder = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
+  const sortedGrades = allGrades.sort((a, b) => {
+    const aIndex = gradeOrder.indexOf(a.toUpperCase());
+    const bIndex = gradeOrder.indexOf(b.toUpperCase());
+    return aIndex - bIndex;
+  });
+  const grades = ['All', ...sortedGrades];
+
   // Get available options based on current filters
   const getAvailableCategories = () => {
     let filtered = assets;
@@ -45,6 +56,9 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
     }
     if (selectedLocation !== 'All') {
       filtered = filtered.filter(a => a.location === selectedLocation);
+    }
+    if (selectedGrade !== 'All') {
+      filtered = filtered.filter(a => a.grade === selectedGrade);
     }
     return new Set(filtered.map(a => a.category).filter(Boolean));
   };
@@ -57,6 +71,9 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
     if (selectedLocation !== 'All') {
       filtered = filtered.filter(a => a.location === selectedLocation);
     }
+    if (selectedGrade !== 'All') {
+      filtered = filtered.filter(a => a.grade === selectedGrade);
+    }
     return new Set(filtered.map(a => a.status).filter(Boolean));
   };
 
@@ -68,12 +85,30 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
     if (selectedStatus !== 'All') {
       filtered = filtered.filter(a => a.status === selectedStatus);
     }
+    if (selectedGrade !== 'All') {
+      filtered = filtered.filter(a => a.grade === selectedGrade);
+    }
     return new Set(filtered.map(a => a.location).filter(Boolean));
+  };
+
+  const getAvailableGrades = () => {
+    let filtered = assets;
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(a => a.category === selectedCategory);
+    }
+    if (selectedStatus !== 'All') {
+      filtered = filtered.filter(a => a.status === selectedStatus);
+    }
+    if (selectedLocation !== 'All') {
+      filtered = filtered.filter(a => a.location === selectedLocation);
+    }
+    return new Set(filtered.map(a => a.grade).filter(Boolean));
   };
 
   const availableCategories = getAvailableCategories();
   const availableStatuses = getAvailableStatuses();
   const availableLocations = getAvailableLocations();
+  const availableGrades = getAvailableGrades();
 
   // Custom grade sorting order
   const getGradeValue = (grade) => {
@@ -109,8 +144,14 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
       ? statusFiltered
       : statusFiltered.filter(a => a.location === selectedLocation);
 
+  // Filter by grade
+  const gradeFiltered =
+    selectedGrade === 'All'
+      ? locationFiltered
+      : locationFiltered.filter(a => a.grade === selectedGrade);
+
   // Filter by search term
-  const searchFiltered = locationFiltered.filter(asset => {
+  const searchFiltered = gradeFiltered.filter(asset => {
     if (!searchTerm) return true;
     
     // Split search term into individual words
@@ -175,7 +216,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, selectedStatus, selectedLocation, searchTerm, sortConfig]);
+  }, [selectedCategory, selectedStatus, selectedLocation, selectedGrade, searchTerm, sortConfig]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -272,14 +313,14 @@ return 'bg-slate-200 text-slate-600';
           </div>
 
           {/* Filters Section */}
-          <div className="mb-4">
-            <h2 className="text-sm font-semibold text-gray-700 mb-2">Filters</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="mb-3">
+            <h2 className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Filters</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="All">All Categories</option>
                 {CATEGORIES.map(cat => (
@@ -298,7 +339,7 @@ return 'bg-slate-200 text-slate-600';
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="All">All Statuses</option>
                 {statuses.filter(s => s !== 'All').map(status => (
@@ -317,7 +358,7 @@ return 'bg-slate-200 text-slate-600';
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="All">All Locations</option>
                 {locations.filter(l => l !== 'All').map(location => (
@@ -331,13 +372,32 @@ return 'bg-slate-200 text-slate-600';
                   </option>
                 ))}
               </select>
+
+              {/* Grade Filter */}
+              <select
+                value={selectedGrade}
+                onChange={(e) => setSelectedGrade(e.target.value)}
+                className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="All">All Grades</option>
+                {grades.filter(g => g !== 'All').map(grade => (
+                  <option 
+                    key={grade} 
+                    value={grade}
+                    disabled={!availableGrades.has(grade)}
+                    style={!availableGrades.has(grade) ? { color: '#ccc' } : {}}
+                  >
+                    {grade}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">
             Showing {startIndex + 1}-{Math.min(endIndex, sortedAssets.length)} of {sortedAssets.length} results
-            {(selectedCategory !== 'All' || selectedStatus !== 'All' || selectedLocation !== 'All') && (
+            {(selectedCategory !== 'All' || selectedStatus !== 'All' || selectedLocation !== 'All' || selectedGrade !== 'All') && (
               <span className="ml-1">
                 (filtered from {assets.length} total)
               </span>
