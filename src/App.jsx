@@ -28,6 +28,7 @@ import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import MyRequestsMode from './components/MyRequestsMode.jsx';
+import LoanMode from './components/LoanMode';
 
 
 
@@ -204,7 +205,7 @@ const App = () => {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
-            Portal AVM UPH 6.6
+            Portal AVM UPH 6.8
           </h1>
 
           <p className="text-xs text-gray-400 text-center mb-4">
@@ -286,8 +287,8 @@ const renderMode = () => {
       return <OverviewMode SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
     case 'check':
       return <CheckMode SCRIPT_URL={SCRIPT_URL} />;
-      case 'resourceCenter':
-  return <ResourceCenterMode />;
+    case 'resourceCenter':
+      return <ResourceCenterMode />;
     case 'export':
       return <ExportMode />;
     case 'history':
@@ -303,12 +304,23 @@ const renderMode = () => {
           GRADES={GRADES}
         />
       );
-      case 'battery':
-  return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
+    case 'battery':
+      return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals':
       return <ApprovalsMode userName={userName} />;
-case 'myRequests':
-  return <MyRequestsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
+    case 'myRequests':
+      return <MyRequestsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
+    case 'loan':  // ADD THIS CASE
+      return (
+        <LoanMode
+          userName={userName}
+          userRole={userRole}
+          ROLES={ROLES}
+          SCRIPT_URL={SCRIPT_URL}
+          CATEGORIES={CATEGORIES}
+          GRADES={GRADES}
+        />
+      );
     default:
       return null;
   }
@@ -424,6 +436,18 @@ return (
   />
 )}
 
+{userRole !== ROLES.VIEWER && (
+  <SidebarItem
+    icon={<Edit className="w-5 h-5" />}
+    label={userRole === ROLES.ADMIN ? "Pinjam Barang" : "Pinjam Barang"}
+    active={mode === 'loan'}
+    onClick={() => {
+      setMode('loan');
+      setSidebarOpen(false);
+    }}
+  />
+)}
+
 {/* My Requests - For EDITOR only */}
 {userRole === ROLES.EDITOR && (
   <SidebarItem
@@ -507,17 +531,18 @@ return (
         >
           <Menu className="w-6 h-6" />
         </button>
-        <h1 className="text-xl font-bold text-gray-800">
-          {mode === 'overview' && 'Overview Data'}
-          {mode === 'check' && 'Check Information'}
-          {mode === 'export' && 'Export Data'}
-          {mode === 'history' && 'History'}
-          {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
-          {mode === 'battery' && 'Single-Use Item'}
-          {mode === 'myRequests' && 'Permintaan Saya'} 
-          {mode === 'approvals' && 'Pending Approvals'}
-          {!mode && 'Portal AVM'}
-        </h1>
+<h1 className="text-xl font-bold text-gray-800">
+  {mode === 'overview' && 'Overview Data'}
+  {mode === 'check' && 'Check Information'}
+  {mode === 'export' && 'Export Data'}
+  {mode === 'history' && 'History'}
+  {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
+  {mode === 'battery' && 'Single-Use Item'}
+  {mode === 'myRequests' && 'Permintaan Saya'} 
+  {mode === 'approvals' && 'Pending Approvals'}
+  {mode === 'loan' && 'Peminjaman/Pengembalian'}  
+  {!mode && 'Portal AVM'}
+</h1>
       </div>
 
       {/* Content */}

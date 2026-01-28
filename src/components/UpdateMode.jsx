@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Edit, List, Boxes, Package } from 'lucide-react';
 import SingleUpdateMode from './SingleUpdateMode';
 import BatchUpdateMode from './BatchUpdateMode';
-import LoanMode from './LoanMode';
+
 
 
 const UpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGORIES, GRADES }) => {
@@ -49,19 +49,6 @@ const UpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGORIES,
               </p>
             </div>
 
-            <div
-              onClick={() => setUpdateMode('loan')}
-              className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
-            >
-              <List className="w-12 h-12 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2 text-center">Peminjaman/Pengembalian</h2>
-
-              <p className="text-center opacity-90">
-                {userRole === ROLES.ADMIN
-                  ? 'Ajukan peminjaman/pengembalian untuk aset. Pastikan semua ID sudah benar (case-sensitive)'
-                  : 'Ajukan peminjaman/pengembalian untuk aset. Pastikan semua ID sudah benar (case-sensitive)'}
-              </p>
-            </div>
           </div>
         </div>
       </div>
@@ -96,19 +83,6 @@ const UpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGORIES,
     );
   }
 
-  if (updateMode === 'loan') {
-    return (
-      <LoanMode
-        onBack={() => setUpdateMode(null)}
-        userRole={userRole}
-        userName={userName}
-        ROLES={ROLES}
-        SCRIPT_URL={SCRIPT_URL}
-        CATEGORIES={CATEGORIES}
-        GRADES={GRADES}
-      />
-    );
-  }
 };
 
 export default UpdateMode;
