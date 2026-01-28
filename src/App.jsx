@@ -72,6 +72,8 @@ const CATEGORIES = [
   'XLR Cable',
   'TV Auditorium',
   'Bracket TV',
+  'VGA-HDMI Converter',
+'Type C Hub Converter',
   'Power Extension'
 ];
 
