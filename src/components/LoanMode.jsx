@@ -12,10 +12,8 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const streamRef = useRef(null);
 
   const STATUSES = [
-    'Available',
-    'Classroom',
-    'Loaned',
-    'Unavailable'
+    'Available (kembali)',
+    'Loaned (pinjam)',
   ];
 
   const addId = () => {
@@ -233,7 +231,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi terkini</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi terkini & Peminjam</label>
               <input
                 type="text"
                 value={formData.location || ''}
