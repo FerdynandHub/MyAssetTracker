@@ -314,7 +314,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
             
             {!isFormValid() && assetIds.length > 0 && (
               <p className="text-sm text-red-600 text-center">
-                Please fill in all required fields before submitting
+                Lengkapin mas..
               </p>
             )}
           </div>
