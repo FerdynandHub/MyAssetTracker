@@ -305,10 +305,10 @@ return 'bg-slate-200 text-slate-600';
                         <td className="px-4 py-3">{asset.category}</td>
                         <td className="px-4 py-3">
                         <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            asset.status === 'Available'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
+className={`px-2 py-1 rounded-full text-xs font-semibold ${
+  asset.status === 'Available' || asset.status.includes('kembali')
+    ? 'bg-green-100 text-green-800'
+    : 'bg-red-100 text-red-800'
                             }`}
                           >
                             {asset.status}
