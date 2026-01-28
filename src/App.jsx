@@ -13,6 +13,7 @@ import {
   RefreshCw, 
   BookOpenText,
     BookOpen,
+    ArrowLeftRight,
   FileText,
   Camera,
   List
@@ -438,7 +439,7 @@ return (
 
 {userRole !== ROLES.VIEWER && (
   <SidebarItem
-    icon={<Edit className="w-5 h-5" />}
+    icon={<ArrowLeftRight className="w-5 h-5" />}
     label={userRole === ROLES.ADMIN ? "Pinjam Barang" : "Pinjam Barang"}
     active={mode === 'loan'}
     onClick={() => {

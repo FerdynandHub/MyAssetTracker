@@ -210,7 +210,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Status
+                Status <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.status || ''}
@@ -231,7 +231,9 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi terkini & Peminjam</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Lokasi terkini & Peminjam <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 value={formData.location || ''}
@@ -242,7 +244,9 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Catatan <span className="text-red-500">*</span>
+              </label>
               <textarea
                 value={formData.remarks || ''}
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
