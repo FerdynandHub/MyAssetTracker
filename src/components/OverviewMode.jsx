@@ -7,7 +7,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
-  const [selectedGrade, setSelectedGrade] = useState('All');
+  const [selectedLocation, setSelectedLocation] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,8 +34,8 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   // Get unique statuses from assets
   const statuses = ['All', ...new Set(assets.map(a => a.status).filter(Boolean))];
 
-  // Get unique grades from assets
-  const grades = ['All', ...Array.from(new Set(assets.map(a => a.grade).filter(Boolean))).sort()];
+  // Get unique locations from assets
+  const locations = ['All', ...Array.from(new Set(assets.map(a => a.location).filter(Boolean))).sort()];
 
   // Filter by category
   const categoryFiltered =
@@ -49,14 +49,14 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
       ? categoryFiltered
       : categoryFiltered.filter(a => a.status === selectedStatus);
 
-  // Filter by grade
-  const gradeFiltered =
-    selectedGrade === 'All'
+  // Filter by location
+  const locationFiltered =
+    selectedLocation === 'All'
       ? statusFiltered
-      : statusFiltered.filter(a => a.grade === selectedGrade);
+      : statusFiltered.filter(a => a.location === selectedLocation);
 
   // Filter by search term
-  const searchFiltered = gradeFiltered.filter(asset => {
+  const searchFiltered = locationFiltered.filter(asset => {
     if (!searchTerm) return true;
     
     // Split search term into individual words
@@ -106,7 +106,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, selectedStatus, selectedGrade, searchTerm, sortConfig]);
+  }, [selectedCategory, selectedStatus, selectedLocation, searchTerm, sortConfig]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -202,46 +202,43 @@ return 'bg-slate-200 text-slate-600';
             </div>
           </div>
 
-          {/* Filter Dropdowns */}
-          <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Category Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          {/* Filters Section */}
+          <div className="mb-4">
+            <h2 className="text-sm font-semibold text-gray-700 mb-2">Filters</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {categories.map(cat => (
+                <option value="All">All Categories</option>
+                {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
-            </div>
 
-            {/* Status Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              {/* Status Filter */}
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {statuses.map(status => (
+                <option value="All">All Statuses</option>
+                {statuses.filter(s => s !== 'All').map(status => (
                   <option key={status} value={status}>{status}</option>
                 ))}
               </select>
-            </div>
 
-            {/* Grade Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+              {/* Location Filter */}
               <select
-                value={selectedGrade}
-                onChange={(e) => setSelectedGrade(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {grades.map(grade => (
-                  <option key={grade} value={grade}>{grade}</option>
+                <option value="All">All Locations</option>
+                {locations.filter(l => l !== 'All').map(location => (
+                  <option key={location} value={location}>{location}</option>
                 ))}
               </select>
             </div>
@@ -250,7 +247,7 @@ return 'bg-slate-200 text-slate-600';
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">
             Showing {startIndex + 1}-{Math.min(endIndex, sortedAssets.length)} of {sortedAssets.length} results
-            {(selectedCategory !== 'All' || selectedStatus !== 'All' || selectedGrade !== 'All') && (
+            {(selectedCategory !== 'All' || selectedStatus !== 'All' || selectedLocation !== 'All') && (
               <span className="ml-1">
                 (filtered from {assets.length} total)
               </span>
