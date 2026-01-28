@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
+import PhotoUpload from './PhotoUpload';
 
 const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const [assetIds, setAssetIds] = useState([]);
@@ -27,9 +28,37 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
     setAssetIds(assetIds.filter(i => i !== id));
   };
 
+  // Validation function to check if form is complete
+  const isFormValid = () => {
+    return (
+      assetIds.length > 0 &&
+      formData.status &&
+      formData.status.trim() !== '' &&
+      formData.location &&
+      formData.location.trim() !== '' &&
+      formData.remarks &&
+      formData.remarks.trim() !== ''
+    );
+  };
+
   const handleLoanUpdate = async () => {
     if (assetIds.length === 0) {
-      alert('No assets to update');
+      alert('Please select at least one asset');
+      return;
+    }
+
+    if (!formData.status || formData.status.trim() === '') {
+      alert('Please select a status');
+      return;
+    }
+
+    if (!formData.location || formData.location.trim() === '') {
+      alert('Please enter location and borrower information');
+      return;
+    }
+
+    if (!formData.remarks || formData.remarks.trim() === '') {
+      alert('Please enter remarks');
       return;
     }
 
@@ -39,11 +68,6 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
         updates[key] = formData[key].trim();
       }
     });
-
-    if (Object.keys(updates).length === 0) {
-      alert('No fields to update');
-      return;
-    }
 
     setLoading(true);
     try {
@@ -60,17 +84,17 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
         alert('Assets updated successfully');
       } else {
         // Editor: Submit request
-await fetch(SCRIPT_URL, {
-  method: 'POST',
-  body: JSON.stringify({
-    action: 'submitUpdateRequest',
-    ids: assetIds,
-    updates: updates,
-    requestedBy: userName,
-    isBatch: true,
-    type: 'loan'  
-  })
-});
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'submitUpdateRequest',
+            ids: assetIds,
+            updates: updates,
+            requestedBy: userName,
+            isBatch: true,
+            type: 'loan'  
+          })
+        });
         alert('Loan update request submitted for admin approval');
       }
       setAssetIds([]);
@@ -207,7 +231,7 @@ await fetch(SCRIPT_URL, {
 
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Loan Update</h2>
-          <p className="text-sm text-gray-600 mb-4">Update status, location, and remarks for selected assets</p>
+          <p className="text-sm text-gray-600 mb-4">All fields are required. Update status, location, and remarks for selected assets</p>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -221,7 +245,7 @@ await fetch(SCRIPT_URL, {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">
-                  Tidak berubah
+                  Select status (required)
                 </option>
                 {STATUSES.map(status => (
                   <option key={status} value={status}>
@@ -239,7 +263,7 @@ await fetch(SCRIPT_URL, {
                 type="text"
                 value={formData.location || ''}
                 onChange={(e) => setFormData({...formData, location: e.target.value})}
-                placeholder="Lokasi Tidak Berubah"
+                placeholder="Enter current location and borrower name (required)"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -252,18 +276,40 @@ await fetch(SCRIPT_URL, {
                 value={formData.remarks || ''}
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 rows="3"
-                placeholder="Catatan Tidak Berubah"
+                placeholder="Enter remarks or notes (required)"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Photo (Optional)
+              </label>
+              <PhotoUpload
+                currentPhotoUrl={formData.photoUrl}
+                onPhotoUrlChange={(url) => setFormData({...formData, photoUrl: url})}
+                assetId={assetIds.length > 0 ? assetIds.join(',') : 'loan-batch'}
+                SCRIPT_URL={SCRIPT_URL}
               />
             </div>
 
             <button
               onClick={handleLoanUpdate}
-              disabled={loading || assetIds.length === 0}
-              className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              disabled={loading || !isFormValid()}
+              className={`w-full py-3 rounded-lg transition ${
+                loading || !isFormValid()
+                  ? 'bg-gray-300 cursor-not-allowed'
+                  : 'bg-orange-500 hover:bg-orange-600 text-white'
+              }`}
             >
               {loading ? 'Updating...' : 'Update Loan Status'}
             </button>
+            
+            {!isFormValid() && assetIds.length > 0 && (
+              <p className="text-sm text-red-600 text-center">
+                Lengkapin mas.
+              </p>
+            )}
           </div>
         </div>
       </div>
