@@ -60,16 +60,17 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
         alert('Assets updated successfully');
       } else {
         // Editor: Submit request
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'submitUpdateRequest',
-            ids: assetIds,
-            updates: updates,
-            requestedBy: userName,
-            isBatch: true
-          })
-        });
+await fetch(SCRIPT_URL, {
+  method: 'POST',
+  body: JSON.stringify({
+    action: 'submitUpdateRequest',
+    ids: assetIds,
+    updates: updates,
+    requestedBy: userName,
+    isBatch: true,
+    type: 'loan'  
+  })
+});
         alert('Loan update request submitted for admin approval');
       }
       setAssetIds([]);
