@@ -75,6 +75,22 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const availableStatuses = getAvailableStatuses();
   const availableLocations = getAvailableLocations();
 
+  // Custom grade sorting order
+  const getGradeValue = (grade) => {
+    if (!grade) return 999; // Empty grades go to bottom
+    
+    const gradeOrder = {
+      'S+': 1, 'S': 2, 'S-': 3,
+      'A+': 4, 'A': 5, 'A-': 6,
+      'B+': 7, 'B': 8, 'B-': 9,
+      'C+': 10, 'C': 11, 'C-': 12,
+      'D+': 13, 'D': 14, 'D-': 15,
+      'E': 16
+    };
+    
+    return gradeOrder[grade.toUpperCase()] || 999;
+  };
+
   // Filter by category
   const categoryFiltered =
     selectedCategory === 'All'
@@ -167,22 +183,6 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
-  };
-
-  // Custom grade sorting order
-  const getGradeValue = (grade) => {
-    if (!grade) return 999; // Empty grades go to bottom
-    
-    const gradeOrder = {
-      'S+': 1, 'S': 2, 'S-': 3,
-      'A+': 4, 'A': 5, 'A-': 6,
-      'B+': 7, 'B': 8, 'B-': 9,
-      'C+': 10, 'C': 11, 'C-': 12,
-      'D+': 13, 'D': 14, 'D-': 15,
-      'E': 16
-    };
-    
-    return gradeOrder[grade.toUpperCase()] || 999;
   };
 
 function getGradeClasses(grade) {
