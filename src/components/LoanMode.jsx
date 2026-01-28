@@ -37,7 +37,9 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
       formData.location &&
       formData.location.trim() !== '' &&
       formData.remarks &&
-      formData.remarks.trim() !== ''
+      formData.remarks.trim() !== '' &&
+      formData.photoUrl &&
+      formData.photoUrl.trim() !== ''
     );
   };
 
@@ -59,6 +61,11 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
 
     if (!formData.remarks || formData.remarks.trim() === '') {
       alert('Please enter remarks');
+      return;
+    }
+
+    if (!formData.photoUrl || formData.photoUrl.trim() === '') {
+      alert('Please upload a photo');
       return;
     }
 
@@ -283,7 +290,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Photo (Optional)
+                Photo <span className="text-red-500">*</span>
               </label>
               <PhotoUpload
                 currentPhotoUrl={formData.photoUrl}
@@ -307,7 +314,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
             
             {!isFormValid() && assetIds.length > 0 && (
               <p className="text-sm text-red-600 text-center">
-                Lengkapin mas.
+                Please fill in all required fields before submitting
               </p>
             )}
           </div>
