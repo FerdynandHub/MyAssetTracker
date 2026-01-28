@@ -35,7 +35,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const statuses = ['All', ...new Set(assets.map(a => a.status).filter(Boolean))];
 
   // Get unique grades from assets
-  const grades = ['All', ...new Set(assets.map(a => a.grade).filter(Boolean)).sort()];
+  const grades = ['All', ...Array.from(new Set(assets.map(a => a.grade).filter(Boolean))).sort()];
 
   // Filter by category
   const categoryFiltered =
@@ -359,12 +359,11 @@ return 'bg-slate-200 text-slate-600';
                         <td className="px-4 py-3">{asset.location}</td>
                         <td className="px-4 py-3">{asset.category}</td>
                         <td className="px-4 py-3">
-                        <span
-className={`px-2 py-1 rounded-full text-xs font-semibold ${
-  asset.status === 'Available' || asset.status === 'Available (kembali)'
-    ? 'bg-green-100 text-green-800'
-    : 'bg-red-100 text-red-800'
-}
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                              asset.status === 'Available' || asset.status === 'Available (kembali)'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
                             }`}
                           >
                             {asset.status}
