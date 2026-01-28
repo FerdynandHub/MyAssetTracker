@@ -123,6 +123,21 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const sortedAssets = [...searchFiltered].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
+    // Special handling for grade sorting
+    if (sortConfig.key === 'grade') {
+      const aGradeValue = getGradeValue(a.grade);
+      const bGradeValue = getGradeValue(b.grade);
+      
+      if (aGradeValue < bGradeValue) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aGradeValue > bGradeValue) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    }
+
+    // Normal sorting for other columns
     const aVal = a[sortConfig.key] || '';
     const bVal = b[sortConfig.key] || '';
 
@@ -152,6 +167,22 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+
+  // Custom grade sorting order
+  const getGradeValue = (grade) => {
+    if (!grade) return 999; // Empty grades go to bottom
+    
+    const gradeOrder = {
+      'S+': 1, 'S': 2, 'S-': 3,
+      'A+': 4, 'A': 5, 'A-': 6,
+      'B+': 7, 'B': 8, 'B-': 9,
+      'C+': 10, 'C': 11, 'C-': 12,
+      'D+': 13, 'D': 14, 'D-': 15,
+      'E': 16
+    };
+    
+    return gradeOrder[grade.toUpperCase()] || 999;
   };
 
 function getGradeClasses(grade) {
