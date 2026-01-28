@@ -30,6 +30,30 @@ const MyRequestsMode = ({ userName, SCRIPT_URL }) => {
     fetchMyRequests();
   }, []);
 
+  const getRequestType = (request) => {
+    // Priority 1: Check explicit type field
+    if (request.type) {
+      if (request.type === 'loan') return 'Loan Update Request';
+      if (request.type === 'batch') return 'Batch Update Request';
+      return 'Single Update Request';
+    }
+    
+    // Priority 2: Check updates for loan-specific status
+    if (request.updates && request.updates.status) {
+      const status = String(request.updates.status).toLowerCase();
+      if (status.includes('kembali') || status.includes('pinjam')) {
+        return 'Loan Update Request';
+      }
+    }
+    
+    // Priority 3: Check if batch based on IDs
+    if (request.ids && request.ids.length > 1) {
+      return 'Batch Update Request';
+    }
+    
+    return 'Single Update Request';
+  };
+
   const getStatusBadge = (status) => {
     const badges = {
       pending: 'bg-yellow-100 text-yellow-800',
@@ -77,7 +101,7 @@ const MyRequestsMode = ({ userName, SCRIPT_URL }) => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">
-                      {request.type === 'batch' ? 'Batch Update Request' : 'Single Update Request'}
+                      {getRequestType(request)}
                     </h3>
                     <p className="text-sm text-gray-600">Request ID: {request.requestId}</p>
                     <p className="text-sm text-gray-600">
