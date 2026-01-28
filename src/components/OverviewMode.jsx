@@ -37,6 +37,44 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   // Get unique locations from assets
   const locations = ['All', ...Array.from(new Set(assets.map(a => a.location).filter(Boolean))).sort()];
 
+  // Get available options based on current filters
+  const getAvailableCategories = () => {
+    let filtered = assets;
+    if (selectedStatus !== 'All') {
+      filtered = filtered.filter(a => a.status === selectedStatus);
+    }
+    if (selectedLocation !== 'All') {
+      filtered = filtered.filter(a => a.location === selectedLocation);
+    }
+    return new Set(filtered.map(a => a.category).filter(Boolean));
+  };
+
+  const getAvailableStatuses = () => {
+    let filtered = assets;
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(a => a.category === selectedCategory);
+    }
+    if (selectedLocation !== 'All') {
+      filtered = filtered.filter(a => a.location === selectedLocation);
+    }
+    return new Set(filtered.map(a => a.status).filter(Boolean));
+  };
+
+  const getAvailableLocations = () => {
+    let filtered = assets;
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(a => a.category === selectedCategory);
+    }
+    if (selectedStatus !== 'All') {
+      filtered = filtered.filter(a => a.status === selectedStatus);
+    }
+    return new Set(filtered.map(a => a.location).filter(Boolean));
+  };
+
+  const availableCategories = getAvailableCategories();
+  const availableStatuses = getAvailableStatuses();
+  const availableLocations = getAvailableLocations();
+
   // Filter by category
   const categoryFiltered =
     selectedCategory === 'All'
@@ -214,7 +252,14 @@ return 'bg-slate-200 text-slate-600';
               >
                 <option value="All">All Categories</option>
                 {CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option 
+                    key={cat} 
+                    value={cat}
+                    disabled={!availableCategories.has(cat)}
+                    style={!availableCategories.has(cat) ? { color: '#ccc' } : {}}
+                  >
+                    {cat}
+                  </option>
                 ))}
               </select>
 
@@ -226,7 +271,14 @@ return 'bg-slate-200 text-slate-600';
               >
                 <option value="All">All Statuses</option>
                 {statuses.filter(s => s !== 'All').map(status => (
-                  <option key={status} value={status}>{status}</option>
+                  <option 
+                    key={status} 
+                    value={status}
+                    disabled={!availableStatuses.has(status)}
+                    style={!availableStatuses.has(status) ? { color: '#ccc' } : {}}
+                  >
+                    {status}
+                  </option>
                 ))}
               </select>
 
@@ -238,7 +290,14 @@ return 'bg-slate-200 text-slate-600';
               >
                 <option value="All">All Locations</option>
                 {locations.filter(l => l !== 'All').map(location => (
-                  <option key={location} value={location}>{location}</option>
+                  <option 
+                    key={location} 
+                    value={location}
+                    disabled={!availableLocations.has(location)}
+                    style={!availableLocations.has(location) ? { color: '#ccc' } : {}}
+                  >
+                    {location}
+                  </option>
                 ))}
               </select>
             </div>
