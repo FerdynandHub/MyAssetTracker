@@ -48,6 +48,20 @@
   </p>
 </div>
 
+<div
+  onClick={() => setUpdateMode('loan')}
+  className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-8 cursor-pointer transform hover:scale-105 transition text-white"
+>
+  <Boxes className="w-12 h-12 mx-auto mb-4" />
+  <h2 className="text-2xl font-bold mb-2 text-center">Peminjaman/Pengembalian</h2>
+
+  <p className="text-center opacity-90">
+    {userRole === ROLES.ADMIN
+      ? 'Ajukan peminjaman/pengembalian untuk aset. Pastikan semua ID sudah benar (case-sensitive)'
+      : 'Ajukan peminjaman/Pengembalian untuk aset. Pastikan semua ID sudah benar (case-sensitive)'}
+  </p>
+</div>
+
             </div>
             </div>
         </div>
@@ -71,6 +85,20 @@
     if (updateMode === 'batch') {
         return (
         <BatchUpdateMode
+            onBack={() => setUpdateMode(null)}
+            userRole={userRole}
+            userName={userName}
+            ROLES={ROLES}
+            SCRIPT_URL={SCRIPT_URL}
+            CATEGORIES={CATEGORIES}
+            GRADES={GRADES}
+        />
+        );
+    }
+
+        if (updateMode === 'loan') {
+        return (
+        <SingleUpdateMode
             onBack={() => setUpdateMode(null)}
             userRole={userRole}
             userName={userName}
