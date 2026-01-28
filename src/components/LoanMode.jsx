@@ -290,7 +290,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Photo <span className="text-red-500">*</span>
+                Wajib Foto <span className="text-red-500">*</span>
               </label>
               <PhotoUpload
                 currentPhotoUrl={formData.photoUrl}
