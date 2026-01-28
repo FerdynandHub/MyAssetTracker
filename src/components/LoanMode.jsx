@@ -13,8 +13,8 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const streamRef = useRef(null);
 
   const STATUSES = [
-    'Available (kembali)',
-    'Loaned (pinjam)',
+    'Available',
+    'Loaned',
   ];
 
   const addId = () => {
