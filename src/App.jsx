@@ -311,7 +311,7 @@ const renderMode = () => {
       return <ApprovalsMode userName={userName} />;
     case 'myRequests':
       return <MyRequestsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
-    case 'loan':  // ADD THIS CASE
+    case 'loan':  
       return (
         <LoanMode
           userName={userName}
@@ -725,28 +725,28 @@ const ApprovalsMode = ({ onBack, userName }) => {
     fetchRequests();
   }, []);
 
-    const handleApprove = async (requestId) => {
-      if (!confirm('Are you sure you want to approve this request?')) return;
+  const handleApprove = async (requestId) => {
+    if (!confirm('Are you sure you want to approve this request?')) return;
 
-      // Find the request to get the requester's name
-      const request = requests.find(r => r.requestId === requestId);
+    // Find the request to get the requester's name
+    const request = requests.find(r => r.requestId === requestId);
 
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'approveRequest',
-            requestId: requestId,
-            approvedBy: request.requestedBy  // Use requester instead of approver
-          })
-        });
-        alert('Request approved successfully');
-        fetchRequests();
-      } catch (error) {
-        console.error('Error approving request:', error);
-        alert('Error approving request');
-      }
-    };
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'approveRequest',
+          requestId: requestId,
+          approvedBy: request.requestedBy  // Use requester instead of approver
+        })
+      });
+      alert('Request approved successfully');
+      fetchRequests();
+    } catch (error) {
+      console.error('Error approving request:', error);
+      alert('Error approving request');
+    }
+  };
 
   const handleReject = async (requestId) => {
     if (!confirm('Are you sure you want to reject this request?')) return;
@@ -766,6 +766,30 @@ const ApprovalsMode = ({ onBack, userName }) => {
       alert('Error rejecting request');
     }
   };
+
+const getRequestType = (request) => {
+  // Priority 1: Check explicit type field
+  if (request.type) {
+    if (request.type === 'loan') return 'Loan Update Request';
+    if (request.type === 'batch') return 'Batch Update Request';
+    return 'Single Update Request';
+  }
+  
+  // Priority 2: Check updates for loan-specific status
+  if (request.updates && request.updates.status) {
+    const status = String(request.updates.status).toLowerCase();
+    if (status.includes('kembali') || status.includes('pinjam')) {
+      return 'Loan Update Request';
+    }
+  }
+  
+  // Priority 3: Check if batch based on IDs
+  if (request.ids && request.ids.length > 1) {
+    return 'Batch Update Request';
+  }
+  
+  return 'Single Update Request';
+};
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -801,7 +825,7 @@ const ApprovalsMode = ({ onBack, userName }) => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">
-                      {request.type === 'batch' ? 'Batch Update Request' : 'Single Update Request'}
+                      {getRequestType(request)}
                     </h3>
                     <p className="text-sm text-gray-600">Request ID: {request.requestId}</p>
                     <p className="text-sm text-gray-600">Requested by: {request.requestedBy}</p>
@@ -853,5 +877,4 @@ const ApprovalsMode = ({ onBack, userName }) => {
     </div>
   );
 };
-
 export default App;
