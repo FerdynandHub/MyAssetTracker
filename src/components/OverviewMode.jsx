@@ -6,6 +6,8 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedGrade, setSelectedGrade] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,14 +31,32 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
 
   const categories = ['All', ...CATEGORIES];
 
+  // Get unique statuses from assets
+  const statuses = ['All', ...new Set(assets.map(a => a.status).filter(Boolean))];
+
+  // Get unique grades from assets
+  const grades = ['All', ...new Set(assets.map(a => a.grade).filter(Boolean)).sort()];
+
   // Filter by category
   const categoryFiltered =
     selectedCategory === 'All'
       ? assets
       : assets.filter(a => a.category === selectedCategory);
 
+  // Filter by status
+  const statusFiltered =
+    selectedStatus === 'All'
+      ? categoryFiltered
+      : categoryFiltered.filter(a => a.status === selectedStatus);
+
+  // Filter by grade
+  const gradeFiltered =
+    selectedGrade === 'All'
+      ? statusFiltered
+      : statusFiltered.filter(a => a.grade === selectedGrade);
+
   // Filter by search term
-  const searchFiltered = categoryFiltered.filter(asset => {
+  const searchFiltered = gradeFiltered.filter(asset => {
     if (!searchTerm) return true;
     
     // Split search term into individual words
@@ -86,7 +106,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, searchTerm, sortConfig]);
+  }, [selectedCategory, selectedStatus, selectedGrade, searchTerm, sortConfig]);
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -182,12 +202,15 @@ return 'bg-slate-200 text-slate-600';
             </div>
           </div>
 
-          {/* Category Filter */}
-            <div className="mb-4">
+          {/* Filter Dropdowns */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Category Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {categories.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -195,11 +218,43 @@ return 'bg-slate-200 text-slate-600';
               </select>
             </div>
 
+            {/* Status Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {statuses.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Grade Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+              <select
+                value={selectedGrade}
+                onChange={(e) => setSelectedGrade(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {grades.map(grade => (
+                  <option key={grade} value={grade}>{grade}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-2">
             Showing {startIndex + 1}-{Math.min(endIndex, sortedAssets.length)} of {sortedAssets.length} results
-            {selectedCategory !== 'All' && ` in ${selectedCategory}`}
-            {categoryFiltered.length !== sortedAssets.length && ` (filtered from ${categoryFiltered.length})`}
+            {(selectedCategory !== 'All' || selectedStatus !== 'All' || selectedGrade !== 'All') && (
+              <span className="ml-1">
+                (filtered from {assets.length} total)
+              </span>
+            )}
           </div>
         </div>
 
