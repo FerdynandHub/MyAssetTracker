@@ -284,7 +284,7 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! `
     roleRequired: ['editor'],
     keywords: [
       // Formal
-      'pengajuan saya', 'my request', 'status request', 'request saya', 'ajuan saya',
+      'pengajuan saya', 'my request', 'status request', 'request saya', 'ajuan saya', 'pengajuan',
       // Casual
       'pengajuan gue', 'request gue', 'ajuan gue', 'status ajuan',
       'cek pengajuan', 'liat pengajuan', 'cek request', 'liat request',

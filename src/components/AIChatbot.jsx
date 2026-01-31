@@ -369,8 +369,8 @@ const getResponse = (userInput) => {
               <div>
                 <h3 className="font-bold text-base sm:text-lg">AIMing</h3>
                 <p className="text-[10px] sm:text-xs text-white/80 flex items-center gap-1">
-                  <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                  AI Assistant
+                  <Zap className="w-2.5 h-2.5 sm:w-2 sm:h-2" />
+                  Jgn dimarahin klo salah AI-nya bang🙏
                 </p>
               </div>
             </div>
