@@ -387,10 +387,11 @@ const getResponse = (userInput) => {
     { label: '🔋 Baterai', query: 'Bagaimana cara checkout baterai?' },
     { label: '📥 Download', query: 'Bagaimana cara download data?' },
     { label: '📦 Pinjam barang', query: 'Gimana cara pinjam barang?' },
-    { label: '📜 Riwayat', query: 'Gimana cara lihat history?' },
+    { label: '📜 Riwayat', query: 'History' },
     { label: '📊 Status sistem', query: 'Status sistem' },
     { label: '👤 Role saya', query: 'Role saya' },
-    { label: '🎯 Help', query: 'Help' }
+    { label: '👤 Pengajuan saya', query: 'Pengajuan saya' },
+    { label: '❓ Help', query: 'Help' }
   ];
 
   return (
