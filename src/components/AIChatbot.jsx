@@ -456,26 +456,24 @@ const getResponse = (userInput) => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions */}
-          {messages.length <= 2 && (
-            <div className="hidden sm:block px-4 py-2 border-t bg-white">
-              <p className="text-xs text-gray-500 mb-2">Quick actions:</p>
-              <div className="flex flex-wrap gap-2">
-                {quickActions.map((action, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setInput(action.query);
-                      setTimeout(() => handleSendMessage(), 100);
-                    }}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition"
-                  >
-                    {action.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+{/* Quick Actions */}
+<div className="hidden sm:block px-4 py-2 border-t bg-white">
+  <p className="text-xs text-gray-500 mb-2">Quick actions:</p>
+  <div className="flex flex-wrap gap-2">
+    {quickActions.map((action, idx) => (
+      <button
+        key={idx}
+        onClick={() => {
+          setInput(action.query);
+          setTimeout(() => handleSendMessage(), 100);
+        }}
+        className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition"
+      >
+        {action.label}
+      </button>
+    ))}
+  </div>
+</div>
 
           {/* Input */}
           <div className="p-3 sm:p-4 border-t bg-white">
