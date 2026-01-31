@@ -399,12 +399,12 @@ const getResponse = (userInput) => {
 {!isOpen && (
   <button
     onClick={() => setIsOpen(true)}
-    className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-7 sm:p-6 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
+    className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-5 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
     style={{
       animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
     }}
   >
-    <Headset className="w-7 h-7 sm:w-6 sm:h-6" />
+    <Headset className="w-8 h-8 sm:w-6 sm:h-6" />
     <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
   </button>
 )}
