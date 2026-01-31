@@ -218,11 +218,13 @@ const getResponse = (userInput) => {
 
   // ====== 6B. SYSTEM STATUS - FULL INFO ======
   // More natural ways to ask about stats
-  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem)\b/i) ||
-      input.match(/^(status|stats)[\s!.]*$/i) ||
-      input.match(/\b(berapa\s+(total|jumlah|banyak)\s+(aset|barang|data)|total\s+(aset|data))\b/i) ||
-      input.match(/\b(ada\s+berapa\s+(aset|barang|data)|jumlah\s+(aset|data))\b/i) ||
-      input.match(/\b(aset|barang|data)\s+(berapa|ada\s+berapa)\b/i)) {
+if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem|info\s+portal|kondisi\s+sistem|kondisi\s+portal|dashboard|overview|ringkasan)\b/i) ||
+    input.match(/^(status|stats|stat|info|dashboard|overview)[\s!.]*$/i) ||
+    input.match(/\b(berapa\s+(total|jumlah|banyak)\s+(aset|barang|data)|total\s+(aset|barang|data)|jumlah\s+(aset|barang|data)|banyak\s+(aset|barang|data))\b/i) ||
+    input.match(/\b(ada\s+berapa\s+(aset|barang|data)|jumlah\s+(aset|barang|data)|totalnya\s+berapa|banyaknya\s+berapa)\b/i) ||
+    input.match(/\b(aset|barang|data)\s+(berapa|ada\s+berapa|banyak)\b/i) ||
+    input.match(/\b(asetnya\s+berapa|barangnya\s+berapa|datanya\s+berapa|total\s+berapa|berapa\s+data)\b/i)) {
+
     
     let statusMsg = `Status Sistem Portal AVM:\n\n`;
     
