@@ -385,11 +385,11 @@ const getResponse = (userInput) => {
     { label: '🔍 Cek data', query: 'Bagaimana cara cek data aset?' },
     { label: '✏️ Update data', query: 'Bagaimana cara update data aset?' },
     { label: '🔋 Baterai', query: 'Bagaimana cara checkout baterai?' },
-    { label: '📥 Export', query: 'Bagaimana cara download data?' },
+    { label: '📥 Download', query: 'Bagaimana cara download data?' },
     { label: '📦 Pinjam barang', query: 'Gimana cara pinjam barang?' },
     { label: '📜 Riwayat', query: 'Gimana cara lihat history?' },
     { label: '📊 Status sistem', query: 'Status sistem' },
-    { label: '👤 Role saya', query: 'Role' },
+    { label: '👤 Role saya', query: 'Role saya' },
     { label: '🎯 Help', query: 'Help' }
   ];
 
@@ -399,7 +399,7 @@ const getResponse = (userInput) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-4 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
+          className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-10 sm:p-10 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
           style={{
             animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
           }}
