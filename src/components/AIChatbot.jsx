@@ -52,13 +52,29 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
+
+      // Add viewport meta tag to prevent iOS zoom on input focus
+      let viewport = document.querySelector("meta[name=viewport]");
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
     } else {
       // Restore background scrolling
       document.body.style.overflow = 'unset';
+      
+      // Restore original viewport settings
+      let viewport = document.querySelector("meta[name=viewport]");
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+      }
     }
 
     return () => {
       document.body.style.overflow = 'unset';
+      let viewport = document.querySelector("meta[name=viewport]");
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+      }
     };
   }, [isOpen]);
 
@@ -346,9 +362,14 @@ const getResponse = (userInput) => {
       
       setIsLoading(false);
       
-      // NEW: Refocus input after sending message
+      // NEW: Refocus input after sending message and ensure chat container has focus
       setTimeout(() => {
         inputRef.current?.focus();
+        // Scroll to bottom of chat container, not page
+        chatContainerRef.current?.scrollTo({
+          top: chatContainerRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
       }, 100);
     }, 500);
   };
@@ -363,8 +384,13 @@ const getResponse = (userInput) => {
   const quickActions = [
     { label: '🔍 Cek data', query: 'Bagaimana cara cek data aset?' },
     { label: '✏️ Update data', query: 'Bagaimana cara update data aset?' },
+    { label: '🔋 Baterai', query: 'Bagaimana cara checkout baterai?' },
+    { label: '📥 Export', query: 'Bagaimana cara download data?' },
+    { label: '📦 Pinjam barang', query: 'Gimana cara pinjam barang?' },
+    { label: '📜 Riwayat', query: 'Gimana cara lihat history?' },
     { label: '📊 Status sistem', query: 'Status sistem' },
-    { label: '🎯 Fitur tersedia', query: 'Help' }
+    { label: '👤 Role saya', query: 'Role' },
+    { label: '🎯 Help', query: 'Help' }
   ];
 
   return (
@@ -373,12 +399,12 @@ const getResponse = (userInput) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-3 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
+          className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-4 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
           style={{
             animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
           }}
         >
-          <Headset className="w-5 h-5 sm:w-6 sm:h-6" />
+          <Headset className="w-6 h-6 sm:w-6 sm:h-6" />
           <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
         </button>
       )}
@@ -518,8 +544,9 @@ const getResponse = (userInput) => {
                 onKeyPress={handleKeyPress}
                 placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
                 autoComplete="off" // NEW: Prevent autocomplete suggestions
+                style={{ fontSize: '16px' }} // CRITICAL: Prevents iOS zoom on input focus
               />
               <button
                 onClick={handleSendMessage}
