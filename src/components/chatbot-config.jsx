@@ -498,6 +498,62 @@ export const CONTEXTUAL_RESPONSES = {
 
 Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
 
+genZ: {
+  exact: {
+    'anjir': 'anjir',
+    'njir': 'njir',
+    'bjir': 'bjir',
+    'jir': 'jir',
+
+    'ok gas': 'ok gas ok gas',
+    'gas': 'gaskeun',
+    'yaudah gas': 'nah gitu dong',
+    'gass': 'GASS',
+    'gasss': 'GASSS 🔥',
+    'gaspol': 'GASPOL 🚀',
+
+    'sip': 'y',
+    'mantap': 'mantul',
+    'keren': 'ok sekarang belikan saya babi rica',
+    'cakep': 'valid 🔥',
+    'setuju': 'valid',
+    'setuju banget': 'valid no debat',
+
+    'santai': 'santuy',
+    'serius': 'fr fr',
+    'bener': 'real',
+    'bener banget': 'real no fake',
+
+    'capek': 'capeeek',
+    'lelah': 'mental drop',
+    'pusing': 'otw migrain',
+
+    'lucu': 'ngakak',
+    'wkwk':'wkwk',
+    'ketawa': 'WKWKWK',
+    'parah': 'ngaco sih',
+    'parah banget': 'kelewatan sih',
+
+    'malas': 'mager',
+    'males banget': 'mager akut',
+
+    'oke': 'okey',
+    'iya': 'iy',
+    'tidak': 'ga dulu',
+    'nanti': 'ntar aja',
+
+    'bohong': 'cap',
+    'bohong ah': 'cap lu',
+    'lebay': 'overproud',
+
+    'gg': 'GG',
+    'kalah': 'mental kena',
+    'menang': 'auto senyum'
+  }
+},
+
+
+
   // Encouragement
   encouragement: [
     "Ayo coba! Ga susah kok 😊",

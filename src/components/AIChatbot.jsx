@@ -166,7 +166,14 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
 
   // Main response generator
   const getResponse = (userInput) => {
-    const input = userInput.toLowerCase();
+  const msg = userInput.toLowerCase().trim();
+
+       //ya
+    if (GENERAL_RESPONSES.genZ?.exact[msg]) {
+    return GENERAL_RESPONSES.genZ.exact[msg];
+  }
+
+    const input = msg;
 
     // Greetings
     if (input.match(/^(hai|halo|hi|hello|hey|pagi|siang|sore|malam)/)) {
