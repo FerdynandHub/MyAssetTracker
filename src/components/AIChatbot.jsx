@@ -427,7 +427,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
                       : 'bg-white text-gray-800 rounded-2xl rounded-tl-none shadow-sm border border-gray-100'
                   } p-2.5 sm:p-3`}
                 >
-                  <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+                  <p className="text-xs sm:text-base whitespace-pre-wrap leading-relaxed">
                     {message.content}
                   </p>
                   <p
@@ -489,7 +489,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
                 onKeyPress={handleKeyPress}
                 placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
               />
               <button
                 onClick={handleSendMessage}
