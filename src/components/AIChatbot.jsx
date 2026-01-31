@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2, Bot, User, RefreshCw, Zap } from 'lucide-react';
+import { CHATBOT_CONFIG, GENERAL_RESPONSES } from './chatbot-config';
 
 const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Halo ${userName}! 👋 Saya AIming asisten Portal AVM. Saya akan membantu memandu Anda menggunakan sistem ini.\n\nApa yang ingin Anda lakukan hari ini?`,
+      content: GENERAL_RESPONSES.greeting(userName),
       timestamp: new Date()
     }
   ]);
@@ -22,8 +23,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     pendingRequests: 0,
     myRequests: 0,
     categories: CATEGORIES,
-    lastSync: null,
-    features: []
+    lastSync: null
   });
 
   const scrollToBottom = () => {
@@ -40,84 +40,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
       fetchSystemState();
     }
   }, [isOpen]);
-
-  // Auto-detect available features based on role
-  const detectFeatures = () => {
-    const features = [];
-    
-    // Base features (all roles)
-    features.push({
-      name: 'Daftar Data',
-      id: 'overview',
-      description: 'Lihat semua aset dengan filter kategori',
-      available: true
-    });
-    
-    features.push({
-      name: 'Cek Data',
-      id: 'check',
-      description: 'Cari aset spesifik dengan ID atau scan barcode',
-      available: true
-    });
-    
-    features.push({
-      name: 'Unduh Data',
-      id: 'export',
-      description: 'Export aset ke CSV dengan scan multiple barcode',
-      available: true
-    });
-    
-    features.push({
-      name: 'Riwayat Data',
-      id: 'history',
-      description: 'Lihat history perubahan aset',
-      available: true
-    });
-
-    // Role-based features
-    if (userRole !== ROLES.VIEWER) {
-      features.push({
-        name: 'Baterai',
-        id: 'battery',
-        description: 'Checkout baterai AA/9V untuk event',
-        available: true
-      });
-
-      features.push({
-        name: userRole === ROLES.ADMIN ? 'Perbarui Data' : 'Ajukan Ubah Data',
-        id: 'update',
-        description: userRole === ROLES.ADMIN ? 'Update data langsung' : 'Ajukan perubahan (perlu approval)',
-        available: true
-      });
-
-      features.push({
-        name: 'Pinjam Barang',
-        id: 'loan',
-        description: 'Update status peminjaman/pengembalian',
-        available: true
-      });
-    }
-
-    if (userRole === ROLES.EDITOR) {
-      features.push({
-        name: 'Pengajuan Saya',
-        id: 'myRequests',
-        description: 'Lihat status request update yang diajukan',
-        available: true
-      });
-    }
-
-    if (userRole === ROLES.ADMIN) {
-      features.push({
-        name: 'Persetujuan Pending',
-        id: 'approvals',
-        description: 'Approve/reject request dari editor',
-        available: true
-      });
-    }
-
-    return features;
-  };
 
   const fetchSystemState = async () => {
     try {
@@ -168,7 +90,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
       }
 
       newState.lastSync = new Date();
-      newState.features = detectFeatures();
       newState.categories = CATEGORIES;
 
       setSystemState(newState);
@@ -177,17 +98,97 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     }
   };
 
-  // Generate contextual response based on live data
+  // Get features available to current user
+  const getAvailableFeatures = () => {
+    return Object.entries(CHATBOT_CONFIG)
+      .filter(([_, feature]) => feature.roleRequired.includes(userRole))
+      .map(([key, feature]) => ({ id: key, ...feature }));
+  };
+
+  // Find matching feature based on keywords
+  const findFeatureByKeywords = (input) => {
+    const lowerInput = input.toLowerCase();
+    
+    for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
+      // Check if user has access to this feature
+      if (!feature.roleRequired.includes(userRole)) continue;
+      
+      // Check if any keyword matches
+      const hasMatch = feature.keywords.some(keyword => 
+        lowerInput.includes(keyword.toLowerCase())
+      );
+      
+      if (hasMatch) {
+        return { id: key, ...feature };
+      }
+    }
+    
+    return null;
+  };
+
+  // Generate response from config
+  const getFeatureResponse = (feature) => {
+    let response = '';
+    
+    // Get role-specific instructions if available
+    if (typeof feature.instructions === 'object') {
+      response = feature.instructions[userRole] || feature.instructions.editor || feature.instructions.admin;
+    } else {
+      response = feature.instructions;
+    }
+    
+    // Add live data if enabled
+    if (feature.showLiveData && feature.id === 'battery') {
+      response += `\n\nStok saat ini:\n`;
+      response += `• AA: ${systemState.batteryInventory.AA} pcs\n`;
+      response += `• 9V: ${systemState.batteryInventory['9V']} pcs`;
+    }
+    
+    if (feature.showLiveData && feature.id === 'approvals' && userRole === ROLES.ADMIN) {
+      response += `\n\n📊 Pending saat ini: ${systemState.pendingRequests} request`;
+      response += `\n\n${systemState.pendingRequests > 0 ? 'Ada request yang perlu direview!' : 'Tidak ada request pending.'}`;
+    }
+    
+    if (feature.showLiveData && feature.id === 'myRequests' && userRole === ROLES.EDITOR) {
+      response += `\n\n📊 Total pengajuan Anda: ${systemState.myRequests}`;
+    }
+    
+    if (feature.showLiveData && feature.id === 'update') {
+      if (userRole === ROLES.EDITOR && systemState.myRequests !== undefined) {
+        response += `\n\n📋 Anda punya ${systemState.myRequests} pengajuan. Cek di menu "Pengajuan Saya"`;
+      } else if (userRole === ROLES.ADMIN && systemState.pendingRequests > 0) {
+        response += `\n\n⚠️ Ada ${systemState.pendingRequests} request menunggu approval!`;
+      }
+    }
+    
+    return response;
+  };
+
+  // Main response generator
   const getResponse = (userInput) => {
     const input = userInput.toLowerCase();
-    const features = systemState.features;
 
     // Greetings
     if (input.match(/^(hai|halo|hi|hello|hey|pagi|siang|sore|malam)/)) {
-      return `Halo ${userName}! 😊 Saya di sini untuk membantu Anda menggunakan Portal AVM.\n\nBeberapa hal yang bisa saya bantu:\n• Cara cek data aset\n• Cara update data\n• Cara checkout baterai\n• Cara export data\n• Dan lainnya!\n\nAda yang bisa saya bantu?`;
+      return GENERAL_RESPONSES.greeting(userName);
     }
 
-    // System status / stats
+    // Thanks
+    if (input.match(/(terima kasih|thanks|thank you|makasih|thx)/i)) {
+      return GENERAL_RESPONSES.thanks(userName);
+    }
+
+    // Help
+    if (input.match(/^(help|bantuan|tolong|\?)$/i)) {
+      return GENERAL_RESPONSES.help;
+    }
+
+    // Role info
+    if (input.match(/(role|akses|permission|hak|bisa|tidak bisa)/i)) {
+      return GENERAL_RESPONSES.roleInfo[userRole];
+    }
+
+    // System status
     if (input.match(/(status|statistik|stats|berapa|jumlah|total)/i)) {
       let statusMsg = `Status Sistem Portal AVM:\n\n`;
       
@@ -218,11 +219,12 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
       return statusMsg;
     }
 
-    // List features / apa yang bisa dilakukan
+    // List all features
     if (input.match(/(fitur|feature|bisa apa|apa aja|menu|fungsi)/i)) {
+      const availableFeatures = getAvailableFeatures();
       let featuresMsg = `Fitur yang tersedia untuk Anda:\n\n`;
       
-      features.forEach((feature, idx) => {
+      availableFeatures.forEach((feature, idx) => {
         featuresMsg += `${idx + 1}. ${feature.name}\n   ${feature.description}\n\n`;
       });
       
@@ -231,220 +233,20 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
       return featuresMsg;
     }
 
-    // Battery with live inventory
-    if (input.match(/(baterai|battery|batre|aa|9v|checkout)/i)) {
-      if (userRole === ROLES.VIEWER) {
-        return `Maaf ${userName}, fitur Baterai tidak tersedia untuk role Viewer. 🔋\n\nHubungi admin untuk upgrade role!`;
-      }
-
-      let batteryMsg = `Untuk checkout baterai:\n\n`;
-      batteryMsg += `1. Buka menu "Baterai" di sidebar\n`;
-      batteryMsg += `2. Pilih jenis baterai:\n`;
-      batteryMsg += `   • AA (baterai kecil)\n`;
-      batteryMsg += `   • 9V (baterai kotak)\n`;
-      batteryMsg += `3. Isi form:\n`;
-      batteryMsg += `   • Nama Anda: ${userName}\n`;
-      batteryMsg += `   • Jumlah: (berapa pcs?)\n`;
-      batteryMsg += `   • Nama Event: (untuk acara apa?)\n`;
-      batteryMsg += `   • Lokasi: (di mana?)\n`;
-      batteryMsg += `4. Checkout 🔋\n\n`;
-      
-      // Show current inventory
-      if (systemState.batteryInventory) {
-        batteryMsg += `Stok saat ini:\n`;
-        batteryMsg += `• AA: ${systemState.batteryInventory.AA} pcs\n`;
-        batteryMsg += `• 9V: ${systemState.batteryInventory['9V']} pcs\n\n`;
-      }
-      
-      batteryMsg += `Sistem otomatis kurangi inventory!`;
-      
-      return batteryMsg;
-    }
-
-    // Check data with stats
-    if (input.match(/(cek|check|lihat|search|cari).*(data|aset|barang|item)/i) || 
-        input.match(/(cara|bagaimana).*(cek|search|cari)/i)) {
-      let checkMsg = `Untuk cek data aset, ada 2 cara:\n\n`;
-      checkMsg += `1. Lewat Daftar Data:\n`;
-      checkMsg += `• Buka menu "Daftar Data" di sidebar\n`;
-      checkMsg += `• Gunakan filter kategori untuk mempersempit pencarian\n`;
-      checkMsg += `• Klik pada aset untuk detail\n\n`;
-      checkMsg += `2. Lewat Cek Data (Lebih Cepat):\n`;
-      checkMsg += `• Buka menu "Cek Data"\n`;
-      checkMsg += `• Masukkan ID aset atau scan barcode\n`;
-      checkMsg += `• Detail langsung muncul!\n\n`;
-      
-      if (systemState.totalAssets > 0) {
-        checkMsg += `📦 Total aset di sistem: ${systemState.totalAssets}\n\n`;
-      }
-      
-      checkMsg += `Mau coba yang mana? 🔍`;
-      
-      return checkMsg;
-    }
-
-    // Update data with pending info
-    if (input.match(/(update|ubah|edit|ganti|perbarui).*(data|aset|proyektor|barang)/i) ||
-        input.match(/(cara|bagaimana).*(update|ubah)/i)) {
-      if (userRole === ROLES.VIEWER) {
-        return `Maaf ${userName}, dengan role Viewer Anda tidak dapat update data. 😔\n\nRole Viewer hanya bisa:\n• Lihat data\n• Cek informasi\n• Export data\n• Lihat riwayat\n\nSilakan hubungi admin untuk upgrade role jika perlu akses update!`;
-      }
-
-      if (userRole === ROLES.EDITOR) {
-        let editorMsg = `Untuk mengajukan update data (Editor):\n\n`;
-        editorMsg += `1. Buka menu "Ajukan Ubah Data" di sidebar\n`;
-        editorMsg += `2. Pilih mode:\n`;
-        editorMsg += `   • Single Update (1 aset)\n`;
-        editorMsg += `   • Batch Update (banyak aset)\n`;
-        editorMsg += `3. Masukkan ID aset\n`;
-        editorMsg += `   • Ketik manual, atau\n`;
-        editorMsg += `   • Scan barcode\n`;
-        editorMsg += `4. Isi data yang ingin diubah\n`;
-        editorMsg += `5. Submit → Menunggu approval admin\n\n`;
-        
-        if (systemState.myRequests !== undefined) {
-          editorMsg += `📋 Anda punya ${systemState.myRequests} pengajuan. Cek di menu "Pengajuan Saya"\n\n`;
-        }
-        
-        editorMsg += `Sudah siap ID asetnya?`;
-        
-        return editorMsg;
-      }
-
-      if (userRole === ROLES.ADMIN) {
-        let adminMsg = `Untuk update data (Admin - langsung approve):\n\n`;
-        adminMsg += `1. Buka menu "Perbarui Data" di sidebar\n`;
-        adminMsg += `2. Pilih mode:\n`;
-        adminMsg += `   • Single Update (1 aset)\n`;
-        adminMsg += `   • Batch Update (banyak aset sekaligus)\n`;
-        adminMsg += `3. Masukkan ID aset\n`;
-        adminMsg += `   • Ketik manual, atau\n`;
-        adminMsg += `   • Scan barcode 📷\n`;
-        adminMsg += `4. Isi data yang ingin diubah:\n`;
-        adminMsg += `   • Category, Status, Location, dll\n`;
-        adminMsg += `5. Update! ✅ (langsung tersimpan)\n\n`;
-        
-        if (systemState.pendingRequests > 0) {
-          adminMsg += `⚠️ Ada ${systemState.pendingRequests} request menunggu approval!\n\n`;
-        }
-        
-        adminMsg += `💡 Tip: Gunakan Batch Update untuk efisiensi!\n\nAda yang mau diupdate?`;
-        
-        return adminMsg;
-      }
-    }
-
-    // Approvals with live count
-    if (input.match(/(approval|approve|persetujuan|pending|request)/i)) {
-      if (userRole !== ROLES.ADMIN) {
-        return `Fitur approval hanya untuk Admin. 🔒\n\n${userRole === ROLES.EDITOR ? 'Anda bisa cek status pengajuan di menu "Pengajuan Saya"!' : 'Role Viewer tidak bisa mengajukan update.'}`;
-      }
-
-      let approvalMsg = `Untuk kelola approval (Admin):\n\n`;
-      approvalMsg += `1. Buka menu "Persetujuan Pending"\n`;
-      approvalMsg += `2. Lihat semua request dari Editor\n`;
-      approvalMsg += `   • Detail perubahan\n`;
-      approvalMsg += `   • Siapa yang mengajukan\n`;
-      approvalMsg += `3. Review dan putuskan:\n`;
-      approvalMsg += `   • ✅ Approve → Data langsung terupdate\n`;
-      approvalMsg += `   • ❌ Reject → Request ditolak\n\n`;
-      
-      if (systemState.pendingRequests !== undefined) {
-        approvalMsg += `📊 Pending saat ini: ${systemState.pendingRequests} request\n\n`;
-      }
-      
-      approvalMsg += `📋 Best practice:\n`;
-      approvalMsg += `• Review dengan teliti\n`;
-      approvalMsg += `• Pastikan data valid\n`;
-      approvalMsg += `• Beri feedback jika reject\n\n`;
-      approvalMsg += `${systemState.pendingRequests > 0 ? 'Ada request yang perlu direview!' : 'Tidak ada request pending.'}`;
-      
-      return approvalMsg;
-    }
-
-    // Export data
-    if (input.match(/(export|unduh|download|csv).*(data)/i) ||
-        input.match(/(cara|bagaimana).*(export|unduh|download)/i)) {
-      return `Untuk export data ke CSV:\n\n1. Buka menu "Unduh Data" di sidebar\n2. Tambahkan ID aset:\n   • Ketik manual lalu klik "Add", atau\n   • Klik "Scan Barcode" 📷\n3. Scan beberapa aset (bisa banyak!)\n4. Klik "Export to CSV" 📥\n5. File akan terdownload!\n\n💡 Tips: Scan banyak aset sekaligus untuk laporan lengkap!\n\nMau coba sekarang?`;
-    }
-
-    // Loan
-    if (input.match(/(pinjam|loan|kembalikan|return|borrow)/i)) {
-      if (userRole === ROLES.VIEWER) {
-        return `Fitur Peminjaman tidak tersedia untuk Viewer. 📦\n\nHubungi admin untuk akses!`;
-      }
-
-      return `Untuk pinjam/kembalikan barang:\n\nPINJAM:\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Pinjam"\n3. Scan/input ID barang\n4. Isi detail peminjam\n5. Submit ${userRole === ROLES.ADMIN ? '(langsung approve)' : '(tunggu approval admin)'}\n\nKEMBALIKAN:\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Kembali"\n3. Scan/input ID barang\n4. Submit\n\nStatus otomatis terupdate! 📦\n\nMau pinjam atau kembalikan?`;
-    }
-
-    // History
-    if (input.match(/(history|riwayat|log|perubahan)/i)) {
-      return `Untuk lihat riwayat perubahan:\n\n1. Buka menu "Riwayat Data" di sidebar\n2. Masukkan ID aset\n   • Ketik atau scan\n3. Lihat semua history 📜\n   • Semua perubahan tercatat\n   • Siapa yang ubah\n   • Kapan diubah\n\nBerguna untuk audit dan tracking!\n\nMau cek riwayat aset apa?`;
-    }
-
     // Categories
     if (input.match(/(kategori|category|jenis)/i)) {
       const catList = systemState.categories.slice(0, 10).join(', ');
       return `Kategori aset yang tersedia (${systemState.categories.length} jenis):\n\n${catList}, dan ${systemState.categories.length - 10} lainnya.\n\n🔍 Gunakan filter kategori di menu "Daftar Data" untuk pencarian lebih mudah!\n\nAda kategori spesifik yang dicari?`;
     }
 
-    // Scan barcode
-    if (input.match(/(scan|barcode|qr|kamera|camera)/i)) {
-      return `Cara scan barcode:\n\n1. Di fitur apa pun (Cek Data, Update, Export, dll)\n2. Cari tombol "Scan Barcode" 📷\n3. Klik → Kamera terbuka\n4. Arahkan ke barcode aset\n5. ID otomatis terdeteksi! ✨\n\n💡 Tips:\n• Pastikan pencahayaan cukup\n• Barcode harus jelas/tidak rusak\n• Pegang stabil saat scan\n\nLebih detail? Cek "Cara Pakai Scanner" di sidebar!`;
+    // Try to find matching feature from config
+    const matchedFeature = findFeatureByKeywords(input);
+    if (matchedFeature) {
+      return getFeatureResponse(matchedFeature);
     }
 
-    // Role info
-    if (input.match(/(role|akses|permission|hak|bisa|tidak bisa)/i)) {
-      let roleInfo = '';
-      
-      if (userRole === ROLES.VIEWER) {
-        roleInfo = `Role Anda: Viewer 👁️\n\nYang BISA dilakukan:\n✅ Lihat semua data\n✅ Cek informasi aset\n✅ Export data ke CSV\n✅ Lihat riwayat\n\nYang TIDAK BISA:\n❌ Update data\n❌ Checkout baterai\n❌ Pinjam barang\n\nPerlu akses lebih? Hubungi admin!`;
-      } else if (userRole === ROLES.EDITOR) {
-        roleInfo = `Role Anda: Editor ✏️\n\nYang BISA dilakukan:\n✅ Semua akses Viewer\n✅ Ajukan update data (perlu approval)\n✅ Checkout baterai\n✅ Pinjam/kembalikan barang\n✅ Lihat status pengajuan\n\nYang TIDAK BISA:\n❌ Update langsung (harus request)\n❌ Approve request\n\nRequest Anda akan direview admin!`;
-      } else if (userRole === ROLES.ADMIN) {
-        roleInfo = `Role Anda: Admin 👑\n\nFULL ACCESS! 🎉\n✅ Update data langsung\n✅ Approve/reject request\n✅ Semua fitur tersedia\n✅ Kelola seluruh sistem\n\nDengan kekuatan besar datang tanggung jawab besar! 💪`;
-      }
-      
-      return roleInfo;
-    }
-
-    // My Requests
-    if (input.match(/(pengajuan saya|my request|status|request saya)/i)) {
-      if (userRole !== ROLES.EDITOR) {
-        return userRole === ROLES.ADMIN 
-          ? `Admin tidak perlu ajukan request - Anda bisa update langsung! 👑`
-          : `Fitur ini hanya untuk Editor. Role Viewer tidak bisa ajukan update.`;
-      }
-
-      let requestMsg = `Untuk cek status pengajuan Anda:\n\n`;
-      requestMsg += `1. Buka menu "Pengajuan Saya"\n`;
-      requestMsg += `2. Lihat semua request yang pernah diajukan\n`;
-      requestMsg += `3. Cek status:\n`;
-      requestMsg += `   • 🟡 Pending - Menunggu review admin\n`;
-      requestMsg += `   • ✅ Approved - Sudah disetujui & applied\n`;
-      requestMsg += `   • ❌ Rejected - Ditolak admin\n\n`;
-      
-      if (systemState.myRequests !== undefined) {
-        requestMsg += `📊 Total pengajuan Anda: ${systemState.myRequests}\n\n`;
-      }
-      
-      requestMsg += `💡 Jika lama pending, follow up ke admin!\n\nMau cek sekarang?`;
-      
-      return requestMsg;
-    }
-
-    // Thank you
-    if (input.match(/(terima kasih|thanks|thank you|makasih|thx)/i)) {
-      return `Sama-sama ${userName}! 😊\n\nSenang bisa membantu! Jangan ragu tanya lagi kalau ada yang perlu bantuan.\n\nSemangat kelola aset! 🚀`;
-    }
-
-    // Help
-    if (input.match(/^(help|bantuan|tolong|\?)$/i)) {
-      return `Saya bisa bantu dengan:\n\n🔍 Cek Data - Cara search & lihat aset\n✏️ Update Data - Cara ubah informasi\n🔋 Baterai - Cara checkout baterai\n📥 Export - Cara download data CSV\n📦 Pinjam Barang - Cara pinjam/kembalikan\n📜 Riwayat - Cara lihat history\n📷 Scan - Cara pakai barcode scanner\n👤 Role - Info hak akses Anda\n📊 Status - Lihat statistik sistem\n\nKetik topik yang ingin ditanyakan!`;
-    }
-
-    // Default
-    return `Hmm, saya belum paham pertanyaan ini. 🤔\n\nCoba tanyakan tentang:\n• Cara cek data\n• Cara update data\n• Cara checkout baterai\n• Cara export data\n• Status sistem\n• Fitur yang tersedia\n\nAtau ketik "help" untuk bantuan lengkap!`;
+    // Not found
+    return GENERAL_RESPONSES.notFound;
   };
 
   const handleSendMessage = async () => {
@@ -515,10 +317,10 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
                 <Bot className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-lg">AIming</h3>
+                <h3 className="font-bold text-lg">AIMing</h3>
                 <p className="text-xs text-white/80 flex items-center gap-1">
                   <Zap className="w-3 h-3" />
-                  Live data enabled (Do not share personal information)
+                  (Kalo AInya ada salah jangan dimarahin y bg thx)
                 </p>
               </div>
             </div>
