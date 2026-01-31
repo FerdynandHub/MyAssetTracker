@@ -23,61 +23,125 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     scrollToBottom();
   }, [messages]);
 
-  // System context about the Portal AVM
-  const getSystemContext = () => {
-    return `Anda adalah asisten AI untuk Portal AVM UPH 7.1, sistem manajemen aset audio-visual.
+  // Knowledge base for responses
+  const getResponse = (userInput) => {
+    const input = userInput.toLowerCase();
 
-INFORMASI PENGGUNA:
-- Nama: ${userName}
-- Role: ${userRole}
-- Hak akses: ${userRole === ROLES.ADMIN ? 'Full access (admin)' : userRole === ROLES.EDITOR ? 'Dapat mengajukan perubahan data' : 'Hanya dapat melihat data'}
+    // Greetings
+    if (input.match(/^(hai|halo|hi|hello|hey|pagi|siang|sore|malam)/)) {
+      return `Halo ${userName}! 😊 Saya di sini untuk membantu Anda menggunakan Portal AVM.\n\nBeberapa hal yang bisa saya bantu:\n• Cara cek data aset\n• Cara update data\n• Cara checkout baterai\n• Cara export data\n• Dan lainnya!\n\nAda yang bisa saya bantu?`;
+    }
 
-FITUR YANG TERSEDIA:
-1. **Daftar Data (Overview)** - Melihat semua aset dengan filter kategori
-2. **Cek Data (Check)** - Mencari aset spesifik dengan ID atau scan barcode
-3. **Unduh Data (Export)** - Export aset ke CSV dengan scan multiple barcode
-4. **Riwayat Data (History)** - Melihat history perubahan aset
-5. **Baterai (Battery)** - ${userRole === ROLES.VIEWER ? 'TIDAK TERSEDIA untuk viewer' : 'Checkout baterai AA/9V untuk event'}
-6. **Perbarui Data (Update)** - ${userRole === ROLES.ADMIN ? 'Update langsung' : userRole === ROLES.EDITOR ? 'Ajukan perubahan (perlu approval admin)' : 'TIDAK TERSEDIA'}
-7. **Pinjam Barang (Loan)** - ${userRole === ROLES.VIEWER ? 'TIDAK TERSEDIA' : 'Update status peminjaman/pengembalian'}
-8. **Pengajuan Saya** - ${userRole === ROLES.EDITOR ? 'Lihat status request update yang diajukan' : 'TIDAK TERSEDIA'}
-9. **Persetujuan Pending** - ${userRole === ROLES.ADMIN ? 'Approve/reject request dari editor' : 'TIDAK TERSEDIA'}
+    // Check data / Cek data
+    if (input.match(/(cek|check|lihat|search|cari).*(data|aset|barang|item)/i) || 
+        input.match(/(cara|bagaimana).*(cek|search|cari)/i)) {
+      return `Untuk cek data aset, ada 2 cara:\n\n**1. Lewat Daftar Data:**\n• Buka menu "Daftar Data" di sidebar\n• Gunakan filter kategori untuk mempersempit pencarian\n• Klik pada aset untuk detail\n\n**2. Lewat Cek Data (Lebih Cepat):**\n• Buka menu "Cek Data"\n• Masukkan ID aset atau scan barcode\n• Detail langsung muncul!\n\nMau coba yang mana? 🔍`;
+    }
 
-KATEGORI ASET TERSEDIA:
-${CATEGORIES.join(', ')}
+    // Update data
+    if (input.match(/(update|ubah|edit|ganti|perbarui).*(data|aset|proyektor|barang)/i) ||
+        input.match(/(cara|bagaimana).*(update|ubah)/i)) {
+      if (userRole === ROLES.VIEWER) {
+        return `Maaf ${userName}, dengan role **Viewer** Anda tidak dapat update data. 😔\n\nRole Viewer hanya bisa:\n• Lihat data\n• Cek informasi\n• Export data\n• Lihat riwayat\n\nSilakan hubungi admin untuk upgrade role jika perlu akses update!`;
+      }
 
-GRADE CONDITION:
-S+, S, S-, A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, E
+      if (userRole === ROLES.EDITOR) {
+        return `Untuk mengajukan update data (Editor):\n\n1. **Buka menu "Ajukan Ubah Data"** di sidebar\n2. **Pilih mode:**\n   • Single Update (1 aset)\n   • Batch Update (banyak aset)\n3. **Masukkan ID aset**\n   • Ketik manual, atau\n   • Scan barcode\n4. **Isi data yang ingin diubah**\n5. **Submit** → Menunggu approval admin\n\n📋 Cek status di menu "Pengajuan Saya"\n\nSudah siap ID asetnya?`;
+      }
 
-PERAN ANDA:
-- JANGAN lakukan aksi untuk user (tidak bisa update data langsung)
-- PANDU user step-by-step untuk mencapai tujuan mereka
-- Berikan instruksi jelas dan spesifik
-- Tanyakan informasi yang diperlukan
-- Sarankan fitur mana yang harus digunakan
-- Jelaskan batasan berdasarkan role mereka
+      if (userRole === ROLES.ADMIN) {
+        return `Untuk update data (Admin - langsung approve):\n\n1. **Buka menu "Perbarui Data"** di sidebar\n2. **Pilih mode:**\n   • Single Update (1 aset)\n   • Batch Update (banyak aset sekaligus)\n3. **Masukkan ID aset**\n   • Ketik manual, atau\n   • Scan barcode 📷\n4. **Isi data yang ingin diubah:**\n   • Category, Status, Location, dll\n5. **Update!** ✅ (langsung tersimpan)\n\n💡 Tip: Gunakan Batch Update untuk efisiensi!\n\nAda yang mau diupdate?`;
+      }
+    }
 
-GAYA KOMUNIKASI:
-- Gunakan Bahasa Indonesia yang ramah dan profesional
-- Berikan panduan yang jelas dan terstruktur
-- Gunakan emoji untuk membuat lebih friendly
-- Singkat namun informatif
+    // Battery / Baterai
+    if (input.match(/(baterai|battery|batre|aa|9v|checkout)/i) ||
+        input.match(/(cara|bagaimana).*(baterai|battery)/i)) {
+      if (userRole === ROLES.VIEWER) {
+        return `Maaf ${userName}, fitur Baterai tidak tersedia untuk role Viewer. 🔋\n\nHubungi admin untuk upgrade role!`;
+      }
 
-Contoh interaksi yang BENAR:
-User: "Saya ingin update data proyektor"
-Assistant: "Baik! Untuk update data proyektor, Anda perlu:
-1. Siapkan ID proyektor yang ingin diupdate
-2. Buka menu **Perbarui Data** di sidebar
-3. ${userRole === ROLES.ADMIN ? 'Pilih mode Single/Batch Update' : 'Ajukan request update (akan direview admin)'}
-4. Masukkan ID dan data yang ingin diubah
+      return `Untuk checkout baterai:\n\n1. **Buka menu "Baterai"** di sidebar\n2. **Pilih jenis baterai:**\n   • AA (baterai kecil)\n   • 9V (baterai kotak)\n3. **Isi form:**\n   • Nama Anda: ${userName}\n   • Jumlah: (berapa pcs?)\n   • Nama Event: (untuk acara apa?)\n   • Lokasi: (di mana?)\n4. **Checkout** 🔋\n\nSistem otomatis kurangi inventory!\n\nJenis baterai tersedia: AA dan 9V`;
+    }
 
-Apakah Anda sudah punya ID proyektornya? 📋"
+    // Export data
+    if (input.match(/(export|unduh|download|csv).*(data)/i) ||
+        input.match(/(cara|bagaimana).*(export|unduh|download)/i)) {
+      return `Untuk export data ke CSV:\n\n1. **Buka menu "Unduh Data"** di sidebar\n2. **Tambahkan ID aset:**\n   • Ketik manual lalu klik "Add", atau\n   • Klik "Scan Barcode" 📷\n3. **Scan beberapa aset** (bisa banyak!)\n4. **Klik "Export to CSV"** 📥\n5. File akan terdownload!\n\n💡 Tips: Scan banyak aset sekaligus untuk laporan lengkap!\n\nMau coba sekarang?`;
+    }
 
-Contoh yang SALAH (jangan lakukan):
-❌ "Saya akan update proyektor untuk Anda..."
-❌ Mencoba mengakses SCRIPT_URL atau melakukan API call
+    // Loan / Pinjam barang
+    if (input.match(/(pinjam|loan|kembalikan|return|borrow)/i)) {
+      if (userRole === ROLES.VIEWER) {
+        return `Fitur Peminjaman tidak tersedia untuk Viewer. 📦\n\nHubungi admin untuk akses!`;
+      }
 
-INGAT: Anda HANYA memandu, TIDAK melakukan aksi!`;
+      return `Untuk pinjam/kembalikan barang:\n\n**PINJAM:**\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Pinjam"\n3. Scan/input ID barang\n4. Isi detail peminjam\n5. Submit ${userRole === ROLES.ADMIN ? '(langsung approve)' : '(tunggu approval admin)'}\n\n**KEMBALIKAN:**\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Kembali"\n3. Scan/input ID barang\n4. Submit\n\nStatus otomatis terupdate! 📦\n\nMau pinjam atau kembalikan?`;
+    }
+
+    // History / Riwayat
+    if (input.match(/(history|riwayat|log|perubahan)/i)) {
+      return `Untuk lihat riwayat perubahan:\n\n1. **Buka menu "Riwayat Data"** di sidebar\n2. **Masukkan ID aset**\n   • Ketik atau scan\n3. **Lihat semua history** 📜\n   • Semua perubahan tercatat\n   • Siapa yang ubah\n   • Kapan diubah\n\nBerguna untuk audit dan tracking!\n\nMau cek riwayat aset apa?`;
+    }
+
+    // Categories / Kategori
+    if (input.match(/(kategori|category|jenis)/i)) {
+      const catList = CATEGORIES.slice(0, 10).join(', ');
+      return `Kategori aset yang tersedia:\n\n${catList}, dan ${CATEGORIES.length - 10} lainnya.\n\n🔍 Gunakan filter kategori di menu "Daftar Data" untuk pencarian lebih mudah!\n\nAda kategori spesifik yang dicari?`;
+    }
+
+    // Scan barcode
+    if (input.match(/(scan|barcode|qr|kamera|camera)/i)) {
+      return `Cara scan barcode:\n\n1. **Di fitur apa pun** (Cek Data, Update, Export, dll)\n2. **Cari tombol "Scan Barcode" 📷**\n3. **Klik** → Kamera terbuka\n4. **Arahkan ke barcode** aset\n5. **ID otomatis terdeteksi!** ✨\n\n💡 Tips:\n• Pastikan pencahayaan cukup\n• Barcode harus jelas/tidak rusak\n• Pegang stabil saat scan\n\nLebih detail? Cek "Cara Pakai Scanner" di sidebar!`;
+    }
+
+    // Role / Hak akses
+    if (input.match(/(role|akses|permission|hak|bisa|tidak bisa)/i)) {
+      let roleInfo = '';
+      
+      if (userRole === ROLES.VIEWER) {
+        roleInfo = `**Role Anda: Viewer** 👁️\n\nYang BISA dilakukan:\n✅ Lihat semua data\n✅ Cek informasi aset\n✅ Export data ke CSV\n✅ Lihat riwayat\n\nYang TIDAK BISA:\n❌ Update data\n❌ Checkout baterai\n❌ Pinjam barang\n\nPerlu akses lebih? Hubungi admin!`;
+      } else if (userRole === ROLES.EDITOR) {
+        roleInfo = `**Role Anda: Editor** ✏️\n\nYang BISA dilakukan:\n✅ Semua akses Viewer\n✅ Ajukan update data (perlu approval)\n✅ Checkout baterai\n✅ Pinjam/kembalikan barang\n✅ Lihat status pengajuan\n\nYang TIDAK BISA:\n❌ Update langsung (harus request)\n❌ Approve request\n\nRequest Anda akan direview admin!`;
+      } else if (userRole === ROLES.ADMIN) {
+        roleInfo = `**Role Anda: Admin** 👑\n\nFULL ACCESS! 🎉\n✅ Update data langsung\n✅ Approve/reject request\n✅ Semua fitur tersedia\n✅ Kelola seluruh sistem\n\nDengan kekuatan besar datang tanggung jawab besar! 💪`;
+      }
+      
+      return roleInfo;
+    }
+
+    // Approvals (for Admin)
+    if (input.match(/(approval|approve|persetujuan|pending|request)/i)) {
+      if (userRole !== ROLES.ADMIN) {
+        return `Fitur approval hanya untuk Admin. 🔒\n\n${userRole === ROLES.EDITOR ? 'Anda bisa cek status pengajuan di menu "Pengajuan Saya"!' : 'Role Viewer tidak bisa mengajukan update.'}`;
+      }
+
+      return `Untuk kelola approval (Admin):\n\n1. **Buka menu "Persetujuan Pending"**\n2. **Lihat semua request** dari Editor\n   • Detail perubahan\n   • Siapa yang mengajukan\n3. **Review dan putuskan:**\n   • ✅ **Approve** → Data langsung terupdate\n   • ❌ **Reject** → Request ditolak\n\n📋 Best practice:\n• Review dengan teliti\n• Pastikan data valid\n• Beri feedback jika reject\n\nAda request pending sekarang?`;
+    }
+
+    // My Requests (for Editor)
+    if (input.match(/(pengajuan saya|my request|status|request saya)/i)) {
+      if (userRole !== ROLES.EDITOR) {
+        return userRole === ROLES.ADMIN 
+          ? `Admin tidak perlu ajukan request - Anda bisa update langsung! 👑`
+          : `Fitur ini hanya untuk Editor. Role Viewer tidak bisa ajukan update.`;
+      }
+
+      return `Untuk cek status pengajuan Anda:\n\n1. **Buka menu "Pengajuan Saya"**\n2. **Lihat semua request** yang pernah diajukan\n3. **Cek status:**\n   • 🟡 **Pending** - Menunggu review admin\n   • ✅ **Approved** - Sudah disetujui & applied\n   • ❌ **Rejected** - Ditolak admin\n\n💡 Jika lama pending, follow up ke admin!\n\nMau cek sekarang?`;
+    }
+
+    // Thank you / Terima kasih
+    if (input.match(/(terima kasih|thanks|thank you|makasih|thx)/i)) {
+      return `Sama-sama ${userName}! 😊\n\nSenang bisa membantu! Jangan ragu tanya lagi kalau ada yang perlu bantuan.\n\nSemangat kelola aset! 🚀`;
+    }
+
+    // Help / Bantuan
+    if (input.match(/^(help|bantuan|tolong|\?)$/i)) {
+      return `Saya bisa bantu dengan:\n\n🔍 **Cek Data** - Cara search & lihat aset\n✏️ **Update Data** - Cara ubah informasi\n🔋 **Baterai** - Cara checkout baterai\n📥 **Export** - Cara download data CSV\n📦 **Pinjam Barang** - Cara pinjam/kembalikan\n📜 **Riwayat** - Cara lihat history\n📷 **Scan** - Cara pakai barcode scanner\n👤 **Role** - Info hak akses Anda\n\nKetik topik yang ingin ditanyakan!`;
+    }
+
+    // Default response
+    return `Hmm, saya belum paham pertanyaan ini. 🤔\n\nCoba tanyakan tentang:\n• Cara cek data\n• Cara update data\n• Cara checkout baterai\n• Cara export data\n• Cara pinjam barang\n• Cara scan barcode\n\nAtau ketik "help" untuk bantuan lengkap!`;
   };
 
   const handleSendMessage = async () => {
@@ -90,56 +154,22 @@ INGAT: Anda HANYA memandu, TIDAK melakukan aksi!`;
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: getSystemContext(),
-          messages: [
-            ...messages.filter(m => m.role !== 'system').map(m => ({
-              role: m.role,
-              content: m.content
-            })),
-            {
-              role: 'user',
-              content: input
-            }
-          ]
-        })
-      });
-
-      const data = await response.json();
+    // Simulate typing delay for more natural feel
+    setTimeout(() => {
+      const response = getResponse(currentInput);
       
-      // Extract text from response
-      const assistantMessage = data.content
-        .filter(block => block.type === 'text')
-        .map(block => block.text)
-        .join('\n\n');
-
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: assistantMessage,
+        content: response,
         timestamp: new Date()
       }]);
-
-    } catch (error) {
-      console.error('Chatbot error:', error);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Maaf, terjadi kesalahan. Silakan coba lagi. 😅',
-        timestamp: new Date()
-      }]);
-    } finally {
+      
       setIsLoading(false);
-    }
+    }, 500);
   };
 
   const handleKeyPress = (e) => {
@@ -150,10 +180,10 @@ INGAT: Anda HANYA memandu, TIDAK melakukan aksi!`;
   };
 
   const quickActions = [
-    { label: '📋 Cara cek data', query: 'Bagaimana cara cek data aset?' },
-    { label: '🔄 Cara update data', query: 'Bagaimana cara update data aset?' },
-    { label: '🔋 Cara checkout baterai', query: 'Bagaimana cara checkout baterai?' },
-    { label: '📥 Cara export data', query: 'Bagaimana cara export data ke CSV?' }
+    { label: '🔍 Cek data', query: 'Bagaimana cara cek data aset?' },
+    { label: '✏️ Update data', query: 'Bagaimana cara update data aset?' },
+    { label: '🔋 Baterai', query: 'Bagaimana cara checkout baterai?' },
+    { label: '📥 Export', query: 'Bagaimana cara export data?' }
   ];
 
   return (
@@ -269,7 +299,7 @@ INGAT: Anda HANYA memandu, TIDAK melakukan aksi!`;
                     key={idx}
                     onClick={() => {
                       setInput(action.query);
-                      handleSendMessage();
+                      setTimeout(() => handleSendMessage(), 100);
                     }}
                     className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition"
                   >
