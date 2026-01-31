@@ -164,15 +164,22 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     return response;
   };
 
-// Main response generator
+// Main response generator - FIXED VERSION
 const getResponse = (userInput) => {
   const msg = userInput.toLowerCase().trim();
   const input = msg;
 
+  console.log('🔍 Processing input:', msg); // Debug log
+
   // ====== 1. GEN Z SLANG - HIGHEST PRIORITY ======
   // Check exact match dulu (case insensitive)
-  if (GENERAL_RESPONSES.genZ?.exact?.[msg]) {
-    return GENERAL_RESPONSES.genZ.exact[msg];
+  // This must be first to prevent feature keywords from catching slang
+  if (GENERAL_RESPONSES.genZ?.exact) {
+    const genZResponse = GENERAL_RESPONSES.genZ.exact[msg];
+    if (genZResponse !== undefined) {
+      console.log('✅ Gen Z match found:', msg, '→', genZResponse);
+      return genZResponse;
+    }
   }
 
   // ====== 2. VERY SHORT GREETINGS ONLY ======
@@ -205,9 +212,10 @@ const getResponse = (userInput) => {
 
   // ====== 6. SYSTEM STATUS - MUST BE SPECIFIC ======
   // Harus jelas nanya status/stats, bukan cuma "berapa"
-  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem)\b/i) ||
-      input.match(/^(status|stats)[\s!.]*$/i) ||
-      input.match(/\b(berapa\s+(total|jumlah)\s+(aset|barang)|total\s+aset)\b/i)) {
+  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem|info\s+portal|kondisi\s+sistem|kondisi\s+portal|dashboard|overview|ringkasan)\b/i) ||
+    input.match(/^(status|stats|stat|info|dashboard|overview)[\s!.]*$/i) ||
+    input.match(/\b(berapa\s+(total|jumlah)\s+(aset|barang)|total\s+aset|total\s+barang|jumlah\s+aset|jumlah\s+barang|aset\s+berapa|barang\s+berapa|asetnya\s+berapa|barangnya\s+berapa|totalnya\s+berapa|ada\s+berapa\s+aset)\b/i)) {
+
     
     let statusMsg = `Status Sistem Portal AVM:\n\n`;
     
@@ -240,33 +248,46 @@ const getResponse = (userInput) => {
 
   // ====== 7. FEATURE MATCHING ======
   // Check against features from config
-  for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
-    if (feature.keywords) {
-      // Check if any keyword matches
-      const hasKeyword = feature.keywords.some(keyword => {
-        // For multi-word keywords, check if the whole phrase exists
-        if (keyword.includes(' ')) {
-          return input.includes(keyword);
-        }
-        // For single words, use word boundary to avoid partial matches
-        return new RegExp(`\\b${keyword}\\b`, 'i').test(input);
-      });
+  // IMPORTANT: Only match if message is longer than 3 characters OR contains spaces
+  // This prevents short slang like "jir", "gas", "sip" from being caught by feature keywords
+  if (input.length > 3 || input.includes(' ')) {
+    for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
+      if (feature.keywords) {
+        // Check if any keyword matches
+        const hasKeyword = feature.keywords.some(keyword => {
+          // For multi-word keywords, check if the whole phrase exists
+          if (keyword.includes(' ')) {
+            return input.includes(keyword);
+          }
+          // For single words, use word boundary to avoid partial matches
+          // AND make sure the input is not too short (avoid catching slang)
+          if (input.length <= 4 && keyword.length <= 4) {
+            // For very short inputs/keywords, require exact match to avoid false positives
+            return input === keyword.toLowerCase();
+          }
+          return new RegExp(`\\b${keyword}\\b`, 'i').test(input);
+        });
 
-      if (hasKeyword) {
-        // Check role permission
-        if (!feature.roleRequired.includes(userRole)) {
-          return `Maaf, fitur "${feature.name}" cuma bisa diakses sama ${feature.roleRequired.join(', ')} 🔒\n\nRole kamu sekarang: ${userRole}\n\nMau tau apa aja yang bisa kamu lakuin? Ketik "role"!`;
-        }
+        if (hasKeyword) {
+          console.log('🎯 Feature match:', key);
+          
+          // Check role permission
+          if (!feature.roleRequired.includes(userRole)) {
+            return `Maaf, fitur "${feature.name}" cuma bisa diakses sama ${feature.roleRequired.join(', ')} 🔒\n\nRole kamu sekarang: ${userRole}\n\nMau tau apa aja yang bisa kamu lakuin? Ketik "role"!`;
+          }
 
-        // Return appropriate instructions based on role
-        if (typeof feature.instructions === 'object') {
-          return feature.instructions[userRole] || feature.instructions.editor;
+          // Return appropriate instructions based on role
+          if (typeof feature.instructions === 'object') {
+            return feature.instructions[userRole] || feature.instructions.editor;
+          }
+          return feature.instructions;
         }
-        return feature.instructions;
       }
     }
   }
 
+  console.log('❌ No match found, returning notFound');
+  
   // ====== 8. NOT FOUND ======
   return GENERAL_RESPONSES.notFound;
 };
@@ -319,46 +340,46 @@ const getResponse = (userInput) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group"
+          className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-3 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
           style={{
             animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
           }}
         >
-          <MessageCircle className="w-6 h-6" />
+          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
+        <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <Bot className="w-5 h-5" />
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 sm:p-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="bg-white/20 p-1.5 sm:p-2 rounded-full backdrop-blur-sm">
+                <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-lg">AIMing</h3>
-                <p className="text-xs text-white/80 flex items-center gap-1">
-                  <Zap className="w-3 h-3" />
-                  (Kalo AInya ada salah jangan dimarahin y bg thx)
+                <h3 className="font-bold text-base sm:text-lg">AIMing</h3>
+                <p className="text-[10px] sm:text-xs text-white/80 flex items-center gap-1">
+                  <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  AI Assistant
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
               <button
                 onClick={fetchSystemState}
-                className="hover:bg-white/20 p-2 rounded-full transition"
+                className="hover:bg-white/20 p-1.5 sm:p-2 rounded-full transition"
                 title="Refresh data"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="hover:bg-white/20 p-2 rounded-full transition"
+                className="hover:bg-white/20 p-1.5 sm:p-2 rounded-full transition"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
@@ -366,26 +387,26 @@ const getResponse = (userInput) => {
           {/* Messages */}
           <div
             ref={chatContainerRef}
-            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+            className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50"
             style={{ scrollBehavior: 'smooth' }}
           >
             {messages.map((message, idx) => (
               <div
                 key={idx}
-                className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                className={`flex gap-2 sm:gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
               >
                 {/* Avatar */}
                 <div
-                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                  className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                     message.role === 'user'
                       ? 'bg-blue-500 text-white'
                       : 'bg-purple-500 text-white'
                   }`}
                 >
                   {message.role === 'user' ? (
-                    <User className="w-4 h-4" />
+                    <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   ) : (
-                    <Bot className="w-4 h-4" />
+                    <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   )}
                 </div>
 
@@ -395,13 +416,13 @@ const getResponse = (userInput) => {
                     message.role === 'user'
                       ? 'bg-blue-500 text-white rounded-2xl rounded-tr-none'
                       : 'bg-white text-gray-800 rounded-2xl rounded-tl-none shadow-sm border border-gray-100'
-                  } p-3`}
+                  } p-2.5 sm:p-3`}
                 >
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
                     {message.content}
                   </p>
                   <p
-                    className={`text-xs mt-1 ${
+                    className={`text-[10px] sm:text-xs mt-1 ${
                       message.role === 'user' ? 'text-blue-100' : 'text-gray-400'
                     }`}
                   >
@@ -415,12 +436,12 @@ const getResponse = (userInput) => {
             ))}
 
             {isLoading && (
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center">
-                  <Bot className="w-4 h-4" />
+              <div className="flex gap-2 sm:gap-3">
+                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-500 text-white flex items-center justify-center">
+                  <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
-                <div className="bg-white rounded-2xl rounded-tl-none shadow-sm border border-gray-100 p-3">
-                  <Loader2 className="w-5 h-5 text-purple-500 animate-spin" />
+                <div className="bg-white rounded-2xl rounded-tl-none shadow-sm border border-gray-100 p-2.5 sm:p-3">
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 animate-spin" />
                 </div>
               </div>
             )}
@@ -430,7 +451,7 @@ const getResponse = (userInput) => {
 
           {/* Quick Actions */}
           {messages.length <= 2 && (
-            <div className="px-4 py-2 border-t bg-white">
+            <div className="hidden sm:block px-4 py-2 border-t bg-white">
               <p className="text-xs text-gray-500 mb-2">Quick actions:</p>
               <div className="flex flex-wrap gap-2">
                 {quickActions.map((action, idx) => (
@@ -450,26 +471,26 @@ const getResponse = (userInput) => {
           )}
 
           {/* Input */}
-          <div className="p-4 border-t bg-white">
+          <div className="p-3 sm:p-4 border-t bg-white">
             <div className="flex gap-2">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ketik pertanyaan Anda..."
+                placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!input.trim() || isLoading}
-                className="bg-gradient-to-br from-blue-500 to-purple-600 text-white p-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="bg-gradient-to-br from-blue-500 to-purple-600 text-white p-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
               >
                 {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                 ) : (
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                 )}
               </button>
             </div>
