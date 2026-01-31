@@ -547,7 +547,45 @@ genZ: {
 
     'gg': 'GG',
     'kalah': 'mental kena',
-    'menang': 'auto senyum'
+    'menang': 'auto senyum',
+
+    // greetings
+    'hai': 'yo 👋',
+    'halo': 'halo juga',
+    'hi': 'yo wassup',
+    'pagi': 'pagiii 🌤️',
+    'siang': 'siang bro',
+    'sore': 'soreee',
+    'malam': 'malam vibes',
+
+    // nanya kabar
+    'apa kabar': 'aman terkendali 😌',
+    'gimana kabarnya': 'masih idup, masih ngopi',
+    'lagi apa': 'lagi rebahan mikirin hidup',
+
+    // respon standar
+    'oh': 'ohhh gitu',
+    'oh gitu': 'iyaa paham',
+    'ya': 'y',
+    'yaudah': 'yaudah lah ya',
+
+    // kerja / sistem ringan
+    'lagi kerja': 'kerja rodi tapi digaji',
+    'lagi sibuk': 'sibuk dikit tapi hidup',
+    'udah selesai': 'done 👍',
+    'belum': 'belom, sabar ya',
+    'sudah': 'udah dong',
+
+    // nanya status
+    'aman': 'aman terkendali',
+    'error': 'yah kena mental',
+    'kenapa': 'lah kenapa tuh',
+
+    // penutup
+    'makasih': 'siap',
+    'terima kasih': 'aman bos',
+    'bye': 'cabut dulu',
+    'dadah': 'otw hilang'
   }
 },
 
