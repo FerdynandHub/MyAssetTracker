@@ -404,7 +404,7 @@ const getResponse = (userInput) => {
       animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
     }}
   >
-    <Headset className="w-6 h-6 sm:w-6 sm:h-6" />
+    <Headset className="w-7 h-7 sm:w-6 sm:h-6" />
     <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
   </button>
 )}
