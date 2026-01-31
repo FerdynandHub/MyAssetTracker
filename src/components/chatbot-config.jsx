@@ -504,6 +504,9 @@ genZ: {
     'njir': 'njir',
     'bjir': 'bjir',
     'jir':'jir',
+    'ok':'👍',
+    'thank you fer':'aman',
+    'fer':'yo?',
 
     'ok gas': 'ok gas ok gas',
     'gas': 'gaskeun',
