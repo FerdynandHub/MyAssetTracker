@@ -338,7 +338,7 @@ const getResponse = (userInput) => {
     { label: '🔍 Cek data', query: 'Bagaimana cara cek data aset?' },
     { label: '✏️ Update data', query: 'Bagaimana cara update data aset?' },
     { label: '📊 Status sistem', query: 'Status sistem' },
-    { label: '🎯 Fitur tersedia', query: 'Fitur apa saja yang tersedia?' }
+    { label: '🎯 Fitur tersedia', query: 'Help' }
   ];
 
   return (

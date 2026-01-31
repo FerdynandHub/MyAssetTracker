@@ -406,7 +406,7 @@ export const GENERAL_RESPONSES = {
 📦 Pinjam Barang - Cara pinjam/kembalikan barang
 📜 Riwayat - Cara liat history perubahan
 📷 Scan - Cara pakai barcode scanner
-👤 Role - Info hak akses kamu
+👤 Role Saya - Info hak akses kamu
 📊 Status - Lihat statistik sistem real-time
 
 Tinggal ketik topik yang mau ditanyain! Atau langsung aja tanya dengan bahasa sehari-hari, gue ngerti kok 😉`,
