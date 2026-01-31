@@ -503,6 +503,7 @@ genZ: {
     'anjir': 'anjir',
     'njir': 'njir',
     'bjir': 'bjir',
+    'jir':'jir',
 
     'ok gas': 'ok gas ok gas',
     'gas': 'gaskeun',
