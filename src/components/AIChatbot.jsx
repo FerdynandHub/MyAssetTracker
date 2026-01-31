@@ -6,7 +6,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Halo ${userName}! 👋 Saya asisten Portal AVM. Saya akan membantu memandu Anda menggunakan sistem ini.\n\nApa yang ingin Anda lakukan hari ini?`,
+      content: `Halo ${userName}! 👋 Saya Ferdynand. Saya akan membantu memandu Anda menggunakan sistem ini.\n\nApa yang ingin Anda lakukan hari ini?`,
       timestamp: new Date()
     }
   ]);
@@ -35,22 +35,22 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     // Check data / Cek data
     if (input.match(/(cek|check|lihat|search|cari).*(data|aset|barang|item)/i) || 
         input.match(/(cara|bagaimana).*(cek|search|cari)/i)) {
-      return `Untuk cek data aset, ada 2 cara:\n\n**1. Lewat Daftar Data:**\n• Buka menu "Daftar Data" di sidebar\n• Gunakan filter kategori untuk mempersempit pencarian\n• Klik pada aset untuk detail\n\n**2. Lewat Cek Data (Lebih Cepat):**\n• Buka menu "Cek Data"\n• Masukkan ID aset atau scan barcode\n• Detail langsung muncul!\n\nMau coba yang mana? 🔍`;
+      return `Untuk cek data aset, ada 2 cara:\n\n1. Lewat Daftar Data:\n• Buka menu "Daftar Data" di sidebar\n• Gunakan filter kategori untuk mempersempit pencarian\n• Klik pada aset untuk detail\n\n2. Lewat Cek Data (Lebih Cepat):\n• Buka menu "Cek Data"\n• Masukkan ID aset atau scan barcode\n• Detail langsung muncul!\n\nMau coba yang mana? 🔍`;
     }
 
     // Update data
     if (input.match(/(update|ubah|edit|ganti|perbarui).*(data|aset|proyektor|barang)/i) ||
         input.match(/(cara|bagaimana).*(update|ubah)/i)) {
       if (userRole === ROLES.VIEWER) {
-        return `Maaf ${userName}, dengan role **Viewer** Anda tidak dapat update data. 😔\n\nRole Viewer hanya bisa:\n• Lihat data\n• Cek informasi\n• Export data\n• Lihat riwayat\n\nSilakan hubungi admin untuk upgrade role jika perlu akses update!`;
+        return `Maaf ${userName}, dengan role Viewer Anda tidak dapat update data. 😔\n\nRole Viewer hanya bisa:\n• Lihat data\n• Cek informasi\n• Export data\n• Lihat riwayat\n\nSilakan hubungi admin untuk upgrade role jika perlu akses update!`;
       }
 
       if (userRole === ROLES.EDITOR) {
-        return `Untuk mengajukan update data (Editor):\n\n1. **Buka menu "Ajukan Ubah Data"** di sidebar\n2. **Pilih mode:**\n   • Single Update (1 aset)\n   • Batch Update (banyak aset)\n3. **Masukkan ID aset**\n   • Ketik manual, atau\n   • Scan barcode\n4. **Isi data yang ingin diubah**\n5. **Submit** → Menunggu approval admin\n\n📋 Cek status di menu "Pengajuan Saya"\n\nSudah siap ID asetnya?`;
+        return `Untuk mengajukan update data (Editor):\n\n1. Buka menu "Ajukan Ubah Data" di sidebar\n2. Pilih mode:\n   • Single Update (1 aset)\n   • Batch Update (banyak aset)\n3. Masukkan ID aset\n   • Ketik manual, atau\n   • Scan barcode\n4. Isi data yang ingin diubah\n5. Submit → Menunggu approval admin\n\n📋 Cek status di menu "Pengajuan Saya"\n\nSudah siap ID asetnya?`;
       }
 
       if (userRole === ROLES.ADMIN) {
-        return `Untuk update data (Admin - langsung approve):\n\n1. **Buka menu "Perbarui Data"** di sidebar\n2. **Pilih mode:**\n   • Single Update (1 aset)\n   • Batch Update (banyak aset sekaligus)\n3. **Masukkan ID aset**\n   • Ketik manual, atau\n   • Scan barcode 📷\n4. **Isi data yang ingin diubah:**\n   • Category, Status, Location, dll\n5. **Update!** ✅ (langsung tersimpan)\n\n💡 Tip: Gunakan Batch Update untuk efisiensi!\n\nAda yang mau diupdate?`;
+        return `Untuk update data (Admin - langsung approve):\n\n1. Buka menu "Perbarui Data" di sidebar\n2. Pilih mode:\n   • Single Update (1 aset)\n   • Batch Update (banyak aset sekaligus)\n3. Masukkan ID aset\n   • Ketik manual, atau\n   • Scan barcode 📷\n4. Isi data yang ingin diubah:\n   • Category, Status, Location, dll\n5. Update! ✅ (langsung tersimpan)\n\n💡 Tip: Gunakan Batch Update untuk efisiensi!\n\nAda yang mau diupdate?`;
       }
     }
 
@@ -61,13 +61,13 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         return `Maaf ${userName}, fitur Baterai tidak tersedia untuk role Viewer. 🔋\n\nHubungi admin untuk upgrade role!`;
       }
 
-      return `Untuk checkout baterai:\n\n1. **Buka menu "Baterai"** di sidebar\n2. **Pilih jenis baterai:**\n   • AA (baterai kecil)\n   • 9V (baterai kotak)\n3. **Isi form:**\n   • Nama Anda: ${userName}\n   • Jumlah: (berapa pcs?)\n   • Nama Event: (untuk acara apa?)\n   • Lokasi: (di mana?)\n4. **Checkout** 🔋\n\nSistem otomatis kurangi inventory!\n\nJenis baterai tersedia: AA dan 9V`;
+      return `Untuk checkout baterai:\n\n1. Buka menu "Baterai" di sidebar\n2. Pilih jenis baterai:\n   • AA (baterai kecil)\n   • 9V (baterai kotak)\n3. Isi form:\n   • Nama Anda: ${userName}\n   • Jumlah: (berapa pcs?)\n   • Nama Event: (untuk acara apa?)\n   • Lokasi: (di mana?)\n4. Checkout 🔋\n\nSistem otomatis kurangi inventory!\n\nJenis baterai tersedia: AA dan 9V`;
     }
 
     // Export data
     if (input.match(/(export|unduh|download|csv).*(data)/i) ||
         input.match(/(cara|bagaimana).*(export|unduh|download)/i)) {
-      return `Untuk export data ke CSV:\n\n1. **Buka menu "Unduh Data"** di sidebar\n2. **Tambahkan ID aset:**\n   • Ketik manual lalu klik "Add", atau\n   • Klik "Scan Barcode" 📷\n3. **Scan beberapa aset** (bisa banyak!)\n4. **Klik "Export to CSV"** 📥\n5. File akan terdownload!\n\n💡 Tips: Scan banyak aset sekaligus untuk laporan lengkap!\n\nMau coba sekarang?`;
+      return `Untuk export data ke CSV:\n\n1. Buka menu "Unduh Data" di sidebar\n2. Tambahkan ID aset:\n   • Ketik manual lalu klik "Add", atau\n   • Klik "Scan Barcode" 📷\n3. Scan beberapa aset (bisa banyak!)\n4. Klik "Export to CSV" 📥\n5. File akan terdownload!\n\n💡 Tips: Scan banyak aset sekaligus untuk laporan lengkap!\n\nMau coba sekarang?`;
     }
 
     // Loan / Pinjam barang
@@ -76,12 +76,12 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         return `Fitur Peminjaman tidak tersedia untuk Viewer. 📦\n\nHubungi admin untuk akses!`;
       }
 
-      return `Untuk pinjam/kembalikan barang:\n\n**PINJAM:**\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Pinjam"\n3. Scan/input ID barang\n4. Isi detail peminjam\n5. Submit ${userRole === ROLES.ADMIN ? '(langsung approve)' : '(tunggu approval admin)'}\n\n**KEMBALIKAN:**\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Kembali"\n3. Scan/input ID barang\n4. Submit\n\nStatus otomatis terupdate! 📦\n\nMau pinjam atau kembalikan?`;
+      return `Untuk pinjam/kembalikan barang:\n\nPINJAM:\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Pinjam"\n3. Scan/input ID barang\n4. Isi detail peminjam\n5. Submit ${userRole === ROLES.ADMIN ? '(langsung approve)' : '(tunggu approval admin)'}\n\nKEMBALIKAN:\n1. Buka menu "Pinjam Barang"\n2. Pilih "Update Status Kembali"\n3. Scan/input ID barang\n4. Submit\n\nStatus otomatis terupdate! 📦\n\nMau pinjam atau kembalikan?`;
     }
 
     // History / Riwayat
     if (input.match(/(history|riwayat|log|perubahan)/i)) {
-      return `Untuk lihat riwayat perubahan:\n\n1. **Buka menu "Riwayat Data"** di sidebar\n2. **Masukkan ID aset**\n   • Ketik atau scan\n3. **Lihat semua history** 📜\n   • Semua perubahan tercatat\n   • Siapa yang ubah\n   • Kapan diubah\n\nBerguna untuk audit dan tracking!\n\nMau cek riwayat aset apa?`;
+      return `Untuk lihat riwayat perubahan:\n\n1. Buka menu "Riwayat Data" di sidebar\n2. Masukkan ID aset\n   • Ketik atau scan\n3. Lihat semua history 📜\n   • Semua perubahan tercatat\n   • Siapa yang ubah\n   • Kapan diubah\n\nBerguna untuk audit dan tracking!\n\nMau cek riwayat aset apa?`;
     }
 
     // Categories / Kategori
@@ -92,7 +92,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
 
     // Scan barcode
     if (input.match(/(scan|barcode|qr|kamera|camera)/i)) {
-      return `Cara scan barcode:\n\n1. **Di fitur apa pun** (Cek Data, Update, Export, dll)\n2. **Cari tombol "Scan Barcode" 📷**\n3. **Klik** → Kamera terbuka\n4. **Arahkan ke barcode** aset\n5. **ID otomatis terdeteksi!** ✨\n\n💡 Tips:\n• Pastikan pencahayaan cukup\n• Barcode harus jelas/tidak rusak\n• Pegang stabil saat scan\n\nLebih detail? Cek "Cara Pakai Scanner" di sidebar!`;
+      return `Cara scan barcode:\n\n1. Di fitur apa pun (Cek Data, Update, Export, dll)\n2. Cari tombol "Scan Barcode" 📷\n3. Klik → Kamera terbuka\n4. Arahkan ke barcode aset\n5. ID otomatis terdeteksi! ✨\n\n💡 Tips:\n• Pastikan pencahayaan cukup\n• Barcode harus jelas/tidak rusak\n• Pegang stabil saat scan\n\nLebih detail? Cek "Cara Pakai Scanner" di sidebar!`;
     }
 
     // Role / Hak akses
@@ -100,11 +100,11 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
       let roleInfo = '';
       
       if (userRole === ROLES.VIEWER) {
-        roleInfo = `**Role Anda: Viewer** 👁️\n\nYang BISA dilakukan:\n✅ Lihat semua data\n✅ Cek informasi aset\n✅ Export data ke CSV\n✅ Lihat riwayat\n\nYang TIDAK BISA:\n❌ Update data\n❌ Checkout baterai\n❌ Pinjam barang\n\nPerlu akses lebih? Hubungi admin!`;
+        roleInfo = `Role Anda: Viewer 👁️\n\nYang BISA dilakukan:\n✅ Lihat semua data\n✅ Cek informasi aset\n✅ Export data ke CSV\n✅ Lihat riwayat\n\nYang TIDAK BISA:\n❌ Update data\n❌ Checkout baterai\n❌ Pinjam barang\n\nPerlu akses lebih? Hubungi admin!`;
       } else if (userRole === ROLES.EDITOR) {
-        roleInfo = `**Role Anda: Editor** ✏️\n\nYang BISA dilakukan:\n✅ Semua akses Viewer\n✅ Ajukan update data (perlu approval)\n✅ Checkout baterai\n✅ Pinjam/kembalikan barang\n✅ Lihat status pengajuan\n\nYang TIDAK BISA:\n❌ Update langsung (harus request)\n❌ Approve request\n\nRequest Anda akan direview admin!`;
+        roleInfo = `Role Anda: Editor ✏️\n\nYang BISA dilakukan:\n✅ Semua akses Viewer\n✅ Ajukan update data (perlu approval)\n✅ Checkout baterai\n✅ Pinjam/kembalikan barang\n✅ Lihat status pengajuan\n\nYang TIDAK BISA:\n❌ Update langsung (harus request)\n❌ Approve request\n\nRequest Anda akan direview admin!`;
       } else if (userRole === ROLES.ADMIN) {
-        roleInfo = `**Role Anda: Admin** 👑\n\nFULL ACCESS! 🎉\n✅ Update data langsung\n✅ Approve/reject request\n✅ Semua fitur tersedia\n✅ Kelola seluruh sistem\n\nDengan kekuatan besar datang tanggung jawab besar! 💪`;
+        roleInfo = `Role Anda: Admin 👑\n\nFULL ACCESS! 🎉\n✅ Update data langsung\n✅ Approve/reject request\n✅ Semua fitur tersedia\n✅ Kelola seluruh sistem\n\nDengan kekuatan besar datang tanggung jawab besar! 💪`;
       }
       
       return roleInfo;
@@ -116,7 +116,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         return `Fitur approval hanya untuk Admin. 🔒\n\n${userRole === ROLES.EDITOR ? 'Anda bisa cek status pengajuan di menu "Pengajuan Saya"!' : 'Role Viewer tidak bisa mengajukan update.'}`;
       }
 
-      return `Untuk kelola approval (Admin):\n\n1. **Buka menu "Persetujuan Pending"**\n2. **Lihat semua request** dari Editor\n   • Detail perubahan\n   • Siapa yang mengajukan\n3. **Review dan putuskan:**\n   • ✅ **Approve** → Data langsung terupdate\n   • ❌ **Reject** → Request ditolak\n\n📋 Best practice:\n• Review dengan teliti\n• Pastikan data valid\n• Beri feedback jika reject\n\nAda request pending sekarang?`;
+      return `Untuk kelola approval (Admin):\n\n1. Buka menu "Persetujuan Pending"\n2. Lihat semua request dari Editor\n   • Detail perubahan\n   • Siapa yang mengajukan\n3. Review dan putuskan:\n   • ✅ Approve → Data langsung terupdate\n   • ❌ Reject → Request ditolak\n\n📋 Best practice:\n• Review dengan teliti\n• Pastikan data valid\n• Beri feedback jika reject\n\nAda request pending sekarang?`;
     }
 
     // My Requests (for Editor)
@@ -127,7 +127,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
           : `Fitur ini hanya untuk Editor. Role Viewer tidak bisa ajukan update.`;
       }
 
-      return `Untuk cek status pengajuan Anda:\n\n1. **Buka menu "Pengajuan Saya"**\n2. **Lihat semua request** yang pernah diajukan\n3. **Cek status:**\n   • 🟡 **Pending** - Menunggu review admin\n   • ✅ **Approved** - Sudah disetujui & applied\n   • ❌ **Rejected** - Ditolak admin\n\n💡 Jika lama pending, follow up ke admin!\n\nMau cek sekarang?`;
+      return `Untuk cek status pengajuan Anda:\n\n1. Buka menu "Pengajuan Saya"\n2. Lihat semua request yang pernah diajukan\n3. Cek status:\n   • 🟡 Pending - Menunggu review admin\n   • ✅ Approved - Sudah disetujui & applied\n   • ❌ Rejected - Ditolak admin\n\n💡 Jika lama pending, follow up ke admin!\n\nMau cek sekarang?`;
     }
 
     // Thank you / Terima kasih
@@ -137,7 +137,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
 
     // Help / Bantuan
     if (input.match(/^(help|bantuan|tolong|\?)$/i)) {
-      return `Saya bisa bantu dengan:\n\n🔍 **Cek Data** - Cara search & lihat aset\n✏️ **Update Data** - Cara ubah informasi\n🔋 **Baterai** - Cara checkout baterai\n📥 **Export** - Cara download data CSV\n📦 **Pinjam Barang** - Cara pinjam/kembalikan\n📜 **Riwayat** - Cara lihat history\n📷 **Scan** - Cara pakai barcode scanner\n👤 **Role** - Info hak akses Anda\n\nKetik topik yang ingin ditanyakan!`;
+      return `Saya bisa bantu dengan:\n\n🔍 Cek Data - Cara search & lihat aset\n✏️ Update Data - Cara ubah informasi\n🔋 Baterai - Cara checkout baterai\n📥 Export - Cara download data CSV\n📦 Pinjam Barang - Cara pinjam/kembalikan\n📜 Riwayat - Cara lihat history\n📷 Scan - Cara pakai barcode scanner\n👤 Role - Info hak akses Anda\n\nKetik topik yang ingin ditanyakan!`;
     }
 
     // Default response
