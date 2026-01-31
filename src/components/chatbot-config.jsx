@@ -507,6 +507,7 @@ genZ: {
     'ok':'👍',
     'thank you fer':'aman',
     'fer':'yo?',
+    'thx':'sip',
 
     'ok gas': 'ok gas ok gas',
     'gas': 'gaskeun',
