@@ -6,7 +6,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Halo ${userName}! 👋 Saya Ferdynand. Saya akan membantu memandu Anda menggunakan sistem ini.\n\nApa yang ingin Anda lakukan hari ini?`,
+      content: `Halo ${userName}! 👋 Saya Ferdynand,panggil aja Aming! . Saya akan membantu memandu Anda menggunakan sistem ini.\n\nApa yang ingin Anda lakukan hari ini?`,
       timestamp: new Date()
     }
   ]);
@@ -212,7 +212,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
                 <Bot className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-lg">Portal AVM Assistant</h3>
+                <h3 className="font-bold text-lg">Aming</h3>
                 <p className="text-xs text-white/80">Siap membantu Anda</p>
               </div>
             </div>
