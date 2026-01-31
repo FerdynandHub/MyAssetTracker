@@ -30,6 +30,7 @@ import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import MyRequestsMode from './components/MyRequestsMode.jsx';
 import LoanMode from './components/LoanMode';
+import AIChatbot from './components/AIChatbot';
 
 
 
@@ -564,6 +565,16 @@ return (
         )}
       </div>
     </main>
+
+    {/* AI Chatbot - Always visible when logged in */}
+    <AIChatbot
+      userName={userName}
+      userRole={userRole}
+      ROLES={ROLES}
+      SCRIPT_URL={SCRIPT_URL}
+      CATEGORIES={CATEGORIES}
+      onNavigate={setMode}
+    />
   </div>
 );
 
