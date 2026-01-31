@@ -213,18 +213,16 @@ const getResponse = (userInput) => {
   // ====== 6A. QUICK ASSET COUNT ======
   // If user just asks "how many" without context, show quick asset count
   if (input.match(/^(berapa|ada berapa|jumlah|total)[\s?]*$/i)) {
-    return `📦 Total Aset di Sistem: ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
+    return `📦 **Total Aset di Sistem:** ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
   }
 
   // ====== 6B. SYSTEM STATUS - FULL INFO ======
   // More natural ways to ask about stats
-if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem|info\s+portal|kondisi\s+sistem|kondisi\s+portal|dashboard|overview|ringkasan)\b/i) ||
-    input.match(/^(status|stats|stat|info|dashboard|overview)[\s!.]*$/i) ||
-    input.match(/\b(berapa\s+(total|jumlah|banyak)\s+(aset|barang|data)|total\s+(aset|barang|data)|jumlah\s+(aset|barang|data)|banyak\s+(aset|barang|data))\b/i) ||
-    input.match(/\b(ada\s+berapa\s+(aset|barang|data)|jumlah\s+(aset|barang|data)|totalnya\s+berapa|banyaknya\s+berapa)\b/i) ||
-    input.match(/\b(aset|barang|data)\s+(berapa|ada\s+berapa|banyak)\b/i) ||
-    input.match(/\b(asetnya\s+berapa|barangnya\s+berapa|datanya\s+berapa|total\s+berapa|berapa\s+data)\b/i)) {
-
+  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem)\b/i) ||
+      input.match(/^(status|stats)[\s!.]*$/i) ||
+      input.match(/\b(berapa\s+(total|jumlah|banyak)\s+(aset|barang|data)|total\s+(aset|data))\b/i) ||
+      input.match(/\b(ada\s+berapa\s+(aset|barang|data)|jumlah\s+(aset|data))\b/i) ||
+      input.match(/\b(aset|barang|data)\s+(berapa|ada\s+berapa)\b/i)) {
     
     let statusMsg = `Status Sistem Portal AVM:\n\n`;
     
@@ -259,7 +257,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
   // Check against features from config
   // IMPORTANT: Only match if message is longer than 3 characters OR contains spaces
   // This prevents short slang like "jir", "gas", "sip" from being caught by feature keywords
-  if (input.length > 4 || input.includes(' ')) {
+  if (input.length > 3 || input.includes(' ')) {
     for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
       if (feature.keywords) {
         // Check if any keyword matches
@@ -270,7 +268,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
           }
           // For single words, use word boundary to avoid partial matches
           // AND make sure the input is not too short (avoid catching slang)
-          if (input.length <= 3 && keyword.length <= 4) {
+          if (input.length <= 4 && keyword.length <= 4) {
             // For very short inputs/keywords, require exact match to avoid false positives
             return input === keyword.toLowerCase();
           }
@@ -427,7 +425,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
                       : 'bg-white text-gray-800 rounded-2xl rounded-tl-none shadow-sm border border-gray-100'
                   } p-2.5 sm:p-3`}
                 >
-                  <p className="text-xs sm:text-base whitespace-pre-wrap leading-relaxed">
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
                     {message.content}
                   </p>
                   <p
@@ -489,7 +487,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
                 onKeyPress={handleKeyPress}
                 placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-base sm:text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
               />
               <button
                 onClick={handleSendMessage}

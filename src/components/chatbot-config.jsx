@@ -57,7 +57,7 @@ Cara 1: Lewat Daftar Data (kalau ga tau ID-nya)
 Cara 2: Lewat Cek Data (kalau udah tau ID)
 • Buka menu "Cek Data"
 • Tinggal masukin ID aset atau scan barcode-nya 📷
-• Boom! Detail langsung muncul 🎯
+• Boom! Detail langsung muncul 
 
 Yang mana nih? Cara 2 lebih cepet kalau udah tau ID-nya!`
   },
@@ -87,10 +87,10 @@ Yang mana nih? Cara 2 lebih cepet kalau udah tau ID-nya!`
    • Bisa ketik manual terus klik "Add", atau
    • Langsung scan barcode aja 📷 (lebih praktis!)
 3. Mau banyak? Scan terus aja, ga ada limit!
-4. Udah selesai? Klik "Export to CSV" 📥
+4. Udah selesai? Klik "Export to CSV" 
 5. File langsung ke-download otomatis!
 
-💡 Pro tips: Scan banyak sekalian biar langsung komplit laporannya! Efisien kan? 😎`
+💡 Pro tips: Scan banyak sekalian biar langsung komplit laporannya.`
   },
 
   history: {
@@ -116,12 +116,12 @@ Yang mana nih? Cara 2 lebih cepet kalau udah tau ID-nya!`
 1. Buka menu "Riwayat Data" di sidebar
 2. Masukin ID aset yang mau dicek
    • Bisa ketik atau scan langsung
-3. Jreng! Semua history muncul 📜
+3. Jreng! Semua history muncul 
    • Semua perubahan dari awal tercatat
    • Siapa yang ngubah (nama user-nya)
    • Kapan tepatnya diubah
 
-Berguna banget buat audit sama tracking! Jadi kalau ada yang aneh, langsung ketahuan deh 🕵️`
+Berguna banget buat audit sama tracking! Jadi kalau ada yang aneh, langsung ketahuan deh `
   },
 
   battery: {
@@ -255,7 +255,7 @@ KEMBALIKAN BARANG:
 3. Scan atau ketik ID barang yang mau dibalikin
 4. Submit dan selesai!
 
-Status bakal otomatis ke-update kok! 📦
+Status bakal otomatis ke-update kok! 
 
 *Note: Sebagai Editor, request pinjam kamu perlu di-approve admin dulu. Tapi buat kembalikan barang langsung bisa!*`,
       admin: `Pinjam/balikin barang gampang, langsung approved:
@@ -273,7 +273,7 @@ KEMBALIKAN BARANG:
 3. Scan atau input ID barang
 4. Submit dan kelar!
 
-Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
+Sistem otomatis update status-nya, jadi ga perlu manual tracking! `
     }
   },
 
@@ -371,7 +371,7 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
 2. Cari tombol "Scan Barcode" 📷 (biasanya ada icon kamera)
 3. Klik → Kamera langsung kebuka
 4. Arahkan ke barcode aset dengan stabil
-5. Tunggu sebentar → ID otomatis ke-detect! ✨
+5. Tunggu sebentar → ID otomatis ke-detect! 
 
 💡 Tips biar lancar:
 • Pastikan pencahayaan cukup (jangan terlalu gelap/silau)
@@ -509,8 +509,8 @@ genZ: {
     'gas': 'gaskeun',
     'yaudah gas': 'nah gitu dong',
     'gass': 'GASS',
-    'gasss': 'GASSS 🔥',
-    'gaspol': 'GASPOL 🚀',
+    'gasss': 'GASSS',
+    'gaspol': 'GASPOL',
 
     'sip': 'y',
     'mantap': 'mantul',
@@ -518,9 +518,10 @@ genZ: {
     'keren nih': 'ok sekarang belikan saya babi rica',  
     'keren banget': 'ok sekarang belikan saya babi rica', 
     'keren sih': 'ok sekarang belikan saya babi rica',   
-    'cakep': 'valid 🔥',
+    'cakep': 'valid',
     'setuju': 'valid',
     'setuju banget': 'valid no debat',
+    
 
     'santai': 'santuy',
     'serius': 'fr fr',
