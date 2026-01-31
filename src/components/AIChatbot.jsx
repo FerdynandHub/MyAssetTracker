@@ -270,7 +270,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
           }
           // For single words, use word boundary to avoid partial matches
           // AND make sure the input is not too short (avoid catching slang)
-          if (input.length <= 4 && keyword.length <= 4) {
+          if (input.length <= 3 && keyword.length <= 4) {
             // For very short inputs/keywords, require exact match to avoid false positives
             return input === keyword.toLowerCase();
           }
