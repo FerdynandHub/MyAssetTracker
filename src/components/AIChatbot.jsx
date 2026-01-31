@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Bot, User, RefreshCw, Zap } from 'lucide-react';
+import { Headset, X, Send, Loader2, Bot, User, RefreshCw, Zap } from 'lucide-react';
 import { CHATBOT_CONFIG, GENERAL_RESPONSES, CONTEXTUAL_RESPONSES } from './chatbot-config';
 
 const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNavigate }) => {
@@ -352,7 +352,7 @@ const getResponse = (userInput) => {
             animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
           }}
         >
-          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+          <Headset className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
         </button>
       )}
