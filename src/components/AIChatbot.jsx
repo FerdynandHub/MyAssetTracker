@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2, Bot, User, RefreshCw, Zap } from 'lucide-react';
-import { CHATBOT_CONFIG, GENERAL_RESPONSES } from './chatbot-config';
+import { CHATBOT_CONFIG, GENERAL_RESPONSES, CONTEXTUAL_RESPONSES } from './chatbot-config';
 
 const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -174,8 +174,8 @@ const getResponse = (userInput) => {
   // ====== 1. GEN Z SLANG - HIGHEST PRIORITY ======
   // Check exact match dulu (case insensitive)
   // This must be first to prevent feature keywords from catching slang
-  if (GENERAL_RESPONSES.genZ?.exact) {
-    const genZResponse = GENERAL_RESPONSES.genZ.exact[msg];
+  if (CONTEXTUAL_RESPONSES?.genZ?.exact) {
+    const genZResponse = CONTEXTUAL_RESPONSES.genZ.exact[msg];
     if (genZResponse !== undefined) {
       console.log('✅ Gen Z match found:', msg, '→', genZResponse);
       return genZResponse;
@@ -210,12 +210,19 @@ const getResponse = (userInput) => {
     return GENERAL_RESPONSES.roleInfo[userRole];
   }
 
-  // ====== 6. SYSTEM STATUS - MUST BE SPECIFIC ======
-  // Harus jelas nanya status/stats, bukan cuma "berapa"
-  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem|info\s+portal|kondisi\s+sistem|kondisi\s+portal|dashboard|overview|ringkasan)\b/i) ||
-    input.match(/^(status|stats|stat|info|dashboard|overview)[\s!.]*$/i) ||
-    input.match(/\b(berapa\s+(total|jumlah)\s+(aset|barang)|total\s+aset|total\s+barang|jumlah\s+aset|jumlah\s+barang|aset\s+berapa|barang\s+berapa|asetnya\s+berapa|barangnya\s+berapa|totalnya\s+berapa|ada\s+berapa\s+aset)\b/i)) {
+  // ====== 6A. QUICK ASSET COUNT ======
+  // If user just asks "how many" without context, show quick asset count
+  if (input.match(/^(berapa|ada berapa|jumlah|total)[\s?]*$/i)) {
+    return `📦 **Total Aset di Sistem:** ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
+  }
 
+  // ====== 6B. SYSTEM STATUS - FULL INFO ======
+  // More natural ways to ask about stats
+  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem)\b/i) ||
+      input.match(/^(status|stats)[\s!.]*$/i) ||
+      input.match(/\b(berapa\s+(total|jumlah|banyak)\s+(aset|barang|data)|total\s+(aset|data))\b/i) ||
+      input.match(/\b(ada\s+berapa\s+(aset|barang|data)|jumlah\s+(aset|data))\b/i) ||
+      input.match(/\b(aset|barang|data)\s+(berapa|ada\s+berapa)\b/i)) {
     
     let statusMsg = `Status Sistem Portal AVM:\n\n`;
     
