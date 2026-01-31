@@ -213,7 +213,7 @@ const getResponse = (userInput) => {
   // ====== 6A. QUICK ASSET COUNT ======
   // If user just asks "how many" without context, show quick asset count
   if (input.match(/^(berapa|ada berapa|jumlah|total)[\s?]*$/i)) {
-    return `📦 **Total Aset di Sistem:** ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
+    return `📦 Total Aset di Sistem: ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
   }
 
   // ====== 6B. SYSTEM STATUS - FULL INFO ======
@@ -259,7 +259,7 @@ if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+siste
   // Check against features from config
   // IMPORTANT: Only match if message is longer than 3 characters OR contains spaces
   // This prevents short slang like "jir", "gas", "sip" from being caught by feature keywords
-  if (input.length > 3 || input.includes(' ')) {
+  if (input.length > 4 || input.includes(' ')) {
     for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
       if (feature.keywords) {
         // Check if any keyword matches
