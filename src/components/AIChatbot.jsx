@@ -164,97 +164,112 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     return response;
   };
 
-  // Main response generator
-  const getResponse = (userInput) => {
+// Main response generator
+const getResponse = (userInput) => {
   const msg = userInput.toLowerCase().trim();
+  const input = msg;
 
-       //ya
-    if (GENERAL_RESPONSES.genZ?.exact[msg]) {
+  // ====== 1. GEN Z SLANG - HIGHEST PRIORITY ======
+  // Check exact match dulu (case insensitive)
+  if (GENERAL_RESPONSES.genZ?.exact?.[msg]) {
     return GENERAL_RESPONSES.genZ.exact[msg];
   }
 
-    const input = msg;
+  // ====== 2. VERY SHORT GREETINGS ONLY ======
+  // Cuma trigger kalau PURELY greeting doang (ga ada kata lain)
+  if (input.match(/^(hai|halo|hi|hello|hey)[\s!.]*$/)) {
+    return GENERAL_RESPONSES.greeting(userName);
+  }
 
-    // Greetings
-    if (input.match(/^(hai|halo|hi|hello|hey|pagi|siang|sore|malam)/)) {
-      return GENERAL_RESPONSES.greeting(userName);
+  // Waktu-based greeting (pagi/siang/sore/malam) - ini opsional
+  if (input.match(/^(pagi|siang|sore|malam)[\s!.]*$/)) {
+    return GENERAL_RESPONSES.greeting(userName);
+  }
+
+  // ====== 3. THANKS - STRICT ======
+  if (input.match(/^(terima kasih|thanks|thank you|makasih|thx|tysm|ty)[\s!.]*$/i)) {
+    return GENERAL_RESPONSES.thanks(userName);
+  }
+
+  // ====== 4. HELP - STRICT ======
+  if (input.match(/^(help|bantuan|tolong|\?)[\s!.]*$/i)) {
+    return GENERAL_RESPONSES.help;
+  }
+
+  // ====== 5. ROLE INFO - MUST MENTION "role" or "bisa apa" ======
+  // Jangan cuma "bisa" doang, harus ada context
+  if (input.match(/\b(role\s+(apa|saya|gue|gw|ku)|apa\s+role|akses\s+apa|permission|hak\s+akses)\b/i) ||
+      input.match(/^(apa\s+yang\s+)?(bisa|tidak\s+bisa|ga\s+bisa)\s+(apa|ngapain|aku|gue|saya|apaan)[\s?]*$/i)) {
+    return GENERAL_RESPONSES.roleInfo[userRole];
+  }
+
+  // ====== 6. SYSTEM STATUS - MUST BE SPECIFIC ======
+  // Harus jelas nanya status/stats, bukan cuma "berapa"
+  if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem)\b/i) ||
+      input.match(/^(status|stats)[\s!.]*$/i) ||
+      input.match(/\b(berapa\s+(total|jumlah)\s+(aset|barang)|total\s+aset)\b/i)) {
+    
+    let statusMsg = `Status Sistem Portal AVM:\n\n`;
+    
+    if (systemState.totalAssets > 0) {
+      statusMsg += `📦 Total Aset: ${systemState.totalAssets}\n`;
     }
-
-    // Thanks
-    if (input.match(/(terima kasih|thanks|thank you|makasih|thx)/i)) {
-      return GENERAL_RESPONSES.thanks(userName);
+    
+    if (userRole !== ROLES.VIEWER && systemState.batteryInventory) {
+      statusMsg += `🔋 Baterai AA: ${systemState.batteryInventory.AA} pcs\n`;
+      statusMsg += `🔋 Baterai 9V: ${systemState.batteryInventory['9V']} pcs\n`;
     }
-
-    // Help
-    if (input.match(/^(help|bantuan|tolong|\?)$/i)) {
-      return GENERAL_RESPONSES.help;
+    
+    if (userRole === ROLES.ADMIN && systemState.pendingRequests !== undefined) {
+      statusMsg += `⏳ Pending Requests: ${systemState.pendingRequests}\n`;
     }
-
-    // Role info
-    if (input.match(/(role|akses|permission|hak|bisa|tidak bisa)/i)) {
-      return GENERAL_RESPONSES.roleInfo[userRole];
+    
+    if (userRole === ROLES.EDITOR && systemState.myRequests !== undefined) {
+      statusMsg += `📋 Pengajuan Saya: ${systemState.myRequests}\n`;
     }
-
-    // System status
-    if (input.match(/(status|statistik|stats|berapa|jumlah|total)/i)) {
-      let statusMsg = `Status Sistem Portal AVM:\n\n`;
-      
-      if (systemState.totalAssets > 0) {
-        statusMsg += `📦 Total Aset: ${systemState.totalAssets}\n`;
-      }
-      
-      if (userRole !== ROLES.VIEWER && systemState.batteryInventory) {
-        statusMsg += `🔋 Baterai AA: ${systemState.batteryInventory.AA} pcs\n`;
-        statusMsg += `🔋 Baterai 9V: ${systemState.batteryInventory['9V']} pcs\n`;
-      }
-      
-      if (userRole === ROLES.ADMIN && systemState.pendingRequests !== undefined) {
-        statusMsg += `⏳ Pending Requests: ${systemState.pendingRequests}\n`;
-      }
-      
-      if (userRole === ROLES.EDITOR && systemState.myRequests !== undefined) {
-        statusMsg += `📋 Pengajuan Saya: ${systemState.myRequests}\n`;
-      }
-      
-      statusMsg += `\n📂 Kategori: ${systemState.categories.length} jenis\n`;
-      statusMsg += `👤 Role: ${userRole}\n`;
-      
-      if (systemState.lastSync) {
-        statusMsg += `\n🔄 Last update: ${systemState.lastSync.toLocaleTimeString('id-ID')}`;
-      }
-      
-      return statusMsg;
+    
+    statusMsg += `\n📂 Kategori: ${systemState.categories.length} jenis\n`;
+    statusMsg += `👤 Role: ${userRole}\n`;
+    
+    if (systemState.lastSync) {
+      statusMsg += `\n🔄 Last update: ${systemState.lastSync.toLocaleTimeString('id-ID')}`;
     }
+    
+    return statusMsg;
+  }
 
-    // List all features
-    if (input.match(/(fitur|feature|bisa apa|apa aja|menu|fungsi)/i)) {
-      const availableFeatures = getAvailableFeatures();
-      let featuresMsg = `Fitur yang tersedia untuk Anda:\n\n`;
-      
-      availableFeatures.forEach((feature, idx) => {
-        featuresMsg += `${idx + 1}. ${feature.name}\n   ${feature.description}\n\n`;
+  // ====== 7. FEATURE MATCHING ======
+  // Check against features from config
+  for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
+    if (feature.keywords) {
+      // Check if any keyword matches
+      const hasKeyword = feature.keywords.some(keyword => {
+        // For multi-word keywords, check if the whole phrase exists
+        if (keyword.includes(' ')) {
+          return input.includes(keyword);
+        }
+        // For single words, use word boundary to avoid partial matches
+        return new RegExp(`\\b${keyword}\\b`, 'i').test(input);
       });
-      
-      featuresMsg += `Ketik nama fitur atau tanyakan "cara [nama fitur]" untuk panduan!`;
-      
-      return featuresMsg;
-    }
 
-    // Categories
-    if (input.match(/(kategori|category|jenis)/i)) {
-      const catList = systemState.categories.slice(0, 10).join(', ');
-      return `Kategori aset yang tersedia (${systemState.categories.length} jenis):\n\n${catList}, dan ${systemState.categories.length - 10} lainnya.\n\n🔍 Gunakan filter kategori di menu "Daftar Data" untuk pencarian lebih mudah!\n\nAda kategori spesifik yang dicari?`;
-    }
+      if (hasKeyword) {
+        // Check role permission
+        if (!feature.roleRequired.includes(userRole)) {
+          return `Maaf, fitur "${feature.name}" cuma bisa diakses sama ${feature.roleRequired.join(', ')} 🔒\n\nRole kamu sekarang: ${userRole}\n\nMau tau apa aja yang bisa kamu lakuin? Ketik "role"!`;
+        }
 
-    // Try to find matching feature from config
-    const matchedFeature = findFeatureByKeywords(input);
-    if (matchedFeature) {
-      return getFeatureResponse(matchedFeature);
+        // Return appropriate instructions based on role
+        if (typeof feature.instructions === 'object') {
+          return feature.instructions[userRole] || feature.instructions.editor;
+        }
+        return feature.instructions;
+      }
     }
+  }
 
-    // Not found
-    return GENERAL_RESPONSES.notFound;
-  };
+  // ====== 8. NOT FOUND ======
+  return GENERAL_RESPONSES.notFound;
+};
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
