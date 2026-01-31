@@ -49,12 +49,12 @@ export const CHATBOT_CONFIG = {
     ],
     instructions: `Ada 2 cara nih buat cek data aset, pilih yang cocok aja:
 
-**Cara 1: Lewat Daftar Data** (kalau ga tau ID-nya)
+Cara 1: Lewat Daftar Data (kalau ga tau ID-nya)
 • Buka menu "Daftar Data" di sidebar
 • Filter kategori yang kamu cari
 • Klik asetnya langsung deh!
 
-**Cara 2: Lewat Cek Data** (kalau udah tau ID)
+Cara 2: Lewat Cek Data (kalau udah tau ID)
 • Buka menu "Cek Data"
 • Tinggal masukin ID aset atau scan barcode-nya 📷
 • Boom! Detail langsung muncul 🎯
@@ -158,7 +158,7 @@ Berguna banget buat audit sama tracking! Jadi kalau ada yang aneh, langsung keta
 
 Sistem otomatis ngurangin inventory, jadi stok selalu update!
 
-**Jenis baterai tersedia:** AA dan 9V aja ya! ⚡`,
+Jenis baterai tersedia: AA dan 9V aja ya! ⚡`,
     showLiveData: true // Will show current battery inventory
   },
 
@@ -188,8 +188,8 @@ Sistem otomatis ngurangin inventory, jadi stok selalu update!
 
 1. Buka menu "Ajukan Ubah Data" di sidebar
 2. Pilih mode yang cocok:
-   • **Single Update** - Kalau cuma 1 aset
-   • **Batch Update** - Kalau mau ubah banyak sekaligus (lebih efisien!)
+   • Single Update - Kalau cuma 1 aset
+   • Batch Update - Kalau mau ubah banyak sekaligus (lebih efisien!)
 3. Masukin ID aset:
    • Bisa ketik manual, atau
    • Langsung scan barcode 📷
@@ -203,8 +203,8 @@ Sistem otomatis ngurangin inventory, jadi stok selalu update!
 
 1. Buka menu "Perbarui Data" di sidebar
 2. Pilih mode sesuai kebutuhan:
-   • **Single Update** - Kalau cuma 1 aset
-   • **Batch Update** - Kalau mau ubah banyak aset sekaligus
+   • Single Update - Kalau cuma 1 aset
+   • Batch Update - Kalau mau ubah banyak aset sekaligus
 3. Masukin ID aset:
    • Ketik manual, atau
    • Scan barcode langsung 📷
@@ -242,14 +242,14 @@ Sistem otomatis ngurangin inventory, jadi stok selalu update!
     instructions: {
       editor: `Mau pinjam atau balikin barang? Ini caranya:
 
-**PINJAM BARANG:**
+PINJAM BARANG:
 1. Buka menu "Pinjam Barang"
 2. Pilih "Update Status Pinjam"
 3. Scan atau ketik ID barangnya
 4. Isi detail peminjam (nama, keperluan, dll)
 5. Submit → Nunggu approval admin dulu ya!
 
-**KEMBALIKAN BARANG:**
+KEMBALIKAN BARANG:
 1. Buka menu "Pinjam Barang"
 2. Pilih "Update Status Kembali"
 3. Scan atau ketik ID barang yang mau dibalikin
@@ -260,14 +260,14 @@ Status bakal otomatis ke-update kok! 📦
 *Note: Sebagai Editor, request pinjam kamu perlu di-approve admin dulu. Tapi buat kembalikan barang langsung bisa!*`,
       admin: `Pinjam/balikin barang gampang, langsung approved:
 
-**PINJAM BARANG:**
+PINJAM BARANG:
 1. Buka menu "Pinjam Barang"
 2. Pilih "Update Status Pinjam"
 3. Scan atau input ID barang
 4. Isi detail peminjam lengkap ya
 5. Submit → Langsung approved! ✅
 
-**KEMBALIKAN BARANG:**
+KEMBALIKAN BARANG:
 1. Buka menu "Pinjam Barang"
 2. Pilih "Update Status Kembali"
 3. Scan atau input ID barang
@@ -301,9 +301,9 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
 1. Buka menu "Pengajuan Saya"
 2. Lihat semua request yang pernah kamu ajukan
 3. Cek statusnya:
-   • 🟡 **Pending** - Lagi nunggu review admin nih
-   • ✅ **Approved** - Yeay! Udah disetujui & data sudah ter-update
-   • ❌ **Rejected** - Ditolak admin (mungkin ada yang salah)
+   • 🟡 Pending - Lagi nunggu review admin nih
+   • ✅ Approved - Yeay! Udah disetujui & data sudah ter-update
+   • ❌ Rejected - Ditolak admin (mungkin ada yang salah)
 
 💡 Pro tips: Kalau udah lama pending dan urgent, chat admin aja buat follow up! Kadang mereka lupa cek, normal kok 😅`,
     showLiveData: true // Will show my requests count
@@ -336,8 +336,8 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
    • Siapa yang ngajuin
    • Kapan diajukan
 3. Review dengan teliti, terus putuskan:
-   • ✅ **Approve** → Data langsung ter-update otomatis
-   • ❌ **Reject** → Request ditolak & data ga berubah
+   • ✅ Approve → Data langsung ter-update otomatis
+   • ❌ Reject → Request ditolak & data ga berubah
 
 📋 Best practices buat Admin:
 • Review dengan teliti ya, jangan asal approve
@@ -368,12 +368,12 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
     instructions: `Scanner barcode ada di hampir semua fitur! Ini cara pakainya:
 
 1. Di fitur apa pun (Cek Data, Update, Export, dll)
-2. Cari tombol **"Scan Barcode"** 📷 (biasanya ada icon kamera)
+2. Cari tombol "Scan Barcode" 📷 (biasanya ada icon kamera)
 3. Klik → Kamera langsung kebuka
 4. Arahkan ke barcode aset dengan stabil
 5. Tunggu sebentar → ID otomatis ke-detect! ✨
 
-💡 **Tips biar lancar:**
+💡 Tips biar lancar:
 • Pastikan pencahayaan cukup (jangan terlalu gelap/silau)
 • Barcode harus jelas & ga rusak
 • Pegang HP stabil, jangan goyang-goyang
@@ -382,7 +382,7 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
 
 Masih bingung? Cek "Cara Pakai Scanner" di sidebar buat tutorial lebih detail!
 
-**Troubleshooting:**
+Troubleshooting:
 • Kamera ga mau buka? → Cek permission browser
 • Barcode ga ke-detect? → Coba zoom in/out
 • Masih error? → Ketik manual ID-nya aja! 😊`
@@ -399,28 +399,28 @@ export const GENERAL_RESPONSES = {
   
   help: `Nih beberapa hal yang bisa gue bantu:
 
-🔍 **Cek Data** - Cara search & liat detail aset
-✏️ **Update Data** - Cara ubah informasi aset
-🔋 **Baterai** - Cara checkout baterai buat event
-📥 **Export** - Cara download data ke CSV
-📦 **Pinjam Barang** - Cara pinjam/kembalikan barang
-📜 **Riwayat** - Cara liat history perubahan
-📷 **Scan** - Cara pakai barcode scanner
-👤 **Role** - Info hak akses kamu
-📊 **Status** - Lihat statistik sistem real-time
+🔍 Cek Data - Cara search & liat detail aset
+✏️ Update Data - Cara ubah informasi aset
+🔋 Baterai - Cara checkout baterai buat event
+📥 Export - Cara download data ke CSV
+📦 Pinjam Barang - Cara pinjam/kembalikan barang
+📜 Riwayat - Cara liat history perubahan
+📷 Scan - Cara pakai barcode scanner
+👤 Role - Info hak akses kamu
+📊 Status - Lihat statistik sistem real-time
 
 Tinggal ketik topik yang mau ditanyain! Atau langsung aja tanya dengan bahasa sehari-hari, gue ngerti kok 😉`,
 
   roleInfo: {
-    viewer: `**Role kamu: Viewer** 👁️
+    viewer: `Role kamu: Viewer 👁️
 
-**Yang BISA kamu lakuin:**
+Yang BISA kamu lakuin:
 ✅ Lihat semua data aset
 ✅ Cek informasi detail aset
 ✅ Export data ke CSV (download file)
 ✅ Lihat riwayat perubahan
 
-**Yang TIDAK BISA:**
+Yang TIDAK BISA:
 ❌ Update atau ubah data
 ❌ Checkout baterai
 ❌ Pinjam barang
@@ -428,24 +428,24 @@ Tinggal ketik topik yang mau ditanyain! Atau langsung aja tanya dengan bahasa se
 
 `,
 
-    editor: `**Role kamu: Editor** ✏️
+    editor: `Role kamu: Editor ✏️
 
-**Yang BISA kamu lakuin:**
+Yang BISA kamu lakuin:
 ✅ Semua akses Viewer (cek, export, dll)
 ✅ Ajukan update data (tapi perlu approval admin)
 ✅ Checkout baterai buat event
 ✅ Pinjam & kembalikan barang
 ✅ Lihat status pengajuan kamu
 
-**Yang TIDAK BISA:**
+Yang TIDAK BISA:
 ❌ Update data langsung tanpa approval
 ❌ Approve/reject request orang lain
 
 *Note: Request update kamu bakal direview admin dulu sebelum di-apply. Jadi kalau urgent, follow up ya! 😊*`,
 
-    admin: `**Role kamu: Admin** 👑
+    admin: `Role kamu: Admin 👑
 
-**FULL ACCESS!** 🎉
+FULL ACCESS! 🎉
 ✅ Update data langsung (tanpa approval)
 ✅ Approve/reject request dari Editor
 ✅ Semua fitur tersedia lengkap
@@ -467,14 +467,14 @@ Coba deh tanya tentang:
 • Fitur apa aja yang tersedia
 • Cara pakai scanner
 
-Atau kalau bingung, ketik **"help"** aja buat bantuan lengkap!`
+Atau kalau bingung, ketik "help" aja buat bantuan lengkap!`
 };
 
 // Additional contextual responses for natural conversation
 export const CONTEXTUAL_RESPONSES = {
   // Status checks
   checkStatus: (userName, pendingCount) => 
-    `Halo ${userName}! Gue cek ya...\n\n${pendingCount > 0 ? `Kamu ada **${pendingCount} pengajuan** yang masih pending nih. Mau liat detail-nya?` : `Kayaknya semua pengajuan kamu udah di-approve atau belum ada yang pending. All good! ✅`}`,
+    `Halo ${userName}! Gue cek ya...\n\n${pendingCount > 0 ? `Kamu ada ${pendingCount} pengajuan yang masih pending nih. Mau liat detail-nya?` : `Kayaknya semua pengajuan kamu udah di-approve atau belum ada yang pending. All good! ✅`}`,
   
   // When user seems frustrated
   frustrated: (userName) =>
@@ -483,7 +483,7 @@ export const CONTEXTUAL_RESPONSES = {
   // When asking about capabilities
   capabilities: `Gue bisa bantuin kamu dengan berbagai hal di Portal AVM:
 
-📱 **Fitur Utama:**
+📱 Fitur Utama:
 • Cek & search data aset (pakai ID atau scan)
 • Update data (langsung atau request dulu)
 • Download/export data ke CSV
@@ -491,7 +491,7 @@ export const CONTEXTUAL_RESPONSES = {
 • Pinjam & kembalikan barang
 • Tracking history perubahan
 
-🔧 **Tools:**
+🔧 Tools:
 • Barcode scanner (scan langsung dari HP)
 • Filter & search advanced
 • Batch operations (ubah banyak sekaligus)
@@ -503,7 +503,6 @@ genZ: {
     'anjir': 'anjir',
     'njir': 'njir',
     'bjir': 'bjir',
-    'jir': 'jir',
 
     'ok gas': 'ok gas ok gas',
     'gas': 'gaskeun',
