@@ -1,4 +1,4 @@
-# Portal AVM UPH 5.0
+# Portal AVM UPH
 
 Asset and inventory management system for UPH AV & Mulmed.
 

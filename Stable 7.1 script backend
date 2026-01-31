@@ -205,6 +205,39 @@ function getBatteryHistorySheet() {
   return sheet;
 }
 
+function getBatteryHistory(limit) {
+  const sheet = getBatteryHistorySheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  
+  // Skip header row and get all data
+  const history = [];
+  
+  for (let i = 1; i < data.length; i++) {
+    history.push({
+      batteryType: data[i][0],
+      quantity: data[i][1],
+      name: data[i][2],
+      eventName: data[i][3],
+      eventLocation: data[i][4],
+      timestamp: data[i][5]
+    });
+  }
+  
+  // Sort by timestamp descending (newest first)
+  history.sort((a, b) => {
+    const dateA = new Date(a.timestamp || 0);
+    const dateB = new Date(b.timestamp || 0);
+    return dateB - dateA;
+  });
+  
+  // Limit results if specified
+  const limitNum = parseInt(limit) || 10;
+  const limitedHistory = history.slice(0, limitNum);
+  
+  return json({ history: limitedHistory });
+}
+
 function getBatteryInventory() {
   const sheet = getBatterySheet();
   const data = sheet.getDataRange().getValues();
@@ -312,7 +345,9 @@ function doGet(e) {
         return getAssetHistory(e.parameter.id);
       case 'getBatteryInventory':
         return getBatteryInventory();
-      case 'getMyRequests':  // ADD THIS NEW CASE
+        case 'getBatteryHistory':
+  return getBatteryHistory(e.parameter.limit);
+      case 'getMyRequests':  
         return json(getMyRequests(e.parameter.userName));
       default:
         return json({ error: 'Invalid action', availableActions: ['authenticate', 'getAssets', 'getAsset', 'getCategories', 'getPendingRequests', 'getAssetHistory', 'getBatteryInventory', 'getMyRequests'] });
@@ -751,6 +786,9 @@ function submitUpdateRequest(body) {
     "yyyyMMddHHmmss"
   );
   
+  // Determine type from body.type, fallback to isBatch logic
+  let requestType = body.type || (body.isBatch ? 'batch' : 'single');
+  
   sheet.appendRow([
     requestId,
     body.ids.join(','),
@@ -758,11 +796,12 @@ function submitUpdateRequest(body) {
     body.requestedBy,
     timestamp,
     'pending',
-    body.isBatch ? 'batch' : 'single'
+    requestType
   ]);
   
   return json({ success: true, requestId: requestId });
 }
+
 
 function getPendingRequests() {
   const sheet = getRequestSheet();
