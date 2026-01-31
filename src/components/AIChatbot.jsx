@@ -15,6 +15,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const inputRef = useRef(null); // NEW: Reference to input field
 
   // Live system state
   const [systemState, setSystemState] = useState({
@@ -39,6 +40,26 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     if (isOpen && !systemState.lastSync) {
       fetchSystemState();
     }
+  }, [isOpen]);
+
+  // NEW: Prevent body scroll when chat is open on mobile
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent background scrolling
+      document.body.style.overflow = 'hidden';
+      
+      // Focus on input when chat opens
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    } else {
+      // Restore background scrolling
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isOpen]);
 
   const fetchSystemState = async () => {
@@ -324,6 +345,11 @@ const getResponse = (userInput) => {
       }]);
       
       setIsLoading(false);
+      
+      // NEW: Refocus input after sending message
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }, 500);
   };
 
@@ -357,9 +383,12 @@ const getResponse = (userInput) => {
         </button>
       )}
 
-      {/* Chat Window */}
+      {/* Chat Window - FIXED: Added touch-action and better positioning for mobile */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6">
+        <div 
+          className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6"
+          style={{ touchAction: 'none' }} // NEW: Prevent touch gestures from affecting background
+        >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -391,11 +420,14 @@ const getResponse = (userInput) => {
             </div>
           </div>
 
-          {/* Messages */}
+          {/* Messages - FIXED: Better overflow handling */}
           <div
             ref={chatContainerRef}
-            className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50"
-            style={{ scrollBehavior: 'smooth' }}
+            className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50 overscroll-contain"
+            style={{ 
+              scrollBehavior: 'smooth',
+              WebkitOverflowScrolling: 'touch' // NEW: Smooth scrolling on iOS
+            }}
           >
             {messages.map((message, idx) => (
               <div
@@ -456,36 +488,38 @@ const getResponse = (userInput) => {
             <div ref={messagesEndRef} />
           </div>
 
-{/* Quick Actions */}
-<div className="hidden sm:block px-4 py-2 border-t bg-white">
-  <p className="text-xs text-gray-500 mb-2">Quick actions:</p>
-  <div className="flex flex-wrap gap-2">
-    {quickActions.map((action, idx) => (
-      <button
-        key={idx}
-        onClick={() => {
-          setInput(action.query);
-          setTimeout(() => handleSendMessage(), 100);
-        }}
-        className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition"
-      >
-        {action.label}
-      </button>
-    ))}
-  </div>
-</div>
+          {/* Quick Actions - FIXED: Now visible on mobile with responsive sizing */}
+          <div className="px-3 sm:px-4 py-2 border-t bg-white">
+            <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2">Quick actions:</p>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {quickActions.map((action, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setInput(action.query);
+                    setTimeout(() => handleSendMessage(), 100);
+                  }}
+                  className="text-[10px] sm:text-xs bg-gray-100 hover:bg-gray-200 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition"
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {/* Input */}
+          {/* Input - FIXED: Added ref and better mobile handling */}
           <div className="p-3 sm:p-4 border-t bg-white">
             <div className="flex gap-2">
               <input
+                ref={inputRef} // NEW: Added ref for focus management
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-3 sm:px-4 py-2 text-base sm:text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                autoComplete="off" // NEW: Prevent autocomplete suggestions
               />
               <button
                 onClick={handleSendMessage}
