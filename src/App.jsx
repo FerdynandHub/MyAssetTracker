@@ -209,11 +209,15 @@ const App = () => {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">
-            Portal AVM UPH 7.1
+            Portal AVM UPH 8.0
           </h1>
 
           <p className="text-xs text-gray-400 text-center mb-4">
             by Ferdynand
+          </p>
+
+          <p className="text-xs text-gray-400 text-center mb-4">
+            Now with CHATBOT!
           </p>
 
           <h2 className="text-lg font-medium text-gray-700 text-center mb-1">
