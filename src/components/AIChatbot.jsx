@@ -396,18 +396,18 @@ const getResponse = (userInput) => {
   return (
     <>
 {/* Floating Button */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-[7px] sm:p-6 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
-          style={{
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-          }}
-        >
-          <Headset className="w-6 h-6 sm:w-6 sm:h-6" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
-        </button>
-      )}
+{!isOpen && (
+  <button
+    onClick={() => setIsOpen(true)}
+    className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-purple-600 text-white p-7 sm:p-6 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
+    style={{
+      animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+    }}
+  >
+    <Headset className="w-6 h-6 sm:w-6 sm:h-6" />
+    <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
+  </button>
+)}
 
       {/* Chat Window - FIXED: Added touch-action and better positioning for mobile */}
       {isOpen && (
