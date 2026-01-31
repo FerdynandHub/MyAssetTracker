@@ -359,7 +359,7 @@ const getResponse = (userInput) => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6">
+        <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -425,7 +425,7 @@ const getResponse = (userInput) => {
                       : 'bg-white text-gray-800 rounded-2xl rounded-tl-none shadow-sm border border-gray-100'
                   } p-2.5 sm:p-3`}
                 >
-                  <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap leading-snug sm:leading-relaxed">
                     {message.content}
                   </p>
                   <p
