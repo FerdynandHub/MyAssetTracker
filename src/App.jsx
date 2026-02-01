@@ -322,7 +322,9 @@ const App = () => {
             Selamat Datang
           </h2>
 
-
+          <p className={`text-sm text-center mb-6 text-gray-500`}>
+            Masukkan Access Code
+          </p>
 
           <input
             type="password"
