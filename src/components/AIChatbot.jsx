@@ -202,17 +202,21 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
   };
 
 // ====== 0. MATH HANDLER ======
-const isMathExpression = (str) => {
-  // Only allow digits, operators, parentheses, decimal points, and spaces
-  return /^[0-9+\-*/().\s]+$/.test(str);
+const extractMathExpression = (str) => {
+  // Match a sequence of digits, operators, parentheses, decimals
+  const match = str.match(/[\d+\-*/().\s]+/g);
+  if (!match) return null;
+
+  // Join matches and trim
+  const expr = match.join('').replace(/\s+/g, '');
+  return expr.length > 0 ? expr : null;
 };
 
 const evaluateMath = (expr) => {
   try {
-    // Evaluate safely using Function constructor
     const result = Function(`"use strict"; return (${expr})`)();
     if (result !== undefined && !isNaN(result)) {
-      return `Hasilnya: **${result}** ✅`;
+      return `Hasilnya: ${result} ✅`;
     }
   } catch (e) {
     return `Ups, gue ga ngerti perhitungannya 😅`;
@@ -228,8 +232,9 @@ const getResponse = (userInput) => {
 
   console.log('🔍 Processing input:', msg); // Debug log
 
-    if (isMathExpression(input)) {
-    const mathResponse = evaluateMath(input);
+  const mathExpr = extractMathExpression(input);
+  if (mathExpr) {
+    const mathResponse = evaluateMath(mathExpr);
     if (mathResponse) return mathResponse;
   }
 
