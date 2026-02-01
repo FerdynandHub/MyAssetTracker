@@ -403,6 +403,58 @@ return 'bg-slate-200 text-slate-600';
               </span>
             )}
           </div>
+
+          {/* Mobile Sort Dropdown */}
+          <div className="md:hidden mb-3">
+            <label className="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+              Sort By
+            </label>
+            <select
+              value={sortConfig.key || ''}
+              onChange={(e) => {
+                if (e.target.value) {
+                  handleSort(e.target.value);
+                } else {
+                  setSortConfig({ key: null, direction: 'asc' });
+                }
+              }}
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Default Order</option>
+              <option value="id">ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="name">Name {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="location">Location {sortConfig.key === 'location' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="category">Category {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="status">Status {sortConfig.key === 'status' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="owner">Owner {sortConfig.key === 'owner' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="grade">Grade {sortConfig.key === 'grade' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="lastUpdated">Last Updated {sortConfig.key === 'lastUpdated' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+              <option value="updatedBy">Updated By {sortConfig.key === 'updatedBy' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</option>
+            </select>
+            {sortConfig.key && (
+              <button
+                onClick={() => {
+                  setSortConfig({ 
+                    key: sortConfig.key, 
+                    direction: sortConfig.direction === 'asc' ? 'desc' : 'asc' 
+                  });
+                }}
+                className="mt-2 w-full px-3 py-1.5 bg-gray-100 text-gray-700 rounded text-sm flex items-center justify-center gap-2 hover:bg-gray-200 transition"
+              >
+                {sortConfig.direction === 'asc' ? (
+                  <>
+                    <ArrowUp className="w-4 h-4" />
+                    Ascending
+                  </>
+                ) : (
+                  <>
+                    <ArrowDown className="w-4 h-4" />
+                    Descending
+                  </>
+                )}
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
@@ -541,72 +593,75 @@ return 'bg-slate-200 text-slate-600';
             </div>
 
             {/* Mobile Card View */}
-            <div className="md:hidden space-y-4">
+            <div className="md:hidden">
               {paginatedAssets.length === 0 ? (
                 <div className="bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">
                   No assets found matching your search criteria
                 </div>
               ) : (
-                paginatedAssets.map((asset, idx) => (
-                  <div key={idx} className="bg-white rounded-lg shadow-lg p-4">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
+                <div className="grid grid-cols-2 gap-3">
+                  {paginatedAssets.map((asset, idx) => (
+                    <div key={idx} className="bg-white rounded-lg shadow-lg p-3">
+                      <div className="mb-2">
                         <div className="text-xs text-gray-500 mb-1">ID: {asset.id}</div>
-                        <div className="text-lg font-bold text-gray-800">{asset.name}</div>
-                      </div>
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}
-                      >
-                        {asset.grade || '-'}
-                      </span>
-                    </div>
-                    
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Location:</span>
-                        <span className="font-medium">{asset.location}</span>
+                        <div className="text-sm font-bold text-gray-800 line-clamp-2">{asset.name}</div>
                       </div>
                       
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Category:</span>
-                        <span className="font-medium">{asset.category}</span>
-                      </div>
-                      
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Status:</span>
+                      <div className="mb-2">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            asset.status === 'Available' || asset.status === 'Available (kembali)'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
+                          className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}
                         >
-                          {asset.status}
+                          {asset.grade || '-'}
                         </span>
                       </div>
                       
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Owner:</span>
-                        <span className="font-medium">{asset.owner}</span>
-                      </div>
-                      
-                      {asset.remarks && (
-                        <div className="pt-2 border-t">
-                          <span className="text-gray-600">Remarks:</span>
-                          <p className="text-gray-800 mt-1">{asset.remarks}</p>
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between gap-1">
+                          <span className="text-gray-600 shrink-0">Location:</span>
+                          <span className="font-medium text-right truncate">{asset.location}</span>
                         </div>
-                      )}
-                      
-                      <div className="flex justify-between items-center pt-2 border-t">
-                        <div>
-                          <div className="text-xs text-gray-500">Updated: {asset.lastUpdated}</div>
-                          <div className="text-xs text-gray-500">By: {asset.updatedBy}</div>
+                        
+                        <div className="flex justify-between gap-1">
+                          <span className="text-gray-600 shrink-0">Category:</span>
+                          <span className="font-medium text-right truncate">{asset.category}</span>
                         </div>
-                        <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
+                        
+                        <div className="flex justify-between items-center gap-1">
+                          <span className="text-gray-600 shrink-0">Status:</span>
+                          <span
+                            className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
+                              asset.status === 'Available' || asset.status === 'Available (kembali)'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {asset.status}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between gap-1">
+                          <span className="text-gray-600 shrink-0">Owner:</span>
+                          <span className="font-medium text-right truncate">{asset.owner}</span>
+                        </div>
+                        
+                        {asset.remarks && (
+                          <div className="pt-1.5 border-t">
+                            <span className="text-gray-600">Remarks:</span>
+                            <p className="text-gray-800 mt-0.5 line-clamp-2">{asset.remarks}</p>
+                          </div>
+                        )}
+                        
+                        <div className="pt-1.5 border-t">
+                          <div className="text-xs text-gray-500 truncate">Updated: {asset.lastUpdated}</div>
+                          <div className="text-xs text-gray-500 truncate">By: {asset.updatedBy}</div>
+                          <div className="mt-1.5">
+                            <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </>
