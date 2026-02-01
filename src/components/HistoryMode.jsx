@@ -134,7 +134,7 @@ const HistoryMode = ({ onBack, SCRIPT_URL }) => {
                 <div key={idx} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold px-2 py-1 rounded">
+                      <span className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
                         Record #{history.length - idx}
                       </span>
                     </div>
