@@ -160,7 +160,7 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
                 onClick={handleFetch}
                 className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
               >
-                🔍︎
+                <Search className="w-5 h-5" />
               </button>
             </div>
 
