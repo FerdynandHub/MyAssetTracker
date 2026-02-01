@@ -404,7 +404,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                   <div 
                     key={index} 
                     className={`p-3 rounded-lg border-l-4 ${
-                      isCheckout ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'
+                      isCheckout ? 'bg-white border-gray-300' : 'bg-white border-gray-300'
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -412,7 +412,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-gray-800">{transaction.name}</span>
                           <span className={`text-sm px-2 py-0.5 rounded ${
-isCheckout ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+isCheckout ? 'bg-white text-black' : 'bg-white text-black'
                           }`}>
                             {isCheckout ? 'Checkout' : 'Restock'}
                           </span>
