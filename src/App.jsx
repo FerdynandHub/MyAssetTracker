@@ -99,11 +99,37 @@ const App = () => {
   const [isLocked, setIsLocked] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update clock every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   // Check if current time is in dark mode period (6PM - 6AM)
   const isNightTime = () => {
     const hour = new Date().getHours();
     return hour < 6 || hour >= 18; // Dark mode from 6PM (18:00) to 6AM
+  };
+
+  // Get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    
+    // Lunch time: 11:15 AM - 1:00 PM
+    if ((hour === 11 && minute >= 15) || (hour === 12)) {
+      return 'Selamat Makan Siang';
+    }
+    
+    if (hour >= 5 && hour < 11) return 'Selamat Pagi';
+    if (hour >= 11 && hour < 15) return 'Selamat Siang';
+    if (hour >= 15 && hour < 18) return 'Selamat Sore';
+    return 'Selamat Malam';
   };
 
   // Initialize dark mode based on time or saved preference
@@ -405,21 +431,39 @@ return (
     `}>
       {/* Header */}
       <div className={`p-6 border-b flex justify-between items-start border-gray-200`}>
-        <div>
-          <h2 className={`text-xl font-bold text-gray-800`}>
-            Portal AVM
-          </h2>
-          <p className={`text-sm mt-1 text-gray-600`}>
-            {userName}
+        <div className="w-full">
+          <p className={`text-sm text-gray-500 mb-2`}>
+            {getGreeting()}, 👋
           </p>
+          <h2 className={`text-xl font-bold text-gray-800`}>
+            {userName}
+          </h2>
           <p className={`text-xs text-gray-500`}>
             ({userRole})
           </p>
+          {/* Clock Display */}
+          <div className={`mt-3 pt-3 border-t border-gray-200`}>
+            <p className={`text-xs text-gray-500 mb-1`}>
+              {currentTime.toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </p>
+            <p className={`text-2xl font-bold text-blue-600`}>
+              {currentTime.toLocaleTimeString('id-ID', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+              })}
+            </p>
+          </div>
         </div>
         {/* Close button for mobile */}
         <button
           onClick={() => setSidebarOpen(false)}
-          className={`lg:hidden text-gray-500 hover:text-gray-700`}
+          className={`lg:hidden text-gray-500 hover:text-gray-700 flex-shrink-0`}
         >
           <X className="w-6 h-6" />
         </button>
