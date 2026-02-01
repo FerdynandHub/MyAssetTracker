@@ -403,8 +403,8 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 return (
                   <div 
                     key={index} 
-                    className={`p-3 rounded-lg border-l-4 ${
-                      isCheckout ? 'bg-white border-gray-300' : 'bg-white border-gray-300'
+                    className={`p-3 rounded-lg border-2 ${
+                      isCheckout ? 'bg-white border-red-400' : 'bg-white border-green-400'
                     }`}
                   >
                     <div className="flex justify-between items-start">
