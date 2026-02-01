@@ -692,28 +692,6 @@
   color: rgb(243 244 246) !important;
 }
 
-/* ============================================
-   OVERRIDE FIX: Ensure all text on dark card backgrounds is visible
-   Add this AFTER the background overrides section
-   ============================================ */
-
-/* Make sure ALL children of converted dark backgrounds have light text */
-.dark .bg-white *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
-  color: rgb(243 244 246) !important;
-}
-
-.dark .bg-gray-50 *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
-  color: rgb(243 244 246) !important;
-}
-
-.dark .bg-gray-100 *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
-  color: rgb(243 244 246) !important;
-}
-
-.dark .bg-gray-200 *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
-  color: rgb(243 244 246) !important;
-}
-
 /* Chat list items */
 .dark li {
   color: rgb(243 244 246);
@@ -724,197 +702,20 @@
   color: rgb(243 244 246);
 }
 
-/* All paragraph and span tags should be white by default, EXCEPT on light backgrounds */
-.dark p:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]):not([class*="text-yellow"]):not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
+/* All paragraph and span tags should be white by default */
+.dark p:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]):not([class*="text-yellow"]) {
   color: rgb(243 244 246) !important;
 }
 
-.dark span:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]):not([class*="text-yellow"]):not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
+.dark span:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]):not([class*="text-yellow"]) {
   color: rgb(243 244 246) !important;
 }
 
 /* ============================================
-   FIX: WHITE TEXT ON LIGHT BACKGROUNDS
+   TEXT OUTLINE FOR LIGHT-COLORED BADGES
    ============================================ */
 
-/* Fix for light-colored badges/elements - ensure DARK text on LIGHT backgrounds */
-.dark .bg-pink-50,
-.dark .bg-pink-100,
-.dark .bg-pink-200,
-.dark .bg-pink-300,
-.dark .bg-rose-50,
-.dark .bg-rose-100,
-.dark .bg-rose-200,
-.dark .bg-rose-300,
-.dark .bg-red-50,
-.dark .bg-red-100,
-.dark .bg-red-200,
-.dark .bg-red-300,
-.dark .bg-orange-50,
-.dark .bg-orange-100,
-.dark .bg-orange-200,
-.dark .bg-orange-300,
-.dark .bg-yellow-50,
-.dark .bg-yellow-100,
-.dark .bg-yellow-200,
-.dark .bg-yellow-300,
-.dark .bg-lime-50,
-.dark .bg-lime-100,
-.dark .bg-lime-200,
-.dark .bg-lime-300,
-.dark .bg-green-50,
-.dark .bg-green-100,
-.dark .bg-green-200,
-.dark .bg-green-300,
-.dark .bg-blue-50,
-.dark .bg-blue-100,
-.dark .bg-blue-200,
-.dark .bg-blue-300,
-.dark .bg-sky-50,
-.dark .bg-sky-100,
-.dark .bg-sky-200,
-.dark .bg-sky-300,
-.dark .bg-purple-50,
-.dark .bg-purple-100,
-.dark .bg-purple-200,
-.dark .bg-purple-300 {
-  color: rgb(17 24 39) !important; /* gray-900 - very dark text */
-}
-
-/* Ensure ALL children of light backgrounds also have dark text */
-.dark .bg-pink-50 *,
-.dark .bg-pink-100 *,
-.dark .bg-pink-200 *,
-.dark .bg-pink-300 *,
-.dark .bg-rose-50 *,
-.dark .bg-rose-100 *,
-.dark .bg-rose-200 *,
-.dark .bg-rose-300 *,
-.dark .bg-red-50 *,
-.dark .bg-red-100 *,
-.dark .bg-red-200 *,
-.dark .bg-red-300 *,
-.dark .bg-orange-50 *,
-.dark .bg-orange-100 *,
-.dark .bg-orange-200 *,
-.dark .bg-orange-300 *,
-.dark .bg-yellow-50 *,
-.dark .bg-yellow-100 *,
-.dark .bg-yellow-200 *,
-.dark .bg-yellow-300 *,
-.dark .bg-lime-50 *,
-.dark .bg-lime-100 *,
-.dark .bg-lime-200 *,
-.dark .bg-lime-300 *,
-.dark .bg-green-50 *,
-.dark .bg-green-100 *,
-.dark .bg-green-200 *,
-.dark .bg-green-300 *,
-.dark .bg-blue-50 *,
-.dark .bg-blue-100 *,
-.dark .bg-blue-200 *,
-.dark .bg-blue-300 *,
-.dark .bg-sky-50 *,
-.dark .bg-sky-100 *,
-.dark .bg-sky-200 *,
-.dark .bg-sky-300 *,
-.dark .bg-purple-50 *,
-.dark .bg-purple-100 *,
-.dark .bg-purple-200 *,
-.dark .bg-purple-300 * {
-  color: rgb(17 24 39) !important; /* gray-900 - dark text for all nested elements */
-}
-
-/* Specific fix for checkout badges and similar light-colored span/div elements */
-.dark [class*="bg-pink"] span,
-.dark [class*="bg-pink"] p,
-.dark [class*="bg-pink"] div,
-.dark [class*="bg-rose"] span,
-.dark [class*="bg-rose"] p,
-.dark [class*="bg-rose"] div,
-.dark [class*="bg-red-1"] span,
-.dark [class*="bg-red-1"] p,
-.dark [class*="bg-red-1"] div,
-.dark [class*="bg-red-2"] span,
-.dark [class*="bg-red-2"] p,
-.dark [class*="bg-red-2"] div,
-.dark [class*="bg-orange-1"] span,
-.dark [class*="bg-orange-1"] p,
-.dark [class*="bg-orange-1"] div,
-.dark [class*="bg-orange-2"] span,
-.dark [class*="bg-orange-2"] p,
-.dark [class*="bg-orange-2"] div,
-.dark [class*="bg-yellow-1"] span,
-.dark [class*="bg-yellow-1"] p,
-.dark [class*="bg-yellow-1"] div,
-.dark [class*="bg-yellow-2"] span,
-.dark [class*="bg-yellow-2"] p,
-.dark [class*="bg-yellow-2"] div {
-  color: rgb(17 24 39) !important; /* Ensure dark text on light backgrounds */
-}
-
-/* Additional catch-all for inline badges/pills with light backgrounds */
-.dark .rounded-full[class*="bg-pink"],
-.dark .rounded-full[class*="bg-rose"],
-.dark .rounded-full[class*="bg-red-1"],
-.dark .rounded-full[class*="bg-red-2"],
-.dark .rounded-full[class*="bg-orange"],
-.dark .rounded-full[class*="bg-yellow"],
-.dark .rounded-full[class*="bg-lime"],
-.dark .rounded-full[class*="bg-green-1"],
-.dark .rounded-full[class*="bg-green-2"],
-.dark .rounded-full[class*="bg-blue-1"],
-.dark .rounded-full[class*="bg-blue-2"],
-.dark .rounded-full[class*="bg-sky"],
-.dark .rounded-full[class*="bg-purple-1"],
-.dark .rounded-full[class*="bg-purple-2"],
-.dark .rounded-md[class*="bg-pink"],
-.dark .rounded-md[class*="bg-rose"],
-.dark .rounded-md[class*="bg-red-1"],
-.dark .rounded-md[class*="bg-red-2"],
-.dark .rounded-md[class*="bg-orange"],
-.dark .rounded-md[class*="bg-yellow"],
-.dark .rounded-md[class*="bg-lime"],
-.dark .rounded-lg[class*="bg-pink"],
-.dark .rounded-lg[class*="bg-rose"],
-.dark .rounded-lg[class*="bg-red-1"],
-.dark .rounded-lg[class*="bg-red-2"],
-.dark .rounded-lg[class*="bg-orange"],
-.dark .rounded-lg[class*="bg-yellow"],
-.dark .rounded-lg[class*="bg-lime"] {
-  color: rgb(17 24 39) !important; /* Dark text */
-}
-
-.dark .rounded-full[class*="bg-pink"] *,
-.dark .rounded-full[class*="bg-rose"] *,
-.dark .rounded-full[class*="bg-red-1"] *,
-.dark .rounded-full[class*="bg-red-2"] *,
-.dark .rounded-full[class*="bg-orange"] *,
-.dark .rounded-full[class*="bg-yellow"] *,
-.dark .rounded-full[class*="bg-lime"] *,
-.dark .rounded-md[class*="bg-pink"] *,
-.dark .rounded-md[class*="bg-rose"] *,
-.dark .rounded-md[class*="bg-red-1"] *,
-.dark .rounded-md[class*="bg-red-2"] *,
-.dark .rounded-md[class*="bg-orange"] *,
-.dark .rounded-md[class*="bg-yellow"] *,
-.dark .rounded-md[class*="bg-lime"] *,
-.dark .rounded-lg[class*="bg-pink"] *,
-.dark .rounded-lg[class*="bg-rose"] *,
-.dark .rounded-lg[class*="bg-red-1"] *,
-.dark .rounded-lg[class*="bg-red-2"] *,
-.dark .rounded-lg[class*="bg-orange"] *,
-.dark .rounded-lg[class*="bg-yellow"] *,
-.dark .rounded-lg[class*="bg-lime"] * {
-  color: rgb(17 24 39) !important; /* Dark text for children too */
-}
-
-/* ============================================
-   FIX: LIGHT-COLORED BADGES IN DARK MODE
-   Add this to the END of your existing CSS file
-   ============================================ */
-
-/* Ensure dark text on light-colored badges/pills in dark mode */
+/* Add black outline to white text on light-colored backgrounds */
 .dark .bg-pink-50,
 .dark .bg-pink-100,
 .dark .bg-pink-200,
@@ -932,10 +733,14 @@
 .dark .bg-lime-50,
 .dark .bg-lime-100,
 .dark .bg-lime-200 {
-  color: rgb(17 24 39) !important; /* Very dark text for readability */
+  text-shadow: 
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000 !important;
 }
 
-/* Apply dark text to all children of light-colored badges */
+/* Apply outline to all children of light-colored badges */
 .dark .bg-pink-50 *,
 .dark .bg-pink-100 *,
 .dark .bg-pink-200 *,
@@ -953,5 +758,9 @@
 .dark .bg-lime-50 *,
 .dark .bg-lime-100 *,
 .dark .bg-lime-200 * {
-  color: rgb(17 24 39) !important;
+  text-shadow: 
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000 !important;
 }
