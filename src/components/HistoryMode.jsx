@@ -125,7 +125,7 @@ const HistoryMode = ({ onBack, SCRIPT_URL }) => {
 
         {!loading && history.length > 0 && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-black mb-4">
               History for Asset: {assetId} ({history.length} records)
             </h2>
             

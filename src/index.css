@@ -758,9 +758,13 @@
 .dark .bg-lime-50 *,
 .dark .bg-lime-100 *,
 .dark .bg-lime-200 * {
-  text-shadow: 
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000 !important;
+text-shadow: 
+  -1px -1px 0 #000,
+  0px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 0px 0 #000,
+  1px 0px 0 #000,
+  -1px 1px 0 #000,
+  0px 1px 0 #000,
+  1px 1px 0 #000 !important;
 }
