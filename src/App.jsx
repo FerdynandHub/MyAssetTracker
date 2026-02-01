@@ -310,24 +310,19 @@ const App = () => {
           </div>
 
           <h1 className={`text-3xl font-bold mb-1 text-center text-gray-800`}>
-            Portal AVM UPH 8.5
+            Portal AVM UPH
           </h1>
 
           <p className={`text-xs text-center mb-4 text-gray-400`}>
             by Ferdynand
           </p>
 
-          <p className={`text-xs text-center mb-4 text-gray-400`}>
-            Now with CHATBOT!
-          </p>
 
           <h2 className={`text-lg font-medium text-center mb-1 text-gray-700`}>
             Selamat Datang
           </h2>
 
-          <p className={`text-sm text-center mb-6 text-gray-500`}>
-            Masukkan Access Code
-          </p>
+
 
           <input
             type="password"
