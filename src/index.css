@@ -586,6 +586,15 @@
   color: rgb(229 231 235); /* gray-200 as default text color */
 }
 
+/* Main content area background */
+.dark main {
+  background-color: rgb(17 24 39) !important; /* gray-900 */
+}
+
+.dark main > div:last-child {
+  background-color: rgb(17 24 39) !important; /* gray-900 for content area */
+}
+
 /* Specific selectors for text that should be white */
 .dark .rounded-lg:not(.bg-blue-500):not(.bg-green-500):not(.bg-red-500):not(.bg-purple-500):not(.bg-yellow-500):not(.bg-green-100):not(.bg-red-100):not(.bg-blue-100) {
   color: rgb(229 231 235); /* light text on cards */
@@ -607,4 +616,97 @@
 .dark .text-purple-200,
 .dark .text-red-300 {
   /* Keep these colors - they're for badges */
+}
+
+/* Chatbot specific overrides */
+.dark [class*="chatbot"] {
+  color: rgb(243 244 246) !important; /* white text */
+}
+
+.dark [class*="chatbot"] p,
+.dark [class*="chatbot"] span,
+.dark [class*="chatbot"] div,
+.dark [class*="chatbot"] li,
+.dark [class*="chatbot"] ul {
+  color: rgb(243 244 246) !important; /* white text */
+}
+
+.dark [class*="chatbot"] .text-gray-700,
+.dark [class*="chatbot"] .text-gray-600,
+.dark [class*="chatbot"] .text-gray-500 {
+  color: rgb(243 244 246) !important; /* white text */
+}
+
+/* If chatbot uses specific background colors */
+.dark [class*="bg-gray-"][class*="chatbot"] {
+  color: rgb(243 244 246) !important;
+}
+
+/* Chat message bubbles - both sent and received */
+.dark .rounded-lg.p-3,
+.dark .rounded-lg.p-4,
+.dark .rounded-2xl,
+.dark .rounded-xl {
+  color: rgb(243 244 246); /* white text in bubbles */
+}
+
+.dark .rounded-lg.p-3 *,
+.dark .rounded-lg.p-4 *,
+.dark .rounded-2xl *,
+.dark .rounded-xl * {
+  color: inherit; /* inherit white from parent */
+}
+
+/* Specific for gray chat bubbles (assistant messages) */
+.dark .bg-gray-100.rounded-lg,
+.dark .bg-gray-200.rounded-lg,
+.dark .bg-gray-50.rounded-lg,
+.dark .bg-gray-100.rounded-2xl,
+.dark .bg-gray-200.rounded-2xl,
+.dark .bg-gray-50.rounded-2xl {
+  color: rgb(243 244 246) !important; /* white text */
+}
+
+.dark .bg-gray-100.rounded-lg *,
+.dark .bg-gray-200.rounded-lg *,
+.dark .bg-gray-50.rounded-lg *,
+.dark .bg-gray-100.rounded-2xl *,
+.dark .bg-gray-200.rounded-2xl *,
+.dark .bg-gray-50.rounded-2xl * {
+  color: rgb(243 244 246) !important; /* white text for all children */
+}
+
+/* Fixed/absolute positioned chat widgets */
+.dark .fixed p,
+.dark .fixed span,
+.dark .fixed div:not(.bg-blue-500):not(.bg-green-500):not(.bg-red-500),
+.dark .absolute p,
+.dark .absolute span,
+.dark .absolute div:not(.bg-blue-500):not(.bg-green-500):not(.bg-red-500) {
+  color: inherit;
+}
+
+/* Override for chat container */
+.dark [class*="fixed"] [class*="bg-gray"],
+.dark [class*="absolute"] [class*="bg-gray"] {
+  color: rgb(243 244 246) !important;
+}
+
+/* Chat list items */
+.dark li {
+  color: rgb(243 244 246);
+}
+
+.dark ul li,
+.dark ol li {
+  color: rgb(243 244 246);
+}
+
+/* All paragraph and span tags should be white by default */
+.dark p:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]):not([class*="text-yellow"]) {
+  color: rgb(243 244 246) !important;
+}
+
+.dark span:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]):not([class*="text-yellow"]) {
+  color: rgb(243 244 246) !important;
 }
