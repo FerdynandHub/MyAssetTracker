@@ -557,6 +557,7 @@ genZ: {
 'hi fer': 'alo',
 'hii fer': 'alo',
 'oi fer': 'a?',
+'woi fer':'aaa?',
 'hey fer': 'heyyy',
 'hallo fer': 'hallo 👋',
 'hai fer': 'hai!',
