@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Search, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { RefreshCw, Search, ArrowUpDown, ArrowUp, ArrowDown, X } from 'lucide-react';
 import AssetPhotoButton from './AssetPhotoButton';
 
 const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
@@ -13,6 +13,7 @@ const OverviewMode = ({ onBack, SCRIPT_URL, CATEGORIES }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 30;
+  const [selectedAsset, setSelectedAsset] = useState(null);
 
   const fetchAssets = async () => {
     setLoading(true);
@@ -601,7 +602,11 @@ return 'bg-slate-200 text-slate-600';
               ) : (
                 <div className="grid grid-cols-2 gap-3">
                   {paginatedAssets.map((asset, idx) => (
-                    <div key={idx} className="bg-white rounded-lg shadow-lg p-3">
+                    <div 
+                      key={idx} 
+                      className="bg-white rounded-lg shadow-lg p-3 cursor-pointer hover:shadow-xl transition-shadow active:scale-95"
+                      onClick={() => setSelectedAsset(asset)}
+                    >
                       <div className="mb-2">
                         <div className="text-xs text-gray-500 mb-1">ID: {asset.id}</div>
                         <div className="text-sm font-bold text-gray-800 line-clamp-2">{asset.name}</div>
@@ -643,27 +648,103 @@ return 'bg-slate-200 text-slate-600';
                           <span className="text-gray-600 shrink-0">Owner:</span>
                           <span className="font-medium text-right truncate">{asset.owner}</span>
                         </div>
-                        
-                        {asset.remarks && (
-                          <div className="pt-1.5 border-t">
-                            <span className="text-gray-600">Remarks:</span>
-                            <p className="text-gray-800 mt-0.5 line-clamp-2">{asset.remarks}</p>
-                          </div>
-                        )}
-                        
-                        <div className="pt-1.5 border-t">
-                          <div className="text-xs text-gray-500 truncate">Updated: {asset.lastUpdated}</div>
-                          <div className="text-xs text-gray-500 truncate">By: {asset.updatedBy}</div>
-                          <div className="mt-1.5">
-                            <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
-                          </div>
-                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* Mobile Modal Popup */}
+            {selectedAsset && (
+              <div 
+                className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center p-4"
+                onClick={() => setSelectedAsset(null)}
+              >
+                <div 
+                  className="bg-white rounded-t-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Close button */}
+                  <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+                    <h3 className="text-lg font-bold text-gray-800">Asset Details</h3>
+                    <button
+                      onClick={() => setSelectedAsset(null)}
+                      className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <X className="w-5 h-5 text-gray-500" />
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4 space-y-4">
+                    {/* Header */}
+                    <div>
+                      <div className="text-xs text-gray-500 mb-1">ID: {selectedAsset.id}</div>
+                      <div className="text-xl font-bold text-gray-800 mb-2">{selectedAsset.name}</div>
+                      <span
+                        className={`inline-block px-3 py-1.5 rounded text-sm font-semibold ${getGradeClasses(selectedAsset.grade)}`}
+                      >
+                        {selectedAsset.grade || '-'}
+                      </span>
+                    </div>
+
+                    {/* Details */}
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600 font-medium">Location:</span>
+                        <span className="text-gray-800">{selectedAsset.location}</span>
+                      </div>
+                      
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600 font-medium">Category:</span>
+                        <span className="text-gray-800">{selectedAsset.category}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center border-b pb-2">
+                        <span className="text-gray-600 font-medium">Status:</span>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            selectedAsset.status === 'Available' || selectedAsset.status === 'Available (kembali)'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          {selectedAsset.status}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600 font-medium">Owner:</span>
+                        <span className="text-gray-800">{selectedAsset.owner}</span>
+                      </div>
+                      
+                      {selectedAsset.remarks && (
+                        <div className="border-b pb-2">
+                          <span className="text-gray-600 font-medium block mb-1">Remarks:</span>
+                          <p className="text-gray-800">{selectedAsset.remarks}</p>
+                        </div>
+                      )}
+                      
+                      <div className="border-b pb-2">
+                        <span className="text-gray-600 font-medium block mb-1">Last Updated:</span>
+                        <p className="text-gray-800">{selectedAsset.lastUpdated}</p>
+                      </div>
+                      
+                      <div className="border-b pb-2">
+                        <span className="text-gray-600 font-medium block mb-1">Updated By:</span>
+                        <p className="text-gray-800">{selectedAsset.updatedBy}</p>
+                      </div>
+                      
+                      <div className="pt-2">
+                        <span className="text-gray-600 font-medium block mb-2">Photo:</span>
+                        <AssetPhotoButton photoUrl={selectedAsset.photoUrl} assetId={selectedAsset.id} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
 
