@@ -506,6 +506,7 @@ genZ: {
     'jir':'jir',
     'ok':'👍',
     'thank you fer':'aman',
+    'thanks':'aman',
     'fer':'yo?',
     'thx':'sip',
 
@@ -594,7 +595,84 @@ genZ: {
     'makasih': 'siap',
     'terima kasih': 'aman bos',
     'bye': 'cabut dulu',
-    'dadah': 'otw hilang'
+    'dadah': 'otw hilang',
+    'siap':'sip',
+
+    // kendala / error (tanpa eskalasi palsu)
+'error': 'waduh, ada kendala ya. silakan hubungi admin',
+'error lagi': 'kayaknya masih bermasalah. hubungi admin ya',
+'kok error': 'ini bukan kondisi normal. silakan hubungi admin',
+'ga bisa akses': 'akses bermasalah. silakan hubungi admin',
+'ga kebuka': 'halaman gagal dibuka. hubungi admin ya',
+'blank': 'tampilan kosong. silakan hubungi admin',
+
+// sistem lambat
+'lemot': 'respons sistem lagi lambat',
+'loading lama': 'butuh waktu lebih lama dari biasanya',
+'nunggu lama': 'proses belum selesai',
+
+// data / aset (ARAHKAN REFRESH)
+'kok kosong': 'data belum tampil. coba refresh halaman',
+'ga ada datanya': 'data tidak ditemukan. silakan refresh',
+'aset hilang': 'data aset belum muncul. coba refresh dulu',
+'belum masuk': 'data belum tampil. refresh halaman ya',
+'kok ga muncul': 'kemungkinan data belum termuat. silakan refresh',
+'data ga ada': 'data tidak tersedia. coba refresh',
+
+// status umum
+'aman kan': 'sejauh ini tidak ada kendala',
+'normal?': 'sistem dalam kondisi normal',
+'udah beres?': 'belum ada status selesai',
+
+// aksi user
+'harus ngapain': 'ikuti langkah yang tersedia',
+'bisa dibatalin?': 'pembatalan dilakukan secara via admin',
+
+// klarifikasi ringan
+'kok beda': 'tampilan bisa berbeda',
+'harusnya ada': 'data belum tentu tersedia',
+'kok ga sama': 'datanya tidak cocok',
+
+// casual acknowledgements (no implied action)
+'oke sip': 'siap, diterima',
+'noted': 'dipahami',
+'ya oke': 'baik',
+'oh iya': 'oke',
+
+// casual confusion / clarification (NO waiting)
+'loh': 'ape?',
+'hah?': 'hah kenapa?',
+'maksudnya gimana': 'paan',
+'kok bisa': 'apanya',
+
+// user reassurance (no escalation)
+'aman ga sih': 'wkwk tanya admin deh',
+'ga masalah kan': 'wkwk tanya admin deh',
+'bahaya ga': 'wkwk tanya admin deh',
+
+// retry / refresh nudges (explicit user action)
+'coba lagi': 'silakan coba refresh ulang',
+'retry': 'silakan coba refresh ulang',
+'reload': 'silakan refresh halaman',
+'refresh dong': 'coba refresh halaman ya sendiri bg',
+
+// asset-specific casual (refresh-oriented)
+'asetnya mana': 'data aset belum terlihat? silakan refresh',
+'kok aset ga ada': 'aset belum muncul? coba refresh dulu',
+'jumlahnya beda': 'data bisa berubah. silakan refresh',
+'datanya aneh': 'data belum sinkron? refresh halaman',
+
+// slow / waiting (rephrased, no processing claim)
+'masih lama': 'belum ada hasil? refresh',
+'kok belom': 'belum terlihat selesai? refresh',
+'udah lama nih': 'belum ada perubahan? refresh web',
+
+// wrap-up casual (neutral)
+'oke makasih': 'sama-sama',
+'sip makasih': 'siap',
+'paham': 'oke'
+
+
   }
 },
 
