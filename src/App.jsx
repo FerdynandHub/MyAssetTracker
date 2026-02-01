@@ -267,12 +267,9 @@ const App = () => {
             : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)'
         }}
       >
-        {/* Date, Time and Greeting - Top */}
+        {/* Date and Time - Top */}
         <div className="absolute top-8 text-center">
-          <p className={`text-sm mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-            {getGreeting()}
-          </p>
-          <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p className={`text-xs mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {currentTime.toLocaleDateString('id-ID', { 
               weekday: 'long', 
               day: 'numeric',
@@ -285,7 +282,7 @@ const App = () => {
               hour: '2-digit', 
               minute: '2-digit',
               second: '2-digit'
-            }).replace(/\./g, currentTime.getSeconds() % 2 === 0 ? ':' : ' ')}
+            }).replace(/\./g, ':')}
           </p>
         </div>
 
@@ -474,8 +471,9 @@ return (
             <p className={`text-sm font-medium text-gray-600`}>
               {currentTime.toLocaleTimeString('id-ID', { 
                 hour: '2-digit', 
-                minute: '2-digit'
-              }).replace(/\./g, currentTime.getSeconds() % 2 === 0 ? ':' : ' ')}
+                minute: '2-digit',
+                second: '2-digit'
+              }).replace(/\./g, ':')}
             </p>
           </div>
         </div>
