@@ -541,6 +541,12 @@ genZ: {
 
     'lucu': 'ngakak',
     'wkwk':'wkwk',
+    'wkwkwk':'wkwk',
+    'aku kangen':'aww sini peluk',
+    'kangen':'aww sini',
+    'i love you':'ily too',
+    'love you':'love u too',
+    'love u':'love u too',
     'ketawa': 'WKWKWK',
     'parah': 'ngaco sih',
     'parah banget': 'kelewatan sih',
