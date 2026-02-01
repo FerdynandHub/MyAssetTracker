@@ -132,9 +132,20 @@ const MyRequestsMode = ({ userName, SCRIPT_URL }) => {
                   <h4 className="font-semibold text-gray-700 mb-2">Perubahan yang Diajukan:</h4>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     {Object.entries(request.updates).map(([key, value]) => (
-                      <div key={key} className="flex justify-between py-2 border-b last:border-0">
+                      <div key={key} className="flex justify-between py-2 border-b last:border-0 items-center">
                         <span className="font-medium text-gray-700 capitalize">{key}:</span>
-                        <span className="text-gray-900">{value}</span>
+                        {key.toLowerCase() === 'photourl' ? (
+                          <a
+                            href={value}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition text-sm font-semibold"
+                          >
+                            Lihat Foto
+                          </a>
+                        ) : (
+                          <span className="text-gray-900">{value}</span>
+                        )}
                       </div>
                     ))}
                   </div>
