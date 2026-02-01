@@ -886,3 +886,50 @@
 .dark .rounded-lg[class*="bg-lime"] * {
   color: rgb(17 24 39) !important; /* Dark text for children too */
 }
+
+/* ============================================
+   FIX: LIGHT-COLORED BADGES IN DARK MODE
+   Add this to the END of your existing CSS file
+   ============================================ */
+
+/* Ensure dark text on light-colored badges/pills in dark mode */
+.dark .bg-pink-50,
+.dark .bg-pink-100,
+.dark .bg-pink-200,
+.dark .bg-rose-50,
+.dark .bg-rose-100,
+.dark .bg-rose-200,
+.dark .bg-red-50,
+.dark .bg-orange-50,
+.dark .bg-orange-100,
+.dark .bg-orange-200,
+.dark .bg-amber-50,
+.dark .bg-amber-100,
+.dark .bg-amber-200,
+.dark .bg-yellow-50,
+.dark .bg-lime-50,
+.dark .bg-lime-100,
+.dark .bg-lime-200 {
+  color: rgb(17 24 39) !important; /* Very dark text for readability */
+}
+
+/* Apply dark text to all children of light-colored badges */
+.dark .bg-pink-50 *,
+.dark .bg-pink-100 *,
+.dark .bg-pink-200 *,
+.dark .bg-rose-50 *,
+.dark .bg-rose-100 *,
+.dark .bg-rose-200 *,
+.dark .bg-red-50 *,
+.dark .bg-orange-50 *,
+.dark .bg-orange-100 *,
+.dark .bg-orange-200 *,
+.dark .bg-amber-50 *,
+.dark .bg-amber-100 *,
+.dark .bg-amber-200 *,
+.dark .bg-yellow-50 *,
+.dark .bg-lime-50 *,
+.dark .bg-lime-100 *,
+.dark .bg-lime-200 * {
+  color: rgb(17 24 39) !important;
+}
