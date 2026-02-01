@@ -412,7 +412,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-gray-800">{transaction.name}</span>
                           <span className={`text-sm px-2 py-0.5 rounded ${
-                            isCheckout ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'
+isCheckout ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
                           }`}>
                             {isCheckout ? 'Checkout' : 'Restock'}
                           </span>
