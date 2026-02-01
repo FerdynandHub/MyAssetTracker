@@ -209,7 +209,7 @@ const App = () => {
       <div 
         className={`min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat ${darkMode ? 'dark' : ''}`}
         style={{
-          backgroundImage: darkMode ? 'none' : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)',
+          backgroundImage: darkMode ? 'none' : 'url(https://media.indozone.id/crop/0x0:0x0/images/2025/08/21/Nl7134xFIgm2hfR6ZAjX3X0URVRYd3VBhGdazT71.jpg)',
           backgroundColor: darkMode ? 'rgb(17, 24, 39)' : 'transparent'
         }}
       >
@@ -236,7 +236,7 @@ const App = () => {
           </div>
 
           <h1 className={`text-3xl font-bold mb-1 text-center text-gray-800`}>
-            Portal AVM UPH 8.5
+            Portal AVM UPH 8.3
           </h1>
 
           <p className={`text-xs text-center mb-4 text-gray-400`}>
