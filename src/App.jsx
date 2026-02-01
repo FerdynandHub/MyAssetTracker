@@ -100,10 +100,34 @@ const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Load dark mode preference from localStorage
+  // Check if current time is in dark mode period (6PM - 6AM)
+  const isNightTime = () => {
+    const hour = new Date().getHours();
+    return hour < 6 || hour >= 18; // Dark mode from 6PM (18:00) to 6AM
+  };
+
+  // Initialize dark mode based on time or saved preference
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-    setDarkMode(savedDarkMode);
+    const savedDarkMode = localStorage.getItem('darkMode');
+    
+    if (savedDarkMode !== null) {
+      // If user has manually set a preference, use that
+      setDarkMode(savedDarkMode === 'true');
+    } else {
+      // Otherwise, use automatic time-based setting
+      setDarkMode(isNightTime());
+    }
+
+    // Optional: Update dark mode every minute to auto-adjust if no manual preference
+    const interval = setInterval(() => {
+      const savedPref = localStorage.getItem('darkMode');
+      if (savedPref === null) {
+        // Only auto-adjust if user hasn't manually set a preference
+        setDarkMode(isNightTime());
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
   }, []);
 
   // Toggle dark mode and save preference
@@ -111,6 +135,12 @@ const App = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     localStorage.setItem('darkMode', newDarkMode.toString());
+  };
+
+  // Reset to automatic mode (remove manual preference)
+  const resetToAutoMode = () => {
+    localStorage.removeItem('darkMode');
+    setDarkMode(isNightTime());
   };
 
   // SECURITY: Backend authentication
