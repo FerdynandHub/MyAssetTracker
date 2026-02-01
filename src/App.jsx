@@ -210,7 +210,7 @@ const App = () => {
         className={`min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat ${darkMode ? 'dark' : ''}`}
         style={{
           backgroundImage: darkMode 
-            ? 'url(https://media.indozone.id/crop/0x0:0x0/images/2025/08/21/Nl7134xFIgm2hfR6ZAjX3X0URVRYd3VBhGdazT71.jpg)' 
+            ? 'url(https://iili.io/fQ0Kwnp.png)' 
             : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)'
         }}
       >
