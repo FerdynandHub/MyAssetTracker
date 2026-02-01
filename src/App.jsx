@@ -260,15 +260,15 @@ const App = () => {
   if (!isLoggedIn) {
     return (
       <div 
-        className={`min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat ${darkMode ? 'dark' : ''}`}
+        className={`min-h-screen flex flex-col items-center justify-center p-4 bg-cover bg-center bg-no-repeat ${darkMode ? 'dark' : ''}`}
         style={{
           backgroundImage: darkMode 
             ? 'url(https://i.imgur.com/cncw5PG.jpeg)' 
             : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)'
         }}
       >
-        {/* Date, Time and Greeting - Top Middle */}
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 text-center">
+        {/* Date, Time and Greeting - Top */}
+        <div className="absolute top-8 text-center">
           <p className={`text-sm mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             {getGreeting()}
           </p>
@@ -285,7 +285,7 @@ const App = () => {
               hour: '2-digit', 
               minute: '2-digit',
               second: '2-digit'
-            })}
+            }).replace(/\./g, currentTime.getSeconds() % 2 === 0 ? ':' : ' ')}
           </p>
         </div>
 
@@ -475,7 +475,7 @@ return (
               {currentTime.toLocaleTimeString('id-ID', { 
                 hour: '2-digit', 
                 minute: '2-digit'
-              })}
+              }).replace(/\./g, currentTime.getSeconds() % 2 === 0 ? ':' : ' ')}
             </p>
           </div>
         </div>
