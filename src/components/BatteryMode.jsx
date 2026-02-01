@@ -210,9 +210,9 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
           </div>
         </div>
 
-        {/* Add Battery Form */}
+{/* Add Battery Form */}
         {showAddForm && (
-          <div className="bg-green-50 border-2 border-green-200 rounded-lg shadow-lg p-6 mb-6">
+          <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Add Battery to Inventory</h2>
             
             <form onSubmit={handleAddBattery} className="space-y-4">
@@ -223,7 +223,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 <select
                   value={addFormData.batteryType}
                   onChange={(e) => setAddFormData({ ...addFormData, batteryType: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="AA">AA</option>
                   <option value="9V">9V</option>
@@ -238,7 +238,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                   type="number"
                   value={addFormData.quantity}
                   onChange={(e) => setAddFormData({ ...addFormData, quantity: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter quantity to add"
                   min="1"
                   required
@@ -249,7 +249,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition disabled:bg-gray-400"
+                  className="flex-1 bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition disabled:bg-gray-400"
                 >
                   {submitting ? 'Adding...' : 'Add to Inventory'}
                 </button>
