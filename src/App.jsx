@@ -144,7 +144,7 @@ const App = () => {
       setDarkMode(isNightTime());
     }
 
-    // Optional: Update dark mode every minute to auto-adjust if no manual preference
+    // Update dark mode every minute to auto-adjust if no manual preference
     const interval = setInterval(() => {
       const savedPref = localStorage.getItem('darkMode');
       if (savedPref === null) {
@@ -163,10 +163,15 @@ const App = () => {
     localStorage.setItem('darkMode', newDarkMode.toString());
   };
 
-  // Reset to automatic mode (remove manual preference)
-  const resetToAutoMode = () => {
-    localStorage.removeItem('darkMode');
-    setDarkMode(isNightTime());
+  // Clear manual preference on logout to revert to time-based
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserRole(null);
+    setUserName("");
+    setAccessCode("");
+    sessionStorage.clear();
+    localStorage.removeItem('darkMode'); // Clear dark mode preference
+    setDarkMode(isNightTime()); // Reset to time-based
   };
 
   // SECURITY: Backend authentication
@@ -251,14 +256,6 @@ const App = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserRole(null);
-    setUserName("");
-    setAccessCode("");
-    sessionStorage.clear();
-  };
-
   // Login page
   if (!isLoggedIn) {
     return (
@@ -270,6 +267,28 @@ const App = () => {
             : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)'
         }}
       >
+        {/* Date, Time and Greeting - Top Middle */}
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 text-center">
+          <p className={`text-sm mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            {getGreeting()}
+          </p>
+          <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            {currentTime.toLocaleDateString('id-ID', { 
+              weekday: 'long', 
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            })}
+          </p>
+          <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            {currentTime.toLocaleTimeString('id-ID', { 
+              hour: '2-digit', 
+              minute: '2-digit',
+              second: '2-digit'
+            })}
+          </p>
+        </div>
+
         {/* Dark Mode Toggle - Login Page */}
         <button
           onClick={toggleDarkMode}
@@ -430,40 +449,41 @@ return (
       bg-white
     `}>
       {/* Header */}
-      <div className={`p-6 border-b flex justify-between items-start border-gray-200`}>
-        <div className="w-full">
-          <p className={`text-sm text-gray-500 mb-2`}>
-            {getGreeting()}, 👋
-          </p>
-          <h2 className={`text-xl font-bold text-gray-800`}>
-            {userName}
-          </h2>
-          <p className={`text-xs text-gray-500`}>
-            ({userRole})
-          </p>
-          {/* Clock Display */}
-          <div className={`mt-3 pt-3 border-t border-gray-200`}>
-            <p className={`text-xs text-gray-500 mb-1`}>
+      <div className={`p-6 border-b border-gray-200`}>
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <p className={`text-sm text-gray-500 mb-1`}>
+              {getGreeting()}
+            </p>
+            <h2 className={`text-xl font-bold text-gray-800`}>
+              {userName}
+            </h2>
+            <p className={`text-xs text-gray-500`}>
+              ({userRole})
+            </p>
+          </div>
+          
+          {/* Date and Time - Top Right Corner */}
+          <div className="text-right">
+            <p className={`text-xs text-gray-500`}>
               {currentTime.toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+                day: 'numeric',
+                month: 'short'
               })}
             </p>
-            <p className={`text-2xl font-bold text-blue-600`}>
+            <p className={`text-sm font-medium text-gray-600`}>
               {currentTime.toLocaleTimeString('id-ID', { 
                 hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
+                minute: '2-digit'
               })}
             </p>
           </div>
         </div>
+        
         {/* Close button for mobile */}
         <button
           onClick={() => setSidebarOpen(false)}
-          className={`lg:hidden text-gray-500 hover:text-gray-700 flex-shrink-0`}
+          className={`lg:hidden absolute top-6 right-6 text-gray-500 hover:text-gray-700`}
         >
           <X className="w-6 h-6" />
         </button>
