@@ -56,8 +56,8 @@ const MyRequestsMode = ({ userName, SCRIPT_URL }) => {
 
   const getStatusBadge = (status) => {
     const badges = {
-      pending: 'bg-yellow-700 text-black',
-      approved: 'bg-green-100 text-green-800',
+      pending: 'bg-yellow-400 text-black',
+      approved: 'bg-green-400 text-green-800',
       rejected: 'bg-red-700 text-black'
     };
     return badges[status] || 'bg-gray-100 text-gray-800';
