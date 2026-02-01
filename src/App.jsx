@@ -633,7 +633,7 @@ return (
       active={false}
       onClick={() => {
         window.open(
-          "onestopservice.uph.edu",
+          "https://onestopservice.uph.edu",
           "_blank"
         );
         setSidebarOpen(false);
