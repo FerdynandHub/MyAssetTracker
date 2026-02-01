@@ -107,7 +107,7 @@ const CheckMode = ({ onBack, SCRIPT_URL }) => {
                 onClick={handleManualCheck}
                 className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
               >
-                Check
+                🔍︎
               </button>
             </div>
 
