@@ -658,21 +658,21 @@ return 'bg-slate-200 text-slate-600';
             {/* Mobile Modal Popup */}
             {selectedAsset && (
               <div 
-                className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center p-4"
+                className="md:hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 transition-opacity duration-300"
                 onClick={() => setSelectedAsset(null)}
               >
                 <div 
-                  className="bg-white rounded-t-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up shadow-2xl"
+                  className="bg-white rounded-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto shadow-2xl transform transition-all duration-300 ease-out scale-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Close button */}
-                  <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+                  <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center rounded-t-2xl">
                     <h3 className="text-lg font-bold text-gray-800">Asset Details</h3>
                     <button
                       onClick={() => setSelectedAsset(null)}
-                      className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      className="p-1.5 rounded-full hover:bg-gray-100 transition-all duration-200"
                     >
-                      <X className="w-5 h-5 text-gray-500" />
+                      <X className="w-5 h-5 text-gray-400 hover:text-gray-600" />
                     </button>
                   </div>
 
