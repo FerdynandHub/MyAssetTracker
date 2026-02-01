@@ -209,8 +209,9 @@ const App = () => {
       <div 
         className={`min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat ${darkMode ? 'dark' : ''}`}
         style={{
-          backgroundImage: darkMode ? 'none' : 'url(https://media.indozone.id/crop/0x0:0x0/images/2025/08/21/Nl7134xFIgm2hfR6ZAjX3X0URVRYd3VBhGdazT71.jpg)',
-          backgroundColor: darkMode ? 'rgb(17, 24, 39)' : 'transparent'
+          backgroundImage: darkMode 
+            ? 'url(https://media.indozone.id/crop/0x0:0x0/images/2025/08/21/Nl7134xFIgm2hfR6ZAjX3X0URVRYd3VBhGdazT71.jpg)' 
+            : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)'
         }}
       >
         {/* Dark Mode Toggle - Login Page */}
