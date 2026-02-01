@@ -793,10 +793,62 @@ genZ: {
 'lanjut': 'gas lanjut',
 'skip': 'ok skip',
 'cukup': 'sip cukup',
-'udah': 'ok done'
+'udah': 'ok done',
 
+// ===== bad words / makian ringan =====
+'bajingan': 'wkwk',
+'bangsat': 'wkwk',
+'bangsad': 'wkwk',
+'kontol': 'yaelah',
+'kntl': 'yaelah',
+'tai': 'hehe',
+'tolol': 'hehe',
+'tlol': 'hehe',
+'goblok': 'wkwk santai',
+'gblk': 'wkwk',
+'dongo': 'yaelah',
+'bego': 'hehe',
+'anjing': 'wkwk',
+'asw': 'wkwk',
+'kampret': 'hehe',
+'monyet': 'lah',
+'sialan': 'hehe',
+'brengsek': 'wkwk',
+'keparat': 'yaelah',
+'edan lu': 'wkwk',
+'gila lu': 'hehe',
+'cacad': 'yah',
+'telaso':'kasar',
+'sundala':'weh',
 
+// combo / emphasis
+'bajingan lu': 'wkwk',
+'bangsat lu': 'wkwk',
+'goblok lu': 'hehe',
+'tolol lu': 'hehe',
+'dongo lu': 'yaelah',
 
+// typo / censor variants
+'bjngn': 'wkwk',
+'bngst': 'wkwk',
+'gblk banget': 'wkwk',
+'tolol banget': 'hehe',
+'edan':'asli',
+
+'hold on': 'oke',
+'tunggu': 'oke',
+
+'udah makan?':'gw ga makan bang',
+'keren juga': 'iya la',
+'udah ga':'apa tu?',
+'byee':'yoo',
+'ok terima kasih':'aman',
+'ok terima kasih ya':'aman',
+'ok terima kasih fer':'aman',
+'ok terima kasih ya fer':'aman',
+'admin siapa':'ferdynand',
+'admin':'skrg admin cuman satu: Ferdynand',
+'capek':'istrahat atuh'
 
   }
 },
