@@ -18,7 +18,8 @@ import {
   Camera,
   List,
   Moon,
-  Sun
+  Sun,
+  Tickets
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
@@ -620,6 +621,19 @@ return (
       onClick={() => {
         window.open(
           "https://docs.google.com/document/d/1fUivFvMW9HVQ_ht3nKEDjVCSI4Pq2G-dlQD7cCDKtjo/edit?tab=t.0",
+          "_blank"
+        );
+        setSidebarOpen(false);
+      }}
+    />
+
+                <SidebarItem
+      icon={<Tickets className="w-5 h-5" />}
+      label="Buka Tiket"
+      active={false}
+      onClick={() => {
+        window.open(
+          "onestopservice.uph.edu",
           "_blank"
         );
         setSidebarOpen(false);
