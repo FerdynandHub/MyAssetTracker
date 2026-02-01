@@ -841,6 +841,7 @@ genZ: {
 'udah makan?':'gw ga makan bang',
 'keren juga': 'iya la',
 'udah ga':'apa tu?',
+'ya itu':'ok siap mengerti (ga)',
 'byee':'yoo',
 'ok terima kasih':'aman',
 'ok terima kasih ya':'aman',
@@ -848,7 +849,28 @@ genZ: {
 'ok terima kasih ya fer':'aman',
 'admin siapa':'ferdynand',
 'admin':'skrg admin cuman satu: Ferdynand',
-'capek':'istrahat atuh'
+'capek':'istrahat atuh',
+'asal mana':'Makassar kota daeng',
+'asal':'Makassar bang',
+'asal?':'Makassarji',
+'orang mana':'Makassar kota coto',
+'mana':'apanya',
+'kamu apa': 'Aku versi AI dari Ferdynand yang siap jawab pertanyaan kamu',
+'kamu siapa':'Aku AI dari Ferdynand yang siap jawab semua (hampir semua) pertanyaan kamu',
+'nama kamu siapa':'AIming',
+'pak hien':'bos',
+'hiendarta':'bos',
+'hien':'bos',
+'henny':'bos',
+'bu henny':'bos kita tuh',
+'bu hen':'bos kita',
+'hen':'bu henny',
+'cara keluar gimana':'pencet tiga garis di kiri dan pencet Keluar',
+'saya mau keluar':'pencet tiga garis di kiri dan pencet Keluar',
+'cara keluar':'pencet tiga garis di kiri dan pencet Keluar',
+'info':'ingfooo',
+'dimana fer':'paddock kayaknya'
+
 
   }
 },
