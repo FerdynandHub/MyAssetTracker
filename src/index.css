@@ -692,6 +692,28 @@
   color: rgb(243 244 246) !important;
 }
 
+/* ============================================
+   OVERRIDE FIX: Ensure all text on dark card backgrounds is visible
+   Add this AFTER the background overrides section
+   ============================================ */
+
+/* Make sure ALL children of converted dark backgrounds have light text */
+.dark .bg-white *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .bg-gray-50 *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .bg-gray-100 *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .bg-gray-200 *:not([class*="bg-pink"]):not([class*="bg-rose"]):not([class*="bg-red-1"]):not([class*="bg-red-2"]):not([class*="bg-orange"]):not([class*="bg-yellow"]):not([class*="bg-lime"]) {
+  color: rgb(243 244 246) !important;
+}
+
 /* Chat list items */
 .dark li {
   color: rgb(243 244 246);
