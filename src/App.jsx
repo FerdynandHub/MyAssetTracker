@@ -292,7 +292,7 @@ const App = () => {
           onClick={toggleDarkMode}
           className={`fixed top-4 right-4 p-3 rounded-full shadow-lg transition ${
             darkMode 
-              ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' 
+              ? 'bg-white-800 text-black hover:bg-gray-700' 
               : 'bg-white text-gray-800 hover:bg-gray-100'
           }`}
           aria-label="Toggle dark mode"
@@ -692,7 +692,7 @@ return (
                 Welcome to Portal AVM!
               </h1>
               <p className={`text-gray-600`}>
-                Select a mode from the menu ☰ on the left to begin
+                Pilih aktivitas dari menu ☰ di sisi kiri layar untuk mulai
               </p>
             </div>
           </div>
