@@ -550,6 +550,8 @@ genZ: {
     'ketawa': 'WKWKWK',
     'parah': 'ngaco sih',
     'parah banget': 'kelewatan sih',
+    'woi':'oit',
+    'oi':'yo',
 
     'malas': 'mager',
     'males banget': 'mager akut',
