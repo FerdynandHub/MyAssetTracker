@@ -509,6 +509,8 @@ genZ: {
     'thanks':'aman',
     'fer':'yo?',
     'thx':'sip',
+    'salken':'salken gw Aming, AI Chatbot yang siap membantu!',
+    'salam kenal':'salken gw Aming, AI Chatbot yang siap membantu!',
 
     'ok gas': 'ok gas ok gas',
     'gas': 'gaskeun',
@@ -670,7 +672,130 @@ genZ: {
 // wrap-up casual (neutral)
 'oke makasih': 'sama-sama',
 'sip makasih': 'siap',
-'paham': 'oke'
+'paham': 'oke',
+
+// ultra casual / sehari-hari
+'wew': 'wew santuy',
+'eh': 'eh kenapa',
+'ehh': 'eh napa',
+'eh iya': 'nah iya',
+'eh bener': 'tuh kan bener',
+
+// typo & shortcut netizen
+'gmn': 'gimana tuh',
+'gmna': 'gimana',
+'apasi': 'apaan sih',
+'apasih': 'apaan',
+'knp': 'kenapa',
+'kpn': 'kapan',
+'dmn': 'di mana',
+'brp': 'berapa',
+
+// low-effort reply
+'oh ok': 'sip',
+'ok sip': 'mantap',
+'ya ok': 'oke',
+'ywdh': 'yaudah',
+'yaudh': 'yaudah',
+'yowes': 'yaudah gas',
+'y': 'y',
+
+// mild disagreement / doubt
+'masa sih': 'serius?',
+'yakin?': 'lu yakin',
+'kayaknya': 'hmm bisa jadi',
+'kurang yakin': 'ragu tipis',
+
+// approval / validation
+'fix': 'fix no debat',
+'fix banget': 'fix parah',
+'valid?': 'valid',
+'approved': 'approved 👍',
+'set': 'set deal',
+
+// reaction noises
+'zzz': 'ngantuk parah',
+'bruh': 'bruh moment',
+'lah': 'lah kok gitu',
+'lah kok': 'nah kan',
+
+// waiting / impatience (no promise)
+'kapan kelar': 'sabar dikit',
+'lama amat': 'iy lama dikit',
+'kok lama': 'bentar ya',
+
+// curiosity
+'terus': 'terus?',
+'abis itu': 'lanjut gimana',
+'terus gimana': 'nah itu',
+
+// casual ending
+'yaudah ya': 'sip',
+'gw cabut': 'siap hati-hati',
+'cabut': 'gas hati-hati',
+'gtg': 'ok later',
+'ttyl': 'ntar lanjut',
+
+// NEW additions only – append to genZ.exact
+
+// super basic / typo friendly
+'aloo': 'haloo',
+'halo?': 'iyo ada',
+'haloo': 'halo juga',
+'helo': 'halo',
+'hay': 'yo',
+'bro': 'bro 🤝',
+'sis': 'sis 💅',
+
+// no / bingung / klarifikasi
+'no': 'wdym no',
+'ngga': 'ok',
+'ga': 'ok',
+'engga': 'ok',
+'gak': 'ok',
+'hah': 'lah kenapa',
+'apa': 'ha?',
+'serius?': 'iy serius',
+'beneran?': 'real',
+
+// ack / reaksi cepat
+'ohh': 'oh iya iya',
+'hmm': 'hmmm 🤔',
+'hmmm': 'mikiiir',
+'ok deh': 'siap',
+'ya sih': 'nah iya',
+'ya juga': 'iya juga ya',
+'oh iya ya': 'tuh kan',
+
+// santai / basa-basi
+'hehe': 'hehe 😄',
+'haha': 'WKWK',
+'wk': 'WKWK',
+'lol': 'ngakak',
+'buset': 'anjir',
+'gilak': 'edan',
+
+// kondisi ringan
+'laper': 'perut keroncongan',
+'ngantuk': 'mata 5 watt',
+'bosen': 'gabut parah',
+'gabut': 'gabut akut',
+'cape': 'capek batin',
+
+// meta / ngobrol sama bot
+'lu siapa': 'gw Aming 🤖',
+'ini siapa': 'Aming di sini',
+'bot ya': 'iy bot tapi asik',
+'ai ya': 'iy tapi santuy',
+
+// penutup kecil
+'ntar': 'ok ntar',
+'lanjut': 'gas lanjut',
+'skip': 'ok skip',
+'cukup': 'sip cukup',
+'udah': 'ok done'
+
+
 
 
   }
