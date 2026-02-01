@@ -201,12 +201,37 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     return response;
   };
 
+// ====== 0. MATH HANDLER ======
+const isMathExpression = (str) => {
+  // Only allow digits, operators, parentheses, decimal points, and spaces
+  return /^[0-9+\-*/().\s]+$/.test(str);
+};
+
+const evaluateMath = (expr) => {
+  try {
+    // Evaluate safely using Function constructor
+    const result = Function(`"use strict"; return (${expr})`)();
+    if (result !== undefined && !isNaN(result)) {
+      return `Hasilnya: **${result}** ✅`;
+    }
+  } catch (e) {
+    return `Ups, gue ga ngerti perhitungannya 😅`;
+  }
+  return null;
+};
+
+
 // Main response generator - FIXED VERSION
 const getResponse = (userInput) => {
   const msg = userInput.toLowerCase().trim();
   const input = msg;
 
   console.log('🔍 Processing input:', msg); // Debug log
+
+    if (isMathExpression(input)) {
+    const mathResponse = evaluateMath(input);
+    if (mathResponse) return mathResponse;
+  }
 
   // ====== 1. GEN Z SLANG - HIGHEST PRIORITY ======
   // Check exact match dulu (case insensitive)
