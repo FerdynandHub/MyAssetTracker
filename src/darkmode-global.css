@@ -1,170 +1,4 @@
-@import "tailwindcss";
-@keyframes goldGlow {
-  0% { box-shadow: 0 0 4px rgba(255,215,0,0.6); }
-  50% { box-shadow: 0 0 15px rgba(255,215,0,1); }
-  100% { box-shadow: 0 0 4px rgba(255,215,0,0.6); }
-}
-
-.gold-glow {
-  animation: goldGlow 1.8s ease-in-out infinite;
-}
-
-@keyframes deathPulse {
-  0% {
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    transform: scale(0.98);
-  }
-  100% {
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
-    transform: scale(1);
-  }
-}
-
-@keyframes boneFloat {
-  0% {
-    opacity: 0;
-    transform: translateY(4px) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-8px) rotate(15deg);
-  }
-}
-
-.dead-grade {
-  position: relative;
-  animation: deathPulse 2.2s ease-in-out infinite;
-}
-
-.dead-grade::before,
-.dead-grade::after {
-  content: "☠";
-  position: absolute;
-  font-size: 0.75rem;
-  opacity: 0;
-  animation: boneFloat 1.8s ease-in-out infinite;
-  color: #374151; /* gray-700 */
-}
-
-.dead-grade::before {
-  left: -10px;
-  top: 50%;
-  animation-delay: 0s;
-}
-
-.dead-grade::after {
-  right: -10px;
-  top: 50%;
-  animation-delay: 0.9s;
-}
-
-/* ---------- A : Healthy ---------- */
-@keyframes heartPop {
-  0% {
-    transform: scale(0.6) translateY(6px);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.1) translateY(-4px);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) translateY(-10px);
-    opacity: 0.9;
-  }
-}
-
-.grade-a {
-  position: relative;
-}
-
-.grade-a::after {
-  content: "💚";
-  position: absolute;
-  top: -10px;
-  right: -12px;
-  font-size: 1.1rem;
-  animation: thumbsUpFloat 2.8s ease-in-out infinite;
-}
-
-
-/* ---------- B : Tired but alive ---------- */
-@keyframes thumbsUpFloat {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-
-.grade-b {
-  position: relative;
-}
-
-.grade-b::after {
-  content: "👍";
-  position: absolute;
-  top: -8px;
-  right: -12px;
-  font-size: 1rem;
-  animation: thumbsUpFloat 2.8s ease-in-out infinite;
-}
-
-
-.grade-b {
-  animation: weakFlicker 3s ease-in-out infinite;
-}
-
-/* ---------- C : Basically gone ---------- */
-@keyframes thumbsDownSink {
-  0% { opacity: 0.8; }
-  50% { opacity: 0.4; }
-  100% { opacity: 0.8; }
-}
-
-.grade-c {
-  position: relative;
-}
-
-.grade-c::after {
-  content: "👎";
-  position: absolute;
-  top: -6px;
-  right: -12px;
-  font-size: 1rem;
-  opacity: 0.7;
-  animation: thumbsUpFloat 2.8s ease-in-out infinite;
-}
-
-
-/* ---------- D : Almost dead ---------- */
-@keyframes gearSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.grade-d {
-  position: relative;
-}
-
-.grade-d::after {
-  content: "🔧⚙️";
-  position: absolute;
-  top: -10px;
-  right: -18px;
-  font-size: 0.9rem;
-  animation: thumbsUpFloat 2.8s ease-in-out infinite;
-}
-
-
-/* ============================================
-   DARK MODE - GLOBAL OVERRIDES
-   ============================================ */
+/* Global Dark Mode Overrides - Add this to your index.css or main CSS file */
 
 /* Apply dark mode to all child components when .dark class is present */
 .dark {
@@ -301,26 +135,14 @@
   color: rgb(134 239 172) !important;
 }
 
-.dark .text-green-800 {
-  color: rgb(134 239 172) !important;
-}
-
 .dark .bg-red-100 {
   background-color: rgb(239 68 68 / 0.2) !important;
-  color: rgb(252 165 165) !important;
-}
-
-.dark .text-red-800 {
   color: rgb(252 165 165) !important;
 }
 
 /* Blue badges */
 .dark .bg-blue-100 {
   background-color: rgb(59 130 246 / 0.2) !important;
-  color: rgb(147 197 253) !important;
-}
-
-.dark .text-blue-800 {
   color: rgb(147 197 253) !important;
 }
 
@@ -389,13 +211,4 @@
 .dark #reader video {
   border: 2px solid rgb(75 85 99);
   border-radius: 8px;
-}
-
-/* Specific fixes for slate colors */
-.dark .bg-slate-200 {
-  background-color: rgb(71 85 105) !important; /* slate-600 */
-}
-
-.dark .text-slate-600 {
-  color: rgb(226 232 240) !important; /* slate-200 */
 }
