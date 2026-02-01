@@ -410,133 +410,206 @@ return 'bg-slate-200 text-slate-600';
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th
-                      onClick={() => handleSort('id')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        ID {getSortIcon('id')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('name')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Name {getSortIcon('name')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('location')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Location {getSortIcon('location')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('category')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Category {getSortIcon('category')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('status')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Status {getSortIcon('status')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('owner')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Owner {getSortIcon('owner')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('grade')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Grade {getSortIcon('grade')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('lastUpdated')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Last Updated {getSortIcon('lastUpdated')}
-                      </div>
-                    </th>
-                    <th
-                      onClick={() => handleSort('updatedBy')}
-                      className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        Updated By {getSortIcon('updatedBy')}
-                      </div>
-                    </th>
-                    <th className="px-4 py-3 text-left">Remarks</th>
-                    <th className="px-4 py-3 text-left">Photo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedAssets.length === 0 ? (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-200">
                     <tr>
-                      <td colSpan="11" className="px-4 py-8 text-center text-gray-500">
-                        No assets found matching your search criteria
-                      </td>
+                      <th
+                        onClick={() => handleSort('id')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          ID {getSortIcon('id')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('name')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Name {getSortIcon('name')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('location')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Location {getSortIcon('location')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('category')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Category {getSortIcon('category')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('status')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Status {getSortIcon('status')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('owner')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Owner {getSortIcon('owner')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('grade')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Grade {getSortIcon('grade')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('lastUpdated')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Last Updated {getSortIcon('lastUpdated')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('updatedBy')}
+                        className="px-4 py-3 text-left cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          Updated By {getSortIcon('updatedBy')}
+                        </div>
+                      </th>
+                      <th className="px-4 py-3 text-left">Remarks</th>
+                      <th className="px-4 py-3 text-left">Photo</th>
                     </tr>
-                  ) : (
-                    paginatedAssets.map((asset, idx) => (
-                      <tr key={idx} className="border-b hover:bg-gray-50">
-                        <td className="px-4 py-3">{asset.id}</td>
-                        <td className="px-4 py-3">{asset.name}</td>
-                        <td className="px-4 py-3">{asset.location}</td>
-                        <td className="px-4 py-3">{asset.category}</td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              asset.status === 'Available' || asset.status === 'Available (kembali)'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            {asset.status}
-                          </span>
+                  </thead>
+                  <tbody>
+                    {paginatedAssets.length === 0 ? (
+                      <tr>
+                        <td colSpan="11" className="px-4 py-8 text-center text-gray-500">
+                          No assets found matching your search criteria
                         </td>
-                        <td className="px-4 py-3">{asset.owner}</td>
-                        <td className="px-4 py-3">
-                        <span
-                            className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}
-                        >
-                            {asset.grade || '-'}
-                        </span>
-                        </td>
-                        <td className="px-4 py-3">{asset.lastUpdated}</td>
-                        <td className="px-4 py-3">{asset.updatedBy}</td>
-                        <td className="px-4 py-3">{asset.remarks}</td>
-                        <td className="px-4 py-3">
-  <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
-</td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      paginatedAssets.map((asset, idx) => (
+                        <tr key={idx} className="border-b hover:bg-gray-50">
+                          <td className="px-4 py-3">{asset.id}</td>
+                          <td className="px-4 py-3">{asset.name}</td>
+                          <td className="px-4 py-3">{asset.location}</td>
+                          <td className="px-4 py-3">{asset.category}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                asset.status === 'Available' || asset.status === 'Available (kembali)'
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {asset.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">{asset.owner}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}
+                            >
+                              {asset.grade || '-'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">{asset.lastUpdated}</td>
+                          <td className="px-4 py-3">{asset.updatedBy}</td>
+                          <td className="px-4 py-3">{asset.remarks}</td>
+                          <td className="px-4 py-3">
+                            <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+              {paginatedAssets.length === 0 ? (
+                <div className="bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">
+                  No assets found matching your search criteria
+                </div>
+              ) : (
+                paginatedAssets.map((asset, idx) => (
+                  <div key={idx} className="bg-white rounded-lg shadow-lg p-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">ID: {asset.id}</div>
+                        <div className="text-lg font-bold text-gray-800">{asset.name}</div>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}
+                      >
+                        {asset.grade || '-'}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Location:</span>
+                        <span className="font-medium">{asset.location}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Category:</span>
+                        <span className="font-medium">{asset.category}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Status:</span>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            asset.status === 'Available' || asset.status === 'Available (kembali)'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          {asset.status}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Owner:</span>
+                        <span className="font-medium">{asset.owner}</span>
+                      </div>
+                      
+                      {asset.remarks && (
+                        <div className="pt-2 border-t">
+                          <span className="text-gray-600">Remarks:</span>
+                          <p className="text-gray-800 mt-1">{asset.remarks}</p>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between items-center pt-2 border-t">
+                        <div>
+                          <div className="text-xs text-gray-500">Updated: {asset.lastUpdated}</div>
+                          <div className="text-xs text-gray-500">By: {asset.updatedBy}</div>
+                        </div>
+                        <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
         )}
 
         {/* Pagination */}
