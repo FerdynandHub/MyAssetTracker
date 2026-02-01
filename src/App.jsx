@@ -631,21 +631,7 @@ return (
       }}
     />
 
-    {/* Coming Soon Section */}
-    <div className={`pt-4 mt-4 border-t border-gray-200`}>
-      <p className={`text-xs uppercase mb-2 px-3 text-gray-500`}>
-        Segera Hadir
-      </p>
-      {['Permintaan Barang', 'Progres'].map((label) => (
-        <SidebarItem
-          key={label}
-          icon={<span className="w-5 h-5 text-gray-400">•</span>}
-          label={label}
-          active={false}
-          disabled={true}
-        />
-      ))}
-    </div>
+
   </div>
 </nav>
 
