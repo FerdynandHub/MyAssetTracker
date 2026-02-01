@@ -213,6 +213,41 @@
   color: rgb(243 244 246) !important; /* gray-100 */
 }
 
+.dark .text-black {
+  color: rgb(243 244 246) !important; /* gray-100 */
+}
+
+/* Additional text color catches */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: rgb(243 244 246) !important; /* white for all headings */
+}
+
+.dark p,
+.dark span,
+.dark div,
+.dark label {
+  color: inherit; /* inherit from parent, which should be light */
+}
+
+/* Force light text on dark backgrounds */
+.dark .font-bold,
+.dark .font-semibold,
+.dark .font-medium {
+  color: inherit;
+}
+
+/* Specific overrides for common text elements */
+.dark .text-center,
+.dark .text-left,
+.dark .text-right {
+  color: inherit;
+}
+
 /* Border overrides */
 .dark .border-gray-300 {
   border-color: rgb(75 85 99) !important; /* gray-600 */
@@ -250,6 +285,21 @@
   outline: none;
 }
 
+/* Select dropdown options */
+.dark select option {
+  background-color: rgb(55 65 81); /* gray-700 */
+  color: rgb(243 244 246); /* white */
+}
+
+.dark select option:disabled {
+  color: rgb(107 114 128); /* gray-500 */
+}
+
+/* Labels for inputs */
+.dark label {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
 /* Table overrides */
 .dark table thead {
   background-color: rgb(55 65 81) !important; /* gray-700 */
@@ -269,6 +319,27 @@
 
 .dark table tbody td {
   color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* Ensure all table text is light */
+.dark table th,
+.dark table td,
+.dark table span,
+.dark table div {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* But keep badge colors intact */
+.dark table .bg-green-100 *,
+.dark table .bg-red-100 *,
+.dark table .bg-blue-100 *,
+.dark table .bg-yellow-400 *,
+.dark table .bg-green-500 *,
+.dark table .bg-sky-400 *,
+.dark table .bg-yellow-300 *,
+.dark table .bg-purple-600 *,
+.dark table .bg-red-900 * {
+  color: inherit; /* Keep badge text colors */
 }
 
 /* Hover states */
@@ -293,6 +364,25 @@
 .dark .disabled\:bg-gray-300:disabled {
   background-color: rgb(55 65 81) !important; /* gray-700 */
   color: rgb(107 114 128) !important; /* gray-500 */
+}
+
+/* Pagination text */
+.dark .text-sm {
+  color: rgb(209 213 219); /* gray-300 */
+}
+
+/* Results count and other small text */
+.dark .text-xs {
+  color: rgb(156 163 175); /* gray-400 */
+}
+
+/* Links and clickable text */
+.dark a {
+  color: rgb(147 197 253); /* blue-300 */
+}
+
+.dark a:hover {
+  color: rgb(96 165 250); /* blue-400 */
 }
 
 /* Status badges - keep original colors but adjust slightly */
@@ -398,4 +488,123 @@
 
 .dark .text-slate-600 {
   color: rgb(226 232 240) !important; /* slate-200 */
+}
+
+/* Login page dark mode overrides */
+.dark.min-h-screen .bg-white {
+  background-color: rgb(31 41 55) !important; /* gray-800 for login card */
+}
+
+.dark.min-h-screen .text-gray-800 {
+  color: rgb(243 244 246) !important; /* white text for title */
+}
+
+.dark.min-h-screen .text-gray-700 {
+  color: rgb(229 231 235) !important; /* light gray for subtitle */
+}
+
+.dark.min-h-screen .text-gray-500 {
+  color: rgb(156 163 175) !important; /* gray for description */
+}
+
+.dark.min-h-screen input {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+  border-color: rgb(75 85 99) !important; /* gray-600 */
+  color: rgb(243 244 246) !important; /* white text */
+}
+
+.dark.min-h-screen input::placeholder {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+/* Sidebar and navigation dark mode */
+.dark aside {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+}
+
+.dark aside .border-b,
+.dark aside .border-t {
+  border-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark aside h2,
+.dark aside .text-gray-800 {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+.dark aside .text-gray-600 {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark aside .text-gray-500 {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+.dark aside .text-gray-700 {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+.dark aside button:not(.bg-blue-500):not(.bg-red-500) .text-gray-700 {
+  color: rgb(229 231 235) !important;
+}
+
+.dark aside button.hover\:bg-gray-100:hover {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark aside .bg-gray-200 {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark aside .bg-gray-200 .text-gray-700 {
+  color: rgb(250 204 21) !important; /* yellow-400 for dark mode toggle icon */
+}
+
+/* Top header bar dark mode */
+.dark main > div:first-child {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+}
+
+.dark main > div:first-child .text-gray-800 {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+.dark main > div:first-child .text-gray-600 {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark main > div:first-child button {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark main > div:first-child button:hover {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+/* Catch-all for any remaining dark text - make it light */
+.dark {
+  color: rgb(229 231 235); /* gray-200 as default text color */
+}
+
+/* Specific selectors for text that should be white */
+.dark .rounded-lg:not(.bg-blue-500):not(.bg-green-500):not(.bg-red-500):not(.bg-purple-500):not(.bg-yellow-500):not(.bg-green-100):not(.bg-red-100):not(.bg-blue-100) {
+  color: rgb(229 231 235); /* light text on cards */
+}
+
+/* Make sure buttons on dark backgrounds have proper text color */
+.dark button:not(.bg-blue-500):not(.bg-green-500):not(.bg-red-500):not(.bg-purple-500):not(.bg-yellow-500):not(.bg-gray-200) .text-gray-700,
+.dark button:not(.bg-blue-500):not(.bg-green-500):not(.bg-red-500):not(.bg-purple-500):not(.bg-yellow-500):not(.bg-gray-200) .text-gray-800 {
+  color: rgb(229 231 235) !important;
+}
+
+/* Font colors that should remain as-is (for colored badges/buttons) */
+.dark .text-white,
+.dark .text-green-800,
+.dark .text-red-800,
+.dark .text-blue-800,
+.dark .text-yellow-900,
+.dark .text-sky-900,
+.dark .text-purple-200,
+.dark .text-red-300 {
+  /* Keep these colors - they're for badges */
 }

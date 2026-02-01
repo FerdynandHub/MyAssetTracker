@@ -207,13 +207,11 @@ const App = () => {
   if (!isLoggedIn) {
     return (
       <div 
-        className={`min-h-screen flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900' : ''}`}
-        style={!darkMode ? {
-          backgroundImage: 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        } : {}}
+        className={`min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat ${darkMode ? 'dark' : ''}`}
+        style={{
+          backgroundImage: darkMode ? 'none' : 'url(https://edp.uph.edu/wp-content/uploads/2024/06/16.-UPH-RMIT-scaled-1-edited.jpg)',
+          backgroundColor: darkMode ? 'rgb(17, 24, 39)' : 'transparent'
+        }}
       >
         {/* Dark Mode Toggle - Login Page */}
         <button
@@ -228,9 +226,7 @@ const App = () => {
           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </button>
 
-        <div className={`rounded-lg shadow-2xl p-8 w-full max-w-md ${
-          darkMode ? 'bg-gray-800' : 'bg-white'
-        }`}>
+        <div className={`rounded-lg shadow-2xl p-8 w-full max-w-md bg-white ${darkMode ? 'dark' : ''}`}>
           <div className="flex justify-center mb-6">
             <img
               src="https://www.uph.edu/wp-content/uploads/2023/10/cropped-uph-universitas-pelita-harapan-logo.png"
@@ -239,33 +235,23 @@ const App = () => {
             />
           </div>
 
-          <h1 className={`text-3xl font-bold mb-1 text-center ${
-            darkMode ? 'text-white' : 'text-gray-800'
-          }`}>
+          <h1 className={`text-3xl font-bold mb-1 text-center text-gray-800`}>
             Portal AVM UPH 8.3
           </h1>
 
-          <p className={`text-xs text-center mb-4 ${
-            darkMode ? 'text-gray-400' : 'text-gray-400'
-          }`}>
+          <p className={`text-xs text-center mb-4 text-gray-400`}>
             by Ferdynand
           </p>
 
-          <p className={`text-xs text-center mb-4 ${
-            darkMode ? 'text-gray-400' : 'text-gray-400'
-          }`}>
+          <p className={`text-xs text-center mb-4 text-gray-400`}>
             Now with CHATBOT!
           </p>
 
-          <h2 className={`text-lg font-medium text-center mb-1 ${
-            darkMode ? 'text-gray-200' : 'text-gray-700'
-          }`}>
+          <h2 className={`text-lg font-medium text-center mb-1 text-gray-700`}>
             Selamat Datang
           </h2>
 
-          <p className={`text-sm text-center mb-6 ${
-            darkMode ? 'text-gray-400' : 'text-gray-500'
-          }`}>
+          <p className={`text-sm text-center mb-6 text-gray-500`}>
             Masukkan Access Code
           </p>
 
@@ -276,11 +262,7 @@ const App = () => {
             onChange={(e) => setAccessCode(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && !loading && !isLocked && handleLogin()}
             disabled={isLocked || loading}
-            className={`w-full px-4 py-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 ${
-              darkMode 
-                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                : 'bg-white border-gray-300 text-gray-900'
-            }`}
+            className={`w-full px-4 py-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 bg-white border-gray-300 text-gray-900`}
             autoComplete="off"
           />
 
@@ -318,8 +300,8 @@ const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
         ${active 
           ? 'bg-blue-500 text-white' 
           : disabled
-            ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+            ? 'text-gray-400 cursor-not-allowed'
+            : 'text-gray-700 hover:bg-gray-100'
         }
       `}
     >
@@ -381,32 +363,32 @@ const renderMode = () => {
 
 // After login, show sidebar layout
 return (
-  <div className={`flex overflow-hidden bg-gray-100 dark:bg-gray-900 ${darkMode ? 'dark' : ''}`} style={{ height: '100dvh' }}>
+  <div className={`flex overflow-hidden bg-gray-100 ${darkMode ? 'dark' : ''}`} style={{ height: '100dvh' }}>
     {/* Sidebar */}
     <aside className={`
       fixed lg:static inset-y-0 left-0 z-[60]
       w-64 shadow-lg flex flex-col
       transform transition-transform duration-300 ease-in-out
       ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      bg-white dark:bg-gray-800
+      bg-white
     `}>
       {/* Header */}
-      <div className={`p-6 border-b flex justify-between items-start border-gray-200 dark:border-gray-700`}>
+      <div className={`p-6 border-b flex justify-between items-start border-gray-200`}>
         <div>
-          <h2 className={`text-xl font-bold text-gray-800 dark:text-white`}>
+          <h2 className={`text-xl font-bold text-gray-800`}>
             Portal AVM
           </h2>
-          <p className={`text-sm mt-1 text-gray-600 dark:text-gray-300`}>
+          <p className={`text-sm mt-1 text-gray-600`}>
             {userName}
           </p>
-          <p className={`text-xs text-gray-500 dark:text-gray-400`}>
+          <p className={`text-xs text-gray-500`}>
             ({userRole})
           </p>
         </div>
         {/* Close button for mobile */}
         <button
           onClick={() => setSidebarOpen(false)}
-          className={`lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200`}
+          className={`lg:hidden text-gray-500 hover:text-gray-700`}
         >
           <X className="w-6 h-6" />
         </button>
@@ -552,8 +534,8 @@ return (
     />
 
     {/* Coming Soon Section */}
-    <div className={`pt-4 mt-4 border-t border-gray-200 dark:border-gray-700`}>
-      <p className={`text-xs uppercase mb-2 px-3 text-gray-500 dark:text-gray-500`}>
+    <div className={`pt-4 mt-4 border-t border-gray-200`}>
+      <p className={`text-xs uppercase mb-2 px-3 text-gray-500`}>
         Segera Hadir
       </p>
       {['Permintaan Barang', 'Progres'].map((label) => (
@@ -571,12 +553,11 @@ return (
 
 
       {/* Logout & Dark Mode Toggle */}
-      <div className={`p-4 border-t space-y-2 border-gray-200 dark:border-gray-700`}>
+      <div className={`p-4 border-t space-y-2 border-gray-200`}>
         <button
           onClick={toggleDarkMode}
           className={`w-full flex items-center justify-center gap-2 py-2 rounded-lg transition
-            bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-yellow-400 
-            hover:bg-gray-300 dark:hover:bg-gray-600
+            bg-gray-200 text-gray-700 hover:bg-gray-300
           `}
         >
           {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -597,14 +578,14 @@ return (
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
-      <div className={`shadow-sm p-4 flex items-center gap-4 bg-white dark:bg-gray-800`}>
+      <div className={`shadow-sm p-4 flex items-center gap-4 bg-white`}>
         <button
           onClick={() => setSidebarOpen(true)}
-          className={`lg:hidden transition text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white`}
+          className={`lg:hidden transition text-gray-600 hover:text-gray-800`}
         >
           <Menu className="w-6 h-6" />
         </button>
-<h1 className={`text-xl font-bold text-gray-800 dark:text-white`}>
+<h1 className={`text-xl font-bold text-gray-800`}>
   {mode === 'overview' && 'Overview Data'}
   {mode === 'check' && 'Check Information'}
   {mode === 'export' && 'Export Data'}
@@ -623,10 +604,10 @@ return (
         {!mode ? (
           <div className="flex items-center justify-center h-full p-4">
             <div className="text-center">
-              <h1 className={`text-4xl font-bold mb-4 text-gray-800 dark:text-white`}>
+              <h1 className={`text-4xl font-bold mb-4 text-gray-800`}>
                 Welcome to Portal AVM!
               </h1>
-              <p className={`text-gray-600 dark:text-gray-400`}>
+              <p className={`text-gray-600`}>
                 Select a mode from the menu ☰ on the left to begin
               </p>
             </div>
