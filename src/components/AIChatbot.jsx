@@ -447,7 +447,7 @@ const getResponse = (userInput) => {
           style={{ touchAction: 'none' }} // NEW: Prevent touch gestures from affecting background
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-black-500 to-blue-600 text-white p-3 sm:p-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="bg-white/20 p-1.5 sm:p-2 rounded-full backdrop-blur-sm">
                 <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -496,7 +496,7 @@ const getResponse = (userInput) => {
                   className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                     message.role === 'user'
                       ? 'bg-blue-500 text-white'
-                      : 'bg-purple-500 text-white'
+                      : 'bg-blue-500 text-white'
                   }`}
                 >
                   {message.role === 'user' ? (
@@ -533,11 +533,11 @@ const getResponse = (userInput) => {
 
             {isLoading && (
               <div className="flex gap-2 sm:gap-3">
-                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-500 text-white flex items-center justify-center">
+                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
                   <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
                 <div className="bg-white rounded-2xl rounded-tl-none shadow-sm border border-gray-100 p-2.5 sm:p-3">
-                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 animate-spin" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 animate-spin" />
                 </div>
               </div>
             )}
@@ -575,14 +575,14 @@ const getResponse = (userInput) => {
                 onKeyPress={handleKeyPress}
                 placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                 autoComplete="off" // NEW: Prevent autocomplete suggestions
                 style={{ fontSize: '16px' }} // CRITICAL: Prevents iOS zoom on input focus
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!input.trim() || isLoading}
-                className="bg-gradient-to-br from-black-500 to-blue-600 text-white p-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
+                className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
               >
                 {isLoading ? (
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
