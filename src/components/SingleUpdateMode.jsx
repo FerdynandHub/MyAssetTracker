@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, Search } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import PhotoUpload from './PhotoUpload';
 
