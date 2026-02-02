@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, List } from 'lucide-react';
+import { RefreshCw, List, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   const [requests, setRequests] = useState([]);
   const [approvalHistory, setApprovalHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeRequesterTab, setActiveRequesterTab] = useState(null);
+  const [selectedApprover, setSelectedApprover] = useState('all');
   const [currentPage, setCurrentPage] = useState({});
+  const [expandedCards, setExpandedCards] = useState({});
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -28,9 +30,9 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       if (data.history) {
         setApprovalHistory(data.history);
         if (data.history.length > 0) {
-          const approvers = getApprovers(data.history);
-          if (approvers.length > 0) {
-            setActiveTab(approvers[0]);
+          const requesters = getRequesters(data.history);
+          if (requesters.length > 0) {
+            setActiveRequesterTab(requesters[0]);
           }
         }
       }
@@ -55,7 +57,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
         body: JSON.stringify({
           action: 'approveRequest',
           requestId: requestId,
-          approvedBy: request.requestedBy
+          approvedBy: userName
         })
       });
       alert('Request approved successfully');
@@ -119,40 +121,73 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
     });
   };
 
-  const getApprovers = (history) => {
-    const approvers = [...new Set(history.map(h => h.requestedBy))];
+  const getRequesters = (history) => {
+    const requesters = [...new Set(history.map(h => h.requestedBy))];
+    return requesters.sort();
+  };
+
+  const getApprovers = () => {
+    const approvers = [...new Set(approvalHistory.map(h => h.approvedBy).filter(Boolean))];
     return approvers.sort();
   };
 
-  const getApprovalsForUser = (userName, page = 0) => {
-    const userApprovals = approvalHistory.filter(h => h.requestedBy === userName);
+  const hasApprovedForRequester = (approver, requester) => {
+    return approvalHistory.some(
+      h => h.requestedBy === requester && h.approvedBy === approver
+    );
+  };
+
+  const getFilteredApprovals = (requester, approver, page = 0) => {
+    let filtered = approvalHistory.filter(h => h.requestedBy === requester);
+    
+    if (approver !== 'all') {
+      filtered = filtered.filter(h => h.approvedBy === approver);
+    }
+    
     const itemsPerPage = 5;
     const startIndex = page * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     
     return {
-      items: userApprovals.slice(startIndex, endIndex),
-      total: userApprovals.length,
-      hasNext: endIndex < userApprovals.length,
+      items: filtered.slice(startIndex, endIndex),
+      total: filtered.length,
+      hasNext: endIndex < filtered.length,
       currentPage: page
     };
   };
 
-  const handleNextPage = (userName) => {
+  const handleNextPage = () => {
+    const key = `${activeRequesterTab}-${selectedApprover}`;
     setCurrentPage(prev => ({
       ...prev,
-      [userName]: (prev[userName] || 0) + 1
+      [key]: (prev[key] || 0) + 1
     }));
   };
 
-  const handlePrevPage = (userName) => {
+  const handlePrevPage = () => {
+    const key = `${activeRequesterTab}-${selectedApprover}`;
     setCurrentPage(prev => ({
       ...prev,
-      [userName]: Math.max(0, (prev[userName] || 0) - 1)
+      [key]: Math.max(0, (prev[key] || 0) - 1)
     }));
   };
 
-  const approvers = getApprovers(approvalHistory);
+  const toggleCard = (requestId) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [requestId]: !prev[requestId]
+    }));
+  };
+
+  useEffect(() => {
+    const key = `${activeRequesterTab}-${selectedApprover}`;
+    if (!currentPage[key]) {
+      setCurrentPage(prev => ({ ...prev, [key]: 0 }));
+    }
+  }, [activeRequesterTab, selectedApprover]);
+
+  const requesters = getRequesters(approvalHistory);
+  const approvers = getApprovers();
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -237,7 +272,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
           </div>
         )}
 
-        {/* Approval History by User */}
+        {/* Approval History */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-bold text-gray-800">Approval History</h3>
@@ -249,100 +284,198 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
             </button>
           </div>
 
-          {approvers.length === 0 ? (
+          {requesters.length === 0 ? (
             <p className="text-gray-500 text-center py-4">No approval history</p>
           ) : (
             <>
-              {/* Tabs */}
-              <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
-                {approvers.map(approver => (
+              {/* Approver Filter */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Filter by Approver:
+                </label>
+                <div className="flex flex-wrap gap-2">
                   <button
-                    key={approver}
-                    onClick={() => setActiveTab(approver)}
+                    onClick={() => setSelectedApprover('all')}
+                    className={`px-4 py-2 rounded-lg transition ${
+                      selectedApprover === 'all'
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    All Approvers
+                  </button>
+                  {approvers.map(approver => {
+                    const isDisabled = activeRequesterTab && !hasApprovedForRequester(approver, activeRequesterTab);
+                    return (
+                      <button
+                        key={approver}
+                        onClick={() => !isDisabled && setSelectedApprover(approver)}
+                        disabled={isDisabled}
+                        className={`px-4 py-2 rounded-lg transition ${
+                          selectedApprover === approver
+                            ? 'bg-purple-500 text-white'
+                            : isDisabled
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        title={isDisabled ? `${approver} has not approved any requests from ${activeRequesterTab}` : ''}
+                      >
+                        {approver}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Requester Tabs */}
+              <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
+                {requesters.map(requester => (
+                  <button
+                    key={requester}
+                    onClick={() => {
+                      setActiveRequesterTab(requester);
+                      if (selectedApprover !== 'all' && !hasApprovedForRequester(selectedApprover, requester)) {
+                        setSelectedApprover('all');
+                      }
+                    }}
                     className={`px-4 py-2 rounded-t-lg transition ${
-                      activeTab === approver
+                      activeRequesterTab === requester
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    {approver}
+                    {requester}
                   </button>
                 ))}
               </div>
 
-              {/* Active Tab Content */}
-              {activeTab && (
+              {/* Approval Cards */}
+              {activeRequesterTab && (
                 <div>
                   {(() => {
-                    const page = currentPage[activeTab] || 0;
-                    const { items, total, hasNext } = getApprovalsForUser(activeTab, page);
+                    const key = `${activeRequesterTab}-${selectedApprover}`;
+                    const page = currentPage[key] || 0;
+                    const { items, total, hasNext } = getFilteredApprovals(activeRequesterTab, selectedApprover, page);
                     
                     return (
                       <>
-                        <div className="space-y-2 mb-4">
-                          {items.map((approval, index) => {
-                            const isApproved = approval.status === 'approved';
-                            
-                            return (
-                              <div 
-                                key={index} 
-                                className={`p-3 rounded-lg border-2 ${
-                                  isApproved ? 'bg-white border-green-400' : 'bg-white border-red-400'
-                                }`}
-                              >
-                                <div className="flex justify-between items-start">
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                      <span className={`text-sm px-2 py-0.5 rounded ${
-                                        isApproved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                      }`}>
-                                        {isApproved ? 'Approved' : 'Rejected'}
-                                      </span>
+                        <div className="space-y-3 mb-4">
+                          {items.length === 0 ? (
+                            <p className="text-gray-500 text-center py-4">
+                              No approvals found for this filter
+                            </p>
+                          ) : (
+                            items.map((approval, index) => {
+                              const isApproved = approval.status === 'approved';
+                              const isExpanded = expandedCards[approval.requestId];
+                              
+                              return (
+                                <div 
+                                  key={index} 
+                                  className={`rounded-lg border-2 ${
+                                    isApproved ? 'bg-white border-green-400' : 'bg-white border-red-400'
+                                  }`}
+                                >
+                                  {/* Card Header - Always Visible */}
+                                  <div 
+                                    className="p-4 cursor-pointer hover:bg-gray-50 transition"
+                                    onClick={() => toggleCard(approval.requestId)}
+                                  >
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-2">
+                                          <span className={`text-sm px-2 py-0.5 rounded font-medium ${
+                                            isApproved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                          }`}>
+                                            {isApproved ? 'Approved' : 'Rejected'}
+                                          </span>
+                                          {approval.approvedBy && (
+                                            <span className="text-xs text-gray-500">
+                                              by {approval.approvedBy}
+                                            </span>
+                                          )}
+                                          <span className="text-sm text-gray-700 font-medium">
+                                            {getRequestType(approval)}
+                                          </span>
+                                        </div>
+                                        <p className="text-sm text-gray-600">
+                                          {approval.ids?.length || 0} asset(s) • {approval.requestId}
+                                        </p>
+                                      </div>
+                                      <div className="flex items-center gap-3">
+                                        <span className="text-xs text-gray-500">
+                                          {formatDate(approval.timestamp)}
+                                        </span>
+                                        {isExpanded ? (
+                                          <ChevronUp className="w-5 h-5 text-gray-400" />
+                                        ) : (
+                                          <ChevronDown className="w-5 h-5 text-gray-400" />
+                                        )}
+                                      </div>
                                     </div>
-                                    <p className="text-sm text-gray-600 mt-1">
-                                      {getRequestType(approval)} • {approval.ids?.length || 0} asset(s)
-                                    </p>
-                                    <p className="text-xs text-gray-500">Request ID: {approval.requestId}</p>
                                   </div>
-                                  <div className="text-right text-xs text-gray-500">
-                                    {formatDate(approval.timestamp)}
-                                  </div>
+
+                                  {/* Expanded Details */}
+                                  {isExpanded && (
+                                    <div className="px-4 pb-4 border-t pt-4">
+                                      <h4 className="font-semibold text-gray-700 mb-2 text-sm">Assets:</h4>
+                                      <div className="flex flex-wrap gap-2 mb-4">
+                                        {approval.ids.map((id, i) => (
+                                          <span key={i} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono">
+                                            {id}
+                                          </span>
+                                        ))}
+                                      </div>
+
+                                      <h4 className="font-semibold text-gray-700 mb-2 text-sm">Changes Made:</h4>
+                                      <div className="bg-gray-50 p-3 rounded-lg">
+                                        {Object.entries(approval.updates).map(([key, value]) => (
+                                          <div key={key} className="flex justify-between py-2 border-b last:border-0 text-sm">
+                                            <span className="font-medium text-gray-700 capitalize">{key}:</span>
+                                            <span className="text-gray-900 text-right ml-4">{value || 'N/A'}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })
+                          )}
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex justify-between items-center">
-                          <p className="text-sm text-gray-600">
-                            Showing {page * 5 + 1}-{Math.min((page + 1) * 5, total)} of {total}
-                          </p>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handlePrevPage(activeTab)}
-                              disabled={page === 0}
-                              className={`px-4 py-2 rounded-lg transition ${
-                                page === 0
-                                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                  : 'bg-blue-500 text-white hover:bg-blue-600'
-                              }`}
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={() => handleNextPage(activeTab)}
-                              disabled={!hasNext}
-                              className={`px-4 py-2 rounded-lg transition ${
-                                !hasNext
-                                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                  : 'bg-blue-500 text-white hover:bg-blue-600'
-                              }`}
-                            >
-                              Next
-                            </button>
+                        {total > 0 && (
+                          <div className="flex justify-between items-center">
+                            <p className="text-sm text-gray-600">
+                              Showing {page * 5 + 1}-{Math.min((page + 1) * 5, total)} of {total}
+                            </p>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={handlePrevPage}
+                                disabled={page === 0}
+                                className={`px-4 py-2 rounded-lg transition ${
+                                  page === 0
+                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                                }`}
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNextPage}
+                                disabled={!hasNext}
+                                className={`px-4 py-2 rounded-lg transition ${
+                                  !hasNext
+                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                                }`}
+                              >
+                                Next
+                              </button>
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </>
                     );
                   })()}
