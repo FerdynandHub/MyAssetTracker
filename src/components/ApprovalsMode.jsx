@@ -4,10 +4,28 @@ import { RefreshCw, List, ChevronDown, ChevronUp } from 'lucide-react';
 const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   const [requests, setRequests] = useState([]);
   const [approvalHistory, setApprovalHistory] = useState([]);
+  const [assetNames, setAssetNames] = useState({});
   const [loading, setLoading] = useState(false);
   const [activeRequesterTab, setActiveRequesterTab] = useState(null);
   const [currentPage, setCurrentPage] = useState({});
   const [expandedCards, setExpandedCards] = useState({});
+
+  const fetchAssetNames = async (assetIds) => {
+    try {
+      const uniqueIds = [...new Set(assetIds)];
+      const response = await fetch(`${SCRIPT_URL}?action=getAssetNames&ids=${uniqueIds.join(',')}`);
+      const data = await response.json();
+      
+      if (data.assets) {
+        setAssetNames(prev => ({
+          ...prev,
+          ...data.assets
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching asset names:', error);
+    }
+  };
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -15,6 +33,12 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       const response = await fetch(`${SCRIPT_URL}?action=getPendingRequests`);
       const data = await response.json();
       setRequests(data);
+      
+      // Fetch asset names for all requests
+      const allIds = data.flatMap(req => req.ids || []);
+      if (allIds.length > 0) {
+        await fetchAssetNames(allIds);
+      }
     } catch (error) {
       console.error('Error fetching requests:', error);
     }
@@ -28,6 +52,13 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       
       if (data.history) {
         setApprovalHistory(data.history);
+        
+        // Fetch asset names for all history items
+        const allIds = data.history.flatMap(h => h.ids || []);
+        if (allIds.length > 0) {
+          await fetchAssetNames(allIds);
+        }
+        
         if (data.history.length > 0) {
           const requesters = getRequesters(data.history);
           if (requesters.length > 0) {
@@ -172,6 +203,36 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
 
   const requesters = getRequesters(approvalHistory);
 
+  const AssetBadge = ({ id }) => {
+    const name = assetNames[id];
+    return (
+      <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-mono inline-flex items-center gap-1">
+        <span className="font-semibold">{id}</span>
+        {name && (
+          <>
+            <span className="text-blue-600">•</span>
+            <span className="font-normal">{name}</span>
+          </>
+        )}
+      </span>
+    );
+  };
+
+  const AssetBadgeSmall = ({ id }) => {
+    const name = assetNames[id];
+    return (
+      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono inline-flex items-center gap-1">
+        <span className="font-semibold">{id}</span>
+        {name && (
+          <>
+            <span className="text-blue-600">•</span>
+            <span className="font-normal">{name}</span>
+          </>
+        )}
+      </span>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
@@ -234,9 +295,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
                   <h4 className="font-semibold text-gray-700 mb-2">Assets to Update:</h4>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {request.ids.map((id, i) => (
-                      <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-mono">
-                        {id}
-                      </span>
+                      <AssetBadge key={i} id={id} />
                     ))}
                   </div>
 
@@ -360,9 +419,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
                                       <h4 className="font-semibold text-gray-700 mb-2 text-sm">Assets:</h4>
                                       <div className="flex flex-wrap gap-2 mb-4">
                                         {approval.ids.map((id, i) => (
-                                          <span key={i} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono">
-                                            {id}
-                                          </span>
+                                          <AssetBadgeSmall key={i} id={id} />
                                         ))}
                                       </div>
 
