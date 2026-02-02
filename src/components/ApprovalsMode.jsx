@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, List, ChevronDown, ChevronUp } from 'lucide-react';
+import { RefreshCw, List, ChevronDown, ChevronUp, Image } from 'lucide-react';
 
 const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   const [requests, setRequests] = useState([]);
   const [approvalHistory, setApprovalHistory] = useState([]);
   const [assetNames, setAssetNames] = useState({});
   const [loading, setLoading] = useState(false);
-  const [activeRequesterTab, setActiveRequesterTab] = useState(null);
+  const [activeRequesterTab, setActiveRequesterTab] = useState('recent');
   const [currentPage, setCurrentPage] = useState({});
   const [expandedCards, setExpandedCards] = useState({});
 
@@ -48,13 +48,6 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       
       if (data.history) {
         setApprovalHistory(data.history);
-        
-        if (data.history.length > 0) {
-          const requesters = getRequesters(data.history);
-          if (requesters.length > 0) {
-            setActiveRequesterTab(requesters[0]);
-          }
-        }
       }
     } catch (error) {
       console.error('Error fetching approval history:', error);
@@ -148,7 +141,18 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   };
 
   const getFilteredApprovals = (requester, page = 0) => {
-    let filtered = approvalHistory.filter(h => h.requestedBy === requester);
+    let filtered;
+    
+    if (requester === 'recent') {
+      // Sort all approvals by timestamp (most recent first)
+      filtered = [...approvalHistory].sort((a, b) => {
+        const timeA = new Date(a.timestamp).getTime();
+        const timeB = new Date(b.timestamp).getTime();
+        return timeB - timeA; // Descending order
+      });
+    } else {
+      filtered = approvalHistory.filter(h => h.requestedBy === requester);
+    }
     
     const itemsPerPage = 5;
     const startIndex = page * itemsPerPage;
@@ -183,6 +187,12 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       ...prev,
       [requestId]: !prev[requestId]
     }));
+  };
+
+  const handlePhotoClick = (photoUrl) => {
+    if (photoUrl) {
+      window.open(photoUrl, '_blank');
+    }
   };
 
   useEffect(() => {
@@ -295,7 +305,17 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
                     {Object.entries(request.updates).map(([key, value]) => (
                       <div key={key} className="flex justify-between py-2 border-b last:border-0">
                         <span className="font-medium text-gray-700 capitalize">{key}:</span>
-                        <span className="text-gray-900">{value}</span>
+                        {key.toLowerCase() === 'photourl' && value ? (
+                          <button
+                            onClick={() => handlePhotoClick(value)}
+                            className="flex items-center gap-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-sm"
+                          >
+                            <Image className="w-4 h-4" />
+                            View Photo
+                          </button>
+                        ) : (
+                          <span className="text-gray-900">{value}</span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -317,12 +337,22 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
             </button>
           </div>
 
-          {requesters.length === 0 ? (
+          {approvalHistory.length === 0 ? (
             <p className="text-gray-500 text-center py-4">No approval history</p>
           ) : (
             <>
               {/* Requester Tabs */}
               <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
+                <button
+                  onClick={() => setActiveRequesterTab('recent')}
+                  className={`px-4 py-2 rounded-t-lg transition ${
+                    activeRequesterTab === 'recent'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Recent (All)
+                </button>
                 {requesters.map(requester => (
                   <button
                     key={requester}
@@ -378,13 +408,16 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
                                           }`}>
                                             {isApproved ? 'Approved' : 'Rejected'}
                                           </span>
+                                          <span className="text-xs text-gray-500">
+                                            by {approval.requestedBy}
+                                          </span>
                                           {approval.approvedBy && (
                                             <span className="text-xs text-gray-500">
-                                              by {approval.approvedBy}
+                                              • approved by {approval.approvedBy}
                                             </span>
                                           )}
                                           <span className="text-sm text-gray-700 font-medium">
-                                            {getRequestType(approval)}
+                                            • {getRequestType(approval)}
                                           </span>
                                         </div>
                                         <p className="text-sm text-gray-600">
@@ -419,7 +452,20 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
                                         {Object.entries(approval.updates).map(([key, value]) => (
                                           <div key={key} className="flex justify-between py-2 border-b last:border-0 text-sm">
                                             <span className="font-medium text-gray-700 capitalize">{key}:</span>
-                                            <span className="text-gray-900 text-right ml-4">{value || 'N/A'}</span>
+                                            {key.toLowerCase() === 'photourl' && value ? (
+                                              <button
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handlePhotoClick(value);
+                                                }}
+                                                className="flex items-center gap-1 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition text-xs"
+                                              >
+                                                <Image className="w-3 h-3" />
+                                                View Photo
+                                              </button>
+                                            ) : (
+                                              <span className="text-gray-900 text-right ml-4">{value || 'N/A'}</span>
+                                            )}
                                           </div>
                                         ))}
                                       </div>

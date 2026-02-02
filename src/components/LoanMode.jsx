@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, X, List } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import PhotoUpload from './PhotoUpload';
 
@@ -9,6 +9,10 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [showLoanedAssets, setShowLoanedAssets] = useState(false);
+  const [loanedAssets, setLoanedAssets] = useState([]);
+  const [loadingLoaned, setLoadingLoaned] = useState(false);
+  const [activeFilterTab, setActiveFilterTab] = useState('recent');
   const videoRef = useRef(null);
   const streamRef = useRef(null);
 
@@ -16,6 +20,58 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
     'Available',
     'Loaned',
   ];
+
+  const fetchLoanedAssets = async () => {
+    setLoadingLoaned(true);
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
+      const data = await response.json();
+      
+      // Filter for assets with status "Loaned"
+      const loaned = data.filter(asset => 
+        asset.status && asset.status.toLowerCase() === 'loaned'
+      );
+      
+      setLoanedAssets(loaned);
+      setShowLoanedAssets(true);
+      setActiveFilterTab('recent'); // Reset to recent when opening
+    } catch (error) {
+      console.error('Error fetching loaned assets:', error);
+      alert('Error loading loaned assets');
+    }
+    setLoadingLoaned(false);
+  };
+
+  const getBorrowers = (assets) => {
+    const borrowers = [...new Set(
+      assets
+        .map(asset => {
+          // Extract borrower from location field
+          // Assuming format is "Location & Borrower" or just "Borrower"
+          const location = asset.location || '';
+          return location.trim();
+        })
+        .filter(loc => loc !== '')
+    )];
+    return borrowers.sort();
+  };
+
+  const getFilteredLoanedAssets = (filterBy) => {
+    let filtered = [...loanedAssets];
+    
+    if (filterBy === 'recent') {
+      // Sort by most recent (assuming newer entries are at the end, or we can use timestamp if available)
+      // For now, we'll reverse the array to show most recent first
+      filtered = filtered.reverse();
+    } else {
+      // Filter by specific borrower/location
+      filtered = filtered.filter(asset => 
+        asset.location && asset.location.trim() === filterBy
+      );
+    }
+    
+    return filtered;
+  };
 
   const addId = () => {
     if (currentId.trim() && !assetIds.includes(currentId.trim())) {
@@ -164,12 +220,22 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800">Loan Mode</h1>
-            <button
-              onClick={onBack}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-            >
-              Back
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={fetchLoanedAssets}
+                disabled={loadingLoaned}
+                className="flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition disabled:bg-gray-300"
+              >
+                <List className="w-5 h-5" />
+                {loadingLoaned ? 'Loading...' : 'View Loaned Items'}
+              </button>
+              <button
+                onClick={onBack}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+              >
+                Back
+              </button>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -320,6 +386,132 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
           </div>
         </div>
       </div>
+
+      {/* Loaned Assets Modal */}
+      {showLoanedAssets && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Currently Loaned Assets ({loanedAssets.length})
+              </h2>
+              <button
+                onClick={() => setShowLoanedAssets(false)}
+                className="text-gray-500 hover:text-gray-700 transition"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            {loanedAssets.length > 0 && (
+              <div className="px-6 pt-4 border-b">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <button
+                    onClick={() => setActiveFilterTab('recent')}
+                    className={`px-4 py-2 rounded-t-lg transition ${
+                      activeFilterTab === 'recent'
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    Recent (All)
+                  </button>
+                  {getBorrowers(loanedAssets).map(borrower => (
+                    <button
+                      key={borrower}
+                      onClick={() => setActiveFilterTab(borrower)}
+                      className={`px-4 py-2 rounded-t-lg transition ${
+                        activeFilterTab === borrower
+                          ? 'bg-purple-500 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      {borrower}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              {loanedAssets.length === 0 ? (
+                <div className="text-center py-12">
+                  <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600">No assets currently on loan</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {getFilteredLoanedAssets(activeFilterTab).map((asset, idx) => (
+                    <div key={idx} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h3 className="font-bold text-lg text-gray-800 mb-2">
+                            {asset.name || 'Unnamed Asset'}
+                          </h3>
+                          <div className="space-y-1 text-sm">
+                            <p>
+                              <span className="font-semibold text-gray-700">ID:</span>{' '}
+                              <span className="font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                                {asset.id}
+                              </span>
+                            </p>
+                            <p>
+                              <span className="font-semibold text-gray-700">Category:</span>{' '}
+                              {asset.category || 'N/A'}
+                            </p>
+                            <p>
+                              <span className="font-semibold text-gray-700">Status:</span>{' '}
+                              <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded font-medium">
+                                {asset.status}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-1 text-sm">
+                          <p>
+                            <span className="font-semibibold text-gray-700">Location & Borrower:</span>{' '}
+                            {asset.location || 'N/A'}
+                          </p>
+                          <p>
+                            <span className="font-semibold text-gray-700">Remarks:</span>{' '}
+                            {asset.remarks || 'N/A'}
+                          </p>
+                          {asset.photoUrl && (
+                            <a
+                              href={asset.photoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 mt-2"
+                            >
+                              <Camera className="w-4 h-4" />
+                              View Photo
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {getFilteredLoanedAssets(activeFilterTab).length === 0 && (
+                    <div className="text-center py-12">
+                      <p className="text-gray-600">No assets found for this filter</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div className="p-6 border-t bg-gray-50">
+              <button
+                onClick={() => setShowLoanedAssets(false)}
+                className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
