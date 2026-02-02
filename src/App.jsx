@@ -81,8 +81,7 @@ const CATEGORIES = [
 'VGA-HDMI Converter',
 'Kabel Data',
 'Jack L',
-'Jack 6,5mm',
-'Mic Wireless'
+'Jack 6,5mm'
 ];
 
 const GRADES = [
