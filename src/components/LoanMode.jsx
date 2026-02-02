@@ -9,7 +9,6 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
-  const [showLoanedAssets, setShowLoanedAssets] = useState(false);
   const [loanedAssets, setLoanedAssets] = useState([]);
   const [loadingLoaned, setLoadingLoaned] = useState(false);
   const [activeFilterTab, setActiveFilterTab] = useState('recent');
@@ -24,50 +23,47 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const fetchLoanedAssets = async () => {
     setLoadingLoaned(true);
     try {
-      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
+      const response = await fetch(`${SCRIPT_URL}?action=getApprovalHistory&limit=999999`);
       const data = await response.json();
       
-      // Filter for assets with status "Loaned"
-      const loaned = data.filter(asset => 
-        asset.status && asset.status.toLowerCase() === 'loaned'
-      );
-      
-      setLoanedAssets(loaned);
-      setShowLoanedAssets(true);
-      setActiveFilterTab('recent'); // Reset to recent when opening
+      if (data.history) {
+        // Filter for approved loan requests
+        const loaned = data.history.filter(item => 
+          item.status === 'approved' && 
+          item.type === 'loan' &&
+          item.updates &&
+          item.updates.status &&
+          item.updates.status.toLowerCase() === 'loaned'
+        );
+        
+        setLoanedAssets(loaned);
+      }
     } catch (error) {
       console.error('Error fetching loaned assets:', error);
-      alert('Error loading loaned assets');
     }
     setLoadingLoaned(false);
   };
 
-  const getBorrowers = (assets) => {
-    const borrowers = [...new Set(
-      assets
-        .map(asset => {
-          // Extract borrower from location field
-          // Assuming format is "Location & Borrower" or just "Borrower"
-          const location = asset.location || '';
-          return location.trim();
-        })
-        .filter(loc => loc !== '')
+  const getRequesters = (assets) => {
+    const requesters = [...new Set(
+      assets.map(asset => asset.requestedBy).filter(r => r)
     )];
-    return borrowers.sort();
+    return requesters.sort();
   };
 
   const getFilteredLoanedAssets = (filterBy) => {
     let filtered = [...loanedAssets];
     
     if (filterBy === 'recent') {
-      // Sort by most recent (assuming newer entries are at the end, or we can use timestamp if available)
-      // For now, we'll reverse the array to show most recent first
-      filtered = filtered.reverse();
+      // Sort by most recent first
+      filtered = filtered.sort((a, b) => {
+        const timeA = new Date(a.timestamp).getTime();
+        const timeB = new Date(b.timestamp).getTime();
+        return timeB - timeA;
+      });
     } else {
-      // Filter by specific borrower/location
-      filtered = filtered.filter(asset => 
-        asset.location && asset.location.trim() === filterBy
-      );
+      // Filter by specific requester
+      filtered = filtered.filter(asset => asset.requestedBy === filterBy);
     }
     
     return filtered;
@@ -211,6 +207,10 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
+    fetchLoanedAssets();
+  }, []);
+
+  useEffect(() => {
     return () => stopScanning();
   }, []);
 
@@ -219,30 +219,20 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Loan Mode</h1>
-            <div className="flex gap-2">
-              <button
-                onClick={fetchLoanedAssets}
-                disabled={loadingLoaned}
-                className="flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition disabled:bg-gray-300"
-              >
-                <List className="w-5 h-5" />
-                {loadingLoaned ? 'Loading...' : 'View Loaned Items'}
-              </button>
-              <button
-                onClick={onBack}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-              >
-                Back
-              </button>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-800">Mode Peminjaman</h1>
+            <button
+              onClick={onBack}
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+            >
+              Kembali
+            </button>
           </div>
 
           <div className="space-y-4">
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Enter Asset ID"
+                placeholder="Masukkan ID Aset"
                 value={currentId}
                 onChange={(e) => setCurrentId(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addId()}
@@ -263,7 +253,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
               } text-white`}
             >
               <Camera className="w-5 h-5" />
-              {scanning ? 'Stop Scanning' : 'Scan Barcode'}
+              {scanning ? 'Hentikan Scan' : 'Scan Barcode'}
             </button>
           </div>
 
@@ -274,7 +264,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                 onClick={() => setScanning(false)}
                 className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg"
               >
-                Stop Scanning
+                Hentikan Scan
               </button>
             </div>
           )}
@@ -282,7 +272,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h2 className="text-xl font-bold text-gray-800 mb-4">
-            Selected Assets ({assetIds.length})
+            Aset Terpilih ({assetIds.length})
           </h2>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {assetIds.map((id, idx) => (
@@ -292,19 +282,19 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                   onClick={() => removeId(id)}
                   className="text-red-500 hover:text-red-700 transition"
                 >
-                  Remove
+                  Hapus
                 </button>
               </div>
             ))}
             {assetIds.length === 0 && (
-              <p className="text-center text-gray-500 py-4">No assets selected yet</p>
+              <p className="text-center text-gray-500 py-4">Belum ada aset yang dipilih</p>
             )}
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Loan Update</h2>
-          <p className="text-sm text-gray-600 mb-4">All fields are required. Update status, location, and remarks for selected assets</p>
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Pembaruan Peminjaman</h2>
+          <p className="text-sm text-gray-600 mb-4">Semua kolom wajib diisi. Perbarui status, lokasi, dan catatan untuk aset yang dipilih</p>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -318,7 +308,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">
-                  Select status (required)
+                  Pilih status (wajib)
                 </option>
                 {STATUSES.map(status => (
                   <option key={status} value={status}>
@@ -336,7 +326,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                 type="text"
                 value={formData.location || ''}
                 onChange={(e) => setFormData({...formData, location: e.target.value})}
-                placeholder="Enter current location and borrower name (required)"
+                placeholder="Masukkan lokasi terkini dan nama peminjam (wajib)"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -349,7 +339,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                 value={formData.remarks || ''}
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 rows="3"
-                placeholder="Enter remarks or notes (required)"
+                placeholder="Masukkan catatan (wajib)"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -375,7 +365,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                   : 'bg-orange-500 hover:bg-orange-600 text-white'
               }`}
             >
-              {loading ? 'Updating...' : 'Update Loan Status'}
+              {loading ? 'Memperbarui...' : 'Perbarui Status Peminjaman'}
             </button>
             
             {!isFormValid() && assetIds.length > 0 && (
@@ -385,133 +375,136 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
             )}
           </div>
         </div>
-      </div>
 
-      {/* Loaned Assets Modal */}
-      {showLoanedAssets && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="p-6 border-b flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-800">
-                Currently Loaned Assets ({loanedAssets.length})
-              </h2>
-              <button
-                onClick={() => setShowLoanedAssets(false)}
-                className="text-gray-500 hover:text-gray-700 transition"
-              >
-                <X className="w-6 h-6" />
-              </button>
+        {/* Daftar Aset yang Sedang Dipinjam */}
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Aset yang Sedang Dipinjam ({loanedAssets.length})
+            </h2>
+            <button
+              onClick={fetchLoanedAssets}
+              className="text-sm text-blue-500 hover:text-blue-600 transition"
+            >
+              <RefreshCw className="w-4 h-4 inline mr-1" />
+              Muat Ulang
+            </button>
+          </div>
+
+          {loadingLoaned ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
             </div>
-            
-            {loanedAssets.length > 0 && (
-              <div className="px-6 pt-4 border-b">
-                <div className="flex flex-wrap gap-2 mb-4">
+          ) : loanedAssets.length === 0 ? (
+            <div className="text-center py-12">
+              <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <p className="text-gray-600">Tidak ada aset yang sedang dipinjam</p>
+            </div>
+          ) : (
+            <>
+              {/* Filter Tabs */}
+              <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
+                <button
+                  onClick={() => setActiveFilterTab('recent')}
+                  className={`px-4 py-2 rounded-t-lg transition ${
+                    activeFilterTab === 'recent'
+                      ? 'bg-purple-500 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Terbaru (Semua)
+                </button>
+                {getRequesters(loanedAssets).map(requester => (
                   <button
-                    onClick={() => setActiveFilterTab('recent')}
+                    key={requester}
+                    onClick={() => setActiveFilterTab(requester)}
                     className={`px-4 py-2 rounded-t-lg transition ${
-                      activeFilterTab === 'recent'
+                      activeFilterTab === requester
                         ? 'bg-purple-500 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    Recent (All)
+                    {requester}
                   </button>
-                  {getBorrowers(loanedAssets).map(borrower => (
-                    <button
-                      key={borrower}
-                      onClick={() => setActiveFilterTab(borrower)}
-                      className={`px-4 py-2 rounded-t-lg transition ${
-                        activeFilterTab === borrower
-                          ? 'bg-purple-500 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      {borrower}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
-            )}
-            
-            <div className="p-6 overflow-y-auto flex-1">
-              {loanedAssets.length === 0 ? (
-                <div className="text-center py-12">
-                  <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-600">No assets currently on loan</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {getFilteredLoanedAssets(activeFilterTab).map((asset, idx) => (
+
+              {/* Loaned Assets List */}
+              <div className="space-y-4">
+                {getFilteredLoanedAssets(activeFilterTab).length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-600">Tidak ada data untuk filter ini</p>
+                  </div>
+                ) : (
+                  getFilteredLoanedAssets(activeFilterTab).map((loan, idx) => (
                     <div key={idx} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm font-medium">
+                            Dipinjam
+                          </span>
+                          <span className="text-sm text-gray-600">
+                            oleh {loan.requestedBy}
+                          </span>
+                          {loan.approvedBy && (
+                            <span className="text-sm text-gray-600">
+                              • disetujui oleh {loan.approvedBy}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          {new Date(loan.timestamp).toLocaleString('id-ID')}
+                        </p>
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <h3 className="font-bold text-lg text-gray-800 mb-2">
-                            {asset.name || 'Unnamed Asset'}
-                          </h3>
-                          <div className="space-y-1 text-sm">
-                            <p>
-                              <span className="font-semibold text-gray-700">ID:</span>{' '}
-                              <span className="font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                                {asset.id}
+                          <h4 className="font-semibold text-gray-700 mb-2 text-sm">Aset:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {loan.ids && loan.ids.map((id, i) => (
+                              <span key={i} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono">
+                                {id}
                               </span>
-                            </p>
-                            <p>
-                              <span className="font-semibold text-gray-700">Category:</span>{' '}
-                              {asset.category || 'N/A'}
-                            </p>
-                            <p>
-                              <span className="font-semibold text-gray-700">Status:</span>{' '}
-                              <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded font-medium">
-                                {asset.status}
-                              </span>
-                            </p>
+                            ))}
                           </div>
                         </div>
-                        
-                        <div className="space-y-1 text-sm">
-                          <p>
-                            <span className="font-semibibold text-gray-700">Location & Borrower:</span>{' '}
-                            {asset.location || 'N/A'}
-                          </p>
-                          <p>
-                            <span className="font-semibold text-gray-700">Remarks:</span>{' '}
-                            {asset.remarks || 'N/A'}
-                          </p>
-                          {asset.photoUrl && (
+
+                        <div className="space-y-2 text-sm">
+                          <div>
+                            <span className="font-semibold text-gray-700">Status:</span>{' '}
+                            <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+                              {loan.updates?.status || 'N/A'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-semibold text-gray-700">Lokasi & Peminjam:</span>{' '}
+                            <span className="text-gray-900">{loan.updates?.location || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="font-semibold text-gray-700">Catatan:</span>{' '}
+                            <span className="text-gray-900">{loan.updates?.remarks || 'N/A'}</span>
+                          </div>
+                          {loan.updates?.photoUrl && (
                             <a
-                              href={asset.photoUrl}
+                              href={loan.updates.photoUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 mt-2"
+                              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 mt-1"
                             >
                               <Camera className="w-4 h-4" />
-                              View Photo
+                              Lihat Foto
                             </a>
                           )}
                         </div>
                       </div>
                     </div>
-                  ))}
-                  {getFilteredLoanedAssets(activeFilterTab).length === 0 && (
-                    <div className="text-center py-12">
-                      <p className="text-gray-600">No assets found for this filter</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            <div className="p-6 border-t bg-gray-50">
-              <button
-                onClick={() => setShowLoanedAssets(false)}
-                className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-              >
-                Close
-              </button>
-            </div>
-          </div>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
