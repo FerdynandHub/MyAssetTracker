@@ -677,10 +677,10 @@ return (
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
 <div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-gray-900 to-blue-900' : 'bg-gradient-to-r from-sky-400 to-blue-500'}`}>
-  {/* Stars for dark mode */}
+  {/* Stars for dark mode - twinkle but don't move */}
   {darkMode && (
     <div className="absolute inset-0 pointer-events-none">
-      {[...Array(20)].map((_, i) => (
+      {[...Array(30)].map((_, i) => (
         <div
           key={i}
           className="absolute bg-white rounded-full animate-pulse"
@@ -689,17 +689,37 @@ return (
             height: Math.random() * 2 + 1 + 'px',
             top: Math.random() * 100 + '%',
             left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 2 + 's',
-            animationDuration: Math.random() * 3 + 2 + 's'
+            animationDelay: Math.random() * 3 + 's',
+            animationDuration: Math.random() * 2 + 1 + 's'
           }}
         />
       ))}
     </div>
   )}
   
+  {/* Sun rays for day mode */}
+  {!darkMode && (
+    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+      <div className="relative">
+        {/* Sun circle */}
+        <div className="w-8 h-8 bg-yellow-300 rounded-full shadow-lg shadow-yellow-400/50" />
+        {/* Sun rays */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute top-1/2 left-1/2 w-12 h-0.5 bg-yellow-300/60 origin-left"
+            style={{
+              transform: `translate(-50%, -50%) rotate(${i * 45}deg)`
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )}
+  
   <button
     onClick={() => setSidebarOpen(true)}
-    className={`lg:hidden transition relative z-10 ${darkMode ? 'text-white hover:text-gray-200' : 'text-white hover:text-gray-100'}`}>
+    className={`lg:hidden transition relative z-10 text-white hover:text-gray-200`}>
     <Menu className="w-6 h-6" />
   </button>
   <h1 className={`text-xl font-bold text-white relative z-10`}>
