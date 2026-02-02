@@ -676,7 +676,7 @@ return (
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
-<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-blue-950 to-blue-915' : 'bg-gradient-to-r from-blue-500 to-blue-500'}`}>
+<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-blue-915 to-blue-915' : 'bg-gradient-to-r from-blue-500 to-blue-500'}`}>
   
   <button
     onClick={() => setSidebarOpen(true)}
