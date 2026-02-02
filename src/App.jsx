@@ -326,7 +326,7 @@ const App = () => {
           </h1>
 
           <p className={`text-xs text-center mb-4 text-gray-400`}>
-            by Ferdynand
+            Stable Full Release V.1.1
           </p>
 
 
@@ -369,6 +369,11 @@ const App = () => {
             )}
           </button>
         </div>
+        <div className="fixed bottom-4 left-4">
+  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+    Made by Ferdynand
+  </p>
+</div>
       </div>
     );
   }
