@@ -370,9 +370,9 @@ const App = () => {
           </button>
         </div>
         <div className="fixed bottom-4 left-4">
-  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-    Made by Ferdynand
-  </p>
+<p className="text-s text-white">
+  Made by Ferdynand
+</p>
 </div>
       </div>
     );
