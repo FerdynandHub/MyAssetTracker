@@ -461,7 +461,7 @@ return (
       bg-white
     `}>
 {/* Header */}
-<div className="p-6 border-b border-blue-200 relative">
+<div className="p-6 border-b border-gray-200 relative">
   <div className="flex justify-between items-start mb-4">
     
     {/* User Info */}
@@ -676,14 +676,14 @@ return (
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
-      <div className={`shadow-sm p-4 flex items-center gap-4 bg-white`}>
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className={`lg:hidden transition text-gray-600 hover:text-gray-800`}
-        >
-          <Menu className="w-6 h-6" />
-        </button>
-<h1 className={`text-xl font-bold text-gray-800`}>
+<div className={`shadow-sm p-4 flex items-center gap-4 bg-gradient-to-r from-blue-500 to-purple-600`}>
+<button
+  onClick={() => setSidebarOpen(true)}
+  className={`lg:hidden transition text-white hover:text-gray-200`}
+>
+  <Menu className="w-6 h-6" />
+</button>
+<h1 className={`text-xl font-bold text-white`}>
   {mode === 'overview' && 'Overview Data'}
   {mode === 'check' && 'Check Information'}
   {mode === 'export' && 'Export Data'}
