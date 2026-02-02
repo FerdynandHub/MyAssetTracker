@@ -47,8 +47,10 @@ const ROLES = {
 
 const SCRIPT_URL = import.meta.env.VITE_SCRIPT_URL
 
-//Categories List
-const CATEGORIES = [
+/*
+old Categories List (unactive)
+
+const old_CATEGORIES = [
   'Projectors',
   'Toolkit',
   'Kabel HDMI',
@@ -76,13 +78,53 @@ const CATEGORIES = [
   'XLR Cable',
   'TV Auditorium',
   'Bracket TV',
-'Type C Hub Converter',
+  'Type C Hub Converter',
   'Power Extension',
-'VGA-HDMI Converter',
-'Kabel Data',
-'Jack L',
-'Jack 6,5mm'
+  'VGA-HDMI Converter',
+  'Kabel Data',
+  'Jack L',
+  'Jack 6,5mm'
 ];
+*/
+
+
+//new sorted category
+const CATEGORIES = [
+  'Bracket TV',
+  'Camera',
+  'DI Box',
+  'Docking Station',
+  'HDMI Extender',
+  'HDMI Matrix',
+  'HDMI SPLITTER',
+  'HDMI Switcher',
+  'Jack 6,5mm',
+  'Jack L',
+  'Kabel Audio',
+  'Kabel Data',
+  'Kabel HDMI',
+  'Kabel USB',
+  'Microphone',
+  'Mixer',
+  'PDU',
+  'Power Extension',
+  'Power Supply',
+  'Presentation Remote',
+  'Projectors',
+  'Soundcard',
+  'Speaker',
+  'Speaker Stand',
+  'Stylus Pen',
+  'TV Auditorium',
+  'Toolkit',
+  'Type C Hub Converter',
+  'VGA-HDMI Converter',
+  'Video Capture',
+  'Wireless Microphone',
+  'Wireless Presentation',
+  'XLR Cable'
+];
+
 
 const GRADES = [
   'S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 
