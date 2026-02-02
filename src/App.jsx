@@ -676,10 +676,7 @@ return (
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
-<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-blue-950' : 'bg-blue-600'}
-
-
-`}>
+<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-blue-700 to-blue-900' : 'bg-gradient-to-r from-sky-600 to-blue-500'}`}>
  
   
   <button
