@@ -461,7 +461,7 @@ return (
       bg-white
     `}>
 {/* Header */}
-<div className="p-6 border-b border-gray-200 relative">
+<div className="p-6 border-b border-blue-200 relative">
   <div className="flex justify-between items-start mb-4">
     
     {/* User Info */}
