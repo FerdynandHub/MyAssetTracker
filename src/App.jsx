@@ -679,23 +679,33 @@ return (
 <div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-gray-900 to-blue-900' : 'bg-gradient-to-r from-sky-400 to-blue-500'}`}>
  
  
-  {/* Stars for dark mode - twinkle but don't move */}
-  {darkMode && (
-    <div className="absolute inset-0 pointer-events-none">
-      {[...Array(30)].map((_, i) => (
+{darkMode && (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    {[...Array(40)].map((_, i) => {
+      // Pre-calculate values for a cleaner style object
+      const size = Math.random() * 2 + 1 + 'px';
+      const duration = Math.random() * 8 + 7 + 's'; // Very slow: 7s to 15s
+      const delay = Math.random() * -20 + 's'; // Negative delay starts animation mid-cycle
+      
+      return (
         <div
           key={i}
           className="absolute bg-white rounded-full animate-pulse"
           style={{
-width: Math.random() * 2 + 1 + 'px',
-    height: Math.random() * 2 + 1 + 'px',
-    top: Math.random() * 100 + '%',
-    left: Math.random() * 100 + '%',
+            width: size,
+            height: size,
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            animationDuration: duration,
+            animationDelay: delay,
+            opacity: Math.random() * 0.7 + 0.3, // Random base transparency
+            filter: `blur(${Math.random() * 1}px)`, // Slight soft glow
           }}
         />
-      ))}
-    </div>
-  )}
+      );
+    })}
+  </div>
+)}
   
   
   <button
