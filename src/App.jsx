@@ -685,37 +685,19 @@ return (
           key={i}
           className="absolute bg-white rounded-full animate-pulse"
           style={{
-            width: Math.random() * 2 + 1 + 'px',
-            height: Math.random() * 2 + 1 + 'px',
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 3 + 's',
-            animationDuration: Math.random() * 2 + 1 + 's'
+width: Math.random() * 2 + 1 + 'px',
+    height: Math.random() * 2 + 1 + 'px',
+    top: Math.random() * 100 + '%',
+    left: Math.random() * 100 + '%',
+    animationDelay: Math.random() * 3 + 's',
+    animationDuration: Math.random() * 2 + 1 + 's',
+    animationIterationCount: 'infinite'
           }}
         />
       ))}
     </div>
   )}
   
-  {/* Sun rays for day mode */}
-  {!darkMode && (
-    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-      <div className="relative">
-        {/* Sun circle */}
-        <div className="w-8 h-8 bg-yellow-300 rounded-full shadow-lg shadow-yellow-400/50" />
-        {/* Sun rays */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute top-1/2 left-1/2 w-12 h-0.5 bg-yellow-300/60 origin-left"
-            style={{
-              transform: `translate(-50%, -50%) rotate(${i * 45}deg)`
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  )}
   
   <button
     onClick={() => setSidebarOpen(true)}
