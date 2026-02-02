@@ -6,7 +6,6 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   const [approvalHistory, setApprovalHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeRequesterTab, setActiveRequesterTab] = useState(null);
-  const [selectedApprover, setSelectedApprover] = useState('all');
   const [currentPage, setCurrentPage] = useState({});
   const [expandedCards, setExpandedCards] = useState({});
 
@@ -126,23 +125,8 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
     return requesters.sort();
   };
 
-  const getApprovers = () => {
-    const approvers = [...new Set(approvalHistory.map(h => h.approvedBy).filter(Boolean))];
-    return approvers.sort();
-  };
-
-  const hasApprovedForRequester = (approver, requester) => {
-    return approvalHistory.some(
-      h => h.requestedBy === requester && h.approvedBy === approver
-    );
-  };
-
-  const getFilteredApprovals = (requester, approver, page = 0) => {
+  const getFilteredApprovals = (requester, page = 0) => {
     let filtered = approvalHistory.filter(h => h.requestedBy === requester);
-    
-    if (approver !== 'all') {
-      filtered = filtered.filter(h => h.approvedBy === approver);
-    }
     
     const itemsPerPage = 5;
     const startIndex = page * itemsPerPage;
@@ -157,7 +141,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   };
 
   const handleNextPage = () => {
-    const key = `${activeRequesterTab}-${selectedApprover}`;
+    const key = activeRequesterTab;
     setCurrentPage(prev => ({
       ...prev,
       [key]: (prev[key] || 0) + 1
@@ -165,7 +149,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   };
 
   const handlePrevPage = () => {
-    const key = `${activeRequesterTab}-${selectedApprover}`;
+    const key = activeRequesterTab;
     setCurrentPage(prev => ({
       ...prev,
       [key]: Math.max(0, (prev[key] || 0) - 1)
@@ -180,14 +164,13 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
-    const key = `${activeRequesterTab}-${selectedApprover}`;
+    const key = activeRequesterTab;
     if (!currentPage[key]) {
       setCurrentPage(prev => ({ ...prev, [key]: 0 }));
     }
-  }, [activeRequesterTab, selectedApprover]);
+  }, [activeRequesterTab]);
 
   const requesters = getRequesters(approvalHistory);
-  const approvers = getApprovers();
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -288,56 +271,12 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
             <p className="text-gray-500 text-center py-4">No approval history</p>
           ) : (
             <>
-              {/* Approver Filter */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Filter by Approver:
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => setSelectedApprover('all')}
-                    className={`px-4 py-2 rounded-lg transition ${
-                      selectedApprover === 'all'
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
-                  >
-                    All Approvers
-                  </button>
-                  {approvers.map(approver => {
-                    const isDisabled = activeRequesterTab && !hasApprovedForRequester(approver, activeRequesterTab);
-                    return (
-                      <button
-                        key={approver}
-                        onClick={() => !isDisabled && setSelectedApprover(approver)}
-                        disabled={isDisabled}
-                        className={`px-4 py-2 rounded-lg transition ${
-                          selectedApprover === approver
-                            ? 'bg-purple-500 text-white'
-                            : isDisabled
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                        title={isDisabled ? `${approver} has not approved any requests from ${activeRequesterTab}` : ''}
-                      >
-                        {approver}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
               {/* Requester Tabs */}
               <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
                 {requesters.map(requester => (
                   <button
                     key={requester}
-                    onClick={() => {
-                      setActiveRequesterTab(requester);
-                      if (selectedApprover !== 'all' && !hasApprovedForRequester(selectedApprover, requester)) {
-                        setSelectedApprover('all');
-                      }
-                    }}
+                    onClick={() => setActiveRequesterTab(requester)}
                     className={`px-4 py-2 rounded-t-lg transition ${
                       activeRequesterTab === requester
                         ? 'bg-blue-500 text-white'
@@ -353,16 +292,16 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
               {activeRequesterTab && (
                 <div>
                   {(() => {
-                    const key = `${activeRequesterTab}-${selectedApprover}`;
+                    const key = activeRequesterTab;
                     const page = currentPage[key] || 0;
-                    const { items, total, hasNext } = getFilteredApprovals(activeRequesterTab, selectedApprover, page);
+                    const { items, total, hasNext } = getFilteredApprovals(activeRequesterTab, page);
                     
                     return (
                       <>
                         <div className="space-y-3 mb-4">
                           {items.length === 0 ? (
                             <p className="text-gray-500 text-center py-4">
-                              No approvals found for this filter
+                              No approvals found
                             </p>
                           ) : (
                             items.map((approval, index) => {
