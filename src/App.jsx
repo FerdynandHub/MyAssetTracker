@@ -683,16 +683,16 @@ return (
   {darkMode && (
     <div className="absolute inset-0 pointer-events-none">
       {[...Array(30)].map((_, i) => (
-<div
-  key={i}
-  className="absolute bg-white rounded-full animate-[pulse_12s_linear_infinite]"
-  style={{
-    width: Math.random() * 2 + 1 + 'px',
+        <div
+          key={i}
+          className="absolute bg-white rounded-full animate-pulse"
+          style={{
+width: Math.random() * 2 + 1 + 'px',
     height: Math.random() * 2 + 1 + 'px',
     top: Math.random() * 100 + '%',
     left: Math.random() * 100 + '%',
-  }}
-/>
+          }}
+        />
       ))}
     </div>
   )}
