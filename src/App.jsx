@@ -369,10 +369,10 @@ const App = () => {
             )}
           </button>
         </div>
-        <div className="fixed bottom-4 left-4">
-<p className="text-s text-white">
-  Made by Ferdynand
-</p>
+<div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+  <p className="text-xs text-white">
+    © Made by Ferdynand
+  </p>
 </div>
       </div>
     );
