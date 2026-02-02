@@ -676,29 +676,9 @@ return (
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
-<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-gray-900 to-blue-900' : 'bg-gradient-to-r from-sky-400 to-blue-500'}`}>
+<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-sky-400'}
+`}>
  
- 
-{/* Stars for dark mode - twinkle but don't move */}
-  {darkMode && (
-    <div className="absolute inset-0 pointer-events-none">
-      {[...Array(30)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute bg-white rounded-full"
-          style={{
-            width: Math.random() * 2 + 1 + 'px',
-            height: Math.random() * 2 + 1 + 'px',
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animation: 'twinkle 3s ease-in-out infinite',
-            animationDelay: Math.random() * 3 + 's'
-          }}
-        />
-      ))}
-    </div>
-  )}
-  
   
   <button
     onClick={() => setSidebarOpen(true)}
