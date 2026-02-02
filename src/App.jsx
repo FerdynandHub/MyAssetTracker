@@ -676,14 +676,33 @@ return (
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
-<div className={`shadow-sm p-4 flex items-center gap-4 bg-gradient-to-r from-blue-500 to-purple-600`}>
-<button
-  onClick={() => setSidebarOpen(true)}
-  className={`lg:hidden transition text-white hover:text-gray-200`}
->
-  <Menu className="w-6 h-6" />
-</button>
-<h1 className={`text-xl font-bold text-white`}>
+<div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-gray-900 to-blue-900' : 'bg-gradient-to-r from-sky-400 to-blue-500'}`}>
+  {/* Stars for dark mode */}
+  {darkMode && (
+    <div className="absolute inset-0 pointer-events-none">
+      {[...Array(20)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute bg-white rounded-full animate-pulse"
+          style={{
+            width: Math.random() * 2 + 1 + 'px',
+            height: Math.random() * 2 + 1 + 'px',
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            animationDelay: Math.random() * 2 + 's',
+            animationDuration: Math.random() * 3 + 2 + 's'
+          }}
+        />
+      ))}
+    </div>
+  )}
+  
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className={`lg:hidden transition relative z-10 ${darkMode ? 'text-white hover:text-gray-200' : 'text-white hover:text-gray-100'}`}>
+    <Menu className="w-6 h-6" />
+  </button>
+  <h1 className={`text-xl font-bold text-white relative z-10`}>
   {mode === 'overview' && 'Overview Data'}
   {mode === 'check' && 'Check Information'}
   {mode === 'export' && 'Export Data'}
