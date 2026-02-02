@@ -15,7 +15,7 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const inputRef = useRef(null); // NEW: Reference to input field
+  const inputRef = useRef(null);
 
   // Live system state
   const [systemState, setSystemState] = useState({
@@ -35,34 +35,27 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     scrollToBottom();
   }, [messages]);
 
-  // Fetch live system data when chatbot opens
   useEffect(() => {
     if (isOpen && !systemState.lastSync) {
       fetchSystemState();
     }
   }, [isOpen]);
 
-  // NEW: Prevent body scroll when chat is open on mobile
   useEffect(() => {
     if (isOpen) {
-      // Prevent background scrolling
       document.body.style.overflow = 'hidden';
       
-      // Focus on input when chat opens
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
 
-      // Add viewport meta tag to prevent iOS zoom on input focus
       let viewport = document.querySelector("meta[name=viewport]");
       if (viewport) {
         viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
       }
     } else {
-      // Restore background scrolling
       document.body.style.overflow = 'unset';
       
-      // Restore original viewport settings
       let viewport = document.querySelector("meta[name=viewport]");
       if (viewport) {
         viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
@@ -82,7 +75,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     try {
       const newState = { ...systemState };
 
-      // Fetch total assets
       try {
         const assetsResponse = await fetch(`${SCRIPT_URL}?action=getAssets`);
         const assetsData = await assetsResponse.json();
@@ -91,7 +83,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         console.log('Could not fetch assets count');
       }
 
-      // Fetch battery inventory (if not viewer)
       if (userRole !== ROLES.VIEWER) {
         try {
           const batteryResponse = await fetch(`${SCRIPT_URL}?action=getBatteryInventory`);
@@ -104,7 +95,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         }
       }
 
-      // Fetch pending requests count (if admin)
       if (userRole === ROLES.ADMIN) {
         try {
           const requestsResponse = await fetch(`${SCRIPT_URL}?action=getPendingRequests`);
@@ -115,7 +105,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         }
       }
 
-      // Fetch my requests count (if editor)
       if (userRole === ROLES.EDITOR) {
         try {
           const myRequestsResponse = await fetch(`${SCRIPT_URL}?action=getMyRequests&userName=${encodeURIComponent(userName)}`);
@@ -135,22 +124,18 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     }
   };
 
-  // Get features available to current user
   const getAvailableFeatures = () => {
     return Object.entries(CHATBOT_CONFIG)
       .filter(([_, feature]) => feature.roleRequired.includes(userRole))
       .map(([key, feature]) => ({ id: key, ...feature }));
   };
 
-  // Find matching feature based on keywords
   const findFeatureByKeywords = (input) => {
     const lowerInput = input.toLowerCase();
     
     for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
-      // Check if user has access to this feature
       if (!feature.roleRequired.includes(userRole)) continue;
       
-      // Check if any keyword matches
       const hasMatch = feature.keywords.some(keyword => 
         lowerInput.includes(keyword.toLowerCase())
       );
@@ -163,18 +148,15 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     return null;
   };
 
-  // Generate response from config
   const getFeatureResponse = (feature) => {
     let response = '';
     
-    // Get role-specific instructions if available
     if (typeof feature.instructions === 'object') {
       response = feature.instructions[userRole] || feature.instructions.editor || feature.instructions.admin;
     } else {
       response = feature.instructions;
     }
     
-    // Add live data if enabled
     if (feature.showLiveData && feature.id === 'battery') {
       response += `\n\nStok saat ini:\n`;
       response += `• AA: ${systemState.batteryInventory.AA} pcs\n`;
@@ -203,13 +185,24 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
 
 // ====== 0. MATH HANDLER ======
 const extractMathExpression = (str) => {
-  // Match a sequence of digits, operators, parentheses, decimals
-  const match = str.match(/[\d+\-*/().\s]+/g);
-  if (!match) return null;
-
-  // Join matches and trim
-  const expr = match.join('').replace(/\s+/g, '');
-  return expr.length > 0 ? expr : null;
+  let expr = str.toLowerCase().trim();
+  
+  // Convert Indonesian words to operators
+  expr = expr.replace(/\btambah\b/g, '+');
+  expr = expr.replace(/\bkurang\b/g, '-');
+  expr = expr.replace(/\bkali\b/g, '*');
+  expr = expr.replace(/\bbagi\b/g, '/');
+  expr = expr.replace(/\bx\b/g, '*'); // Handle "x" as multiply
+  
+  // Remove spaces
+  expr = expr.replace(/\s+/g, '');
+  
+  // Check if it's a valid math expression (only contains numbers, operators, parentheses, decimals)
+  if (/^[\d+\-*/().]+$/.test(expr)) {
+    return expr;
+  }
+  
+  return null;
 };
 
 const evaluateMath = (expr) => {
@@ -225,12 +218,12 @@ const evaluateMath = (expr) => {
 };
 
 
-// Main response generator - FIXED VERSION
+// Main response generator
 const getResponse = (userInput) => {
   const msg = userInput.toLowerCase().trim();
   const input = msg;
 
-  console.log('🔍 Processing input:', msg); // Debug log
+  console.log('🔍 Processing input:', msg);
 
   const mathExpr = extractMathExpression(input);
   if (mathExpr) {
@@ -239,8 +232,6 @@ const getResponse = (userInput) => {
   }
 
   // ====== 1. GEN Z SLANG - HIGHEST PRIORITY ======
-  // Check exact match dulu (case insensitive)
-  // This must be first to prevent feature keywords from catching slang
   if (CONTEXTUAL_RESPONSES?.genZ?.exact) {
     const genZResponse = CONTEXTUAL_RESPONSES.genZ.exact[msg];
     if (genZResponse !== undefined) {
@@ -250,12 +241,10 @@ const getResponse = (userInput) => {
   }
 
   // ====== 2. VERY SHORT GREETINGS ONLY ======
-  // Cuma trigger kalau PURELY greeting doang (ga ada kata lain)
   if (input.match(/^(hai|halo|hi|hello|hey)[\s!.]*$/)) {
     return GENERAL_RESPONSES.greeting(userName);
   }
 
-  // Waktu-based greeting (pagi/siang/sore/malam) - ini opsional
   if (input.match(/^(pagi|siang|sore|malam)[\s!.]*$/)) {
     return GENERAL_RESPONSES.greeting(userName);
   }
@@ -271,20 +260,17 @@ const getResponse = (userInput) => {
   }
 
   // ====== 5. ROLE INFO - MUST MENTION "role" or "bisa apa" ======
-  // Jangan cuma "bisa" doang, harus ada context
   if (input.match(/\b(role\s+(apa|saya|gue|gw|ku)|apa\s+role|akses\s+apa|permission|hak\s+akses)\b/i) ||
       input.match(/^(apa\s+yang\s+)?(bisa|tidak\s+bisa|ga\s+bisa)\s+(apa|ngapain|aku|gue|saya|apaan)[\s?]*$/i)) {
     return GENERAL_RESPONSES.roleInfo[userRole];
   }
 
   // ====== 6A. QUICK ASSET COUNT ======
-  // If user just asks "how many" without context, show quick asset count
   if (input.match(/^(berapa|ada berapa|jumlah|total)[\s?]*$/i)) {
     return `📦 **Total Aset di Sistem:** ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
   }
 
   // ====== 6B. SYSTEM STATUS - FULL INFO ======
-  // More natural ways to ask about stats
   if (input.match(/\b(status\s+sistem|status\s+portal|statistik|stats|info\s+sistem)\b/i) ||
       input.match(/^(status|stats)[\s!.]*$/i) ||
       input.match(/\b(berapa\s+(total|jumlah|banyak)\s+(aset|barang|data)|total\s+(aset|data))\b/i) ||
@@ -321,22 +307,14 @@ const getResponse = (userInput) => {
   }
 
   // ====== 7. FEATURE MATCHING ======
-  // Check against features from config
-  // IMPORTANT: Only match if message is longer than 3 characters OR contains spaces
-  // This prevents short slang like "jir", "gas", "sip" from being caught by feature keywords
   if (input.length > 3 || input.includes(' ')) {
     for (const [key, feature] of Object.entries(CHATBOT_CONFIG)) {
       if (feature.keywords) {
-        // Check if any keyword matches
         const hasKeyword = feature.keywords.some(keyword => {
-          // For multi-word keywords, check if the whole phrase exists
           if (keyword.includes(' ')) {
             return input.includes(keyword);
           }
-          // For single words, use word boundary to avoid partial matches
-          // AND make sure the input is not too short (avoid catching slang)
           if (input.length <= 4 && keyword.length <= 4) {
-            // For very short inputs/keywords, require exact match to avoid false positives
             return input === keyword.toLowerCase();
           }
           return new RegExp(`\\b${keyword}\\b`, 'i').test(input);
@@ -345,12 +323,10 @@ const getResponse = (userInput) => {
         if (hasKeyword) {
           console.log('🎯 Feature match:', key);
           
-          // Check role permission
           if (!feature.roleRequired.includes(userRole)) {
             return `Maaf, fitur "${feature.name}" cuma bisa diakses sama ${feature.roleRequired.join(', ')} 🔒\n\nRole kamu sekarang: ${userRole}\n\nMau tau apa aja yang bisa kamu lakuin? Ketik "role"!`;
           }
 
-          // Return appropriate instructions based on role
           if (typeof feature.instructions === 'object') {
             return feature.instructions[userRole] || feature.instructions.editor;
           }
@@ -380,7 +356,6 @@ const getResponse = (userInput) => {
     setInput('');
     setIsLoading(true);
 
-    // Simulate typing delay
     setTimeout(() => {
       const response = getResponse(currentInput);
       
@@ -392,10 +367,8 @@ const getResponse = (userInput) => {
       
       setIsLoading(false);
       
-      // NEW: Refocus input after sending message and ensure chat container has focus
       setTimeout(() => {
         inputRef.current?.focus();
-        // Scroll to bottom of chat container, not page
         chatContainerRef.current?.scrollTo({
           top: chatContainerRef.current.scrollHeight,
           behavior: 'smooth'
@@ -426,7 +399,6 @@ const getResponse = (userInput) => {
 
   return (
     <>
-{/* Floating Button */}
 {!isOpen && (
   <button
     onClick={() => setIsOpen(true)}
@@ -440,13 +412,11 @@ const getResponse = (userInput) => {
   </button>
 )}
 
-      {/* Chat Window - FIXED: Added touch-action and better positioning for mobile */}
       {isOpen && (
         <div 
           className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6"
-          style={{ touchAction: 'none' }} // NEW: Prevent touch gestures from affecting background
+          style={{ touchAction: 'none' }}
         >
-          {/* Header */}
           <div className="bg-gradient-to-r from-black to-black text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="bg-white/20 p-1.5 sm:p-2 rounded-full backdrop-blur-sm">
@@ -456,7 +426,7 @@ const getResponse = (userInput) => {
                 <h3 className="font-bold text-base sm:text-lg">AIMing</h3>
                 <p className="text-[10px] sm:text-xs text-white/80 flex items-center gap-1">
                   <Zap className="w-2.5 h-2.5 sm:w-2 sm:h-2" />
-                  AI Chatbot AVM UPH Tercinta
+                  AI Chatbot Mulmed UPH Tercinta
                 </p>
               </div>
             </div>
@@ -477,13 +447,12 @@ const getResponse = (userInput) => {
             </div>
           </div>
 
-          {/* Messages - FIXED: Better overflow handling */}
           <div
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50 overscroll-contain"
             style={{ 
               scrollBehavior: 'smooth',
-              WebkitOverflowScrolling: 'touch' // NEW: Smooth scrolling on iOS
+              WebkitOverflowScrolling: 'touch'
             }}
           >
             {messages.map((message, idx) => (
@@ -491,7 +460,6 @@ const getResponse = (userInput) => {
                 key={idx}
                 className={`flex gap-2 sm:gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
               >
-                {/* Avatar */}
                 <div
                   className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                     message.role === 'user'
@@ -506,7 +474,6 @@ const getResponse = (userInput) => {
                   )}
                 </div>
 
-                {/* Message Bubble */}
                 <div
                   className={`flex-1 max-w-[80%] ${
                     message.role === 'user'
@@ -545,7 +512,6 @@ const getResponse = (userInput) => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions - FIXED: Now visible on mobile with responsive sizing */}
           <div className="px-3 sm:px-4 py-2 border-t bg-white">
             <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2">Quick actions:</p>
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -564,11 +530,10 @@ const getResponse = (userInput) => {
             </div>
           </div>
 
-          {/* Input - FIXED: Added ref and better mobile handling */}
           <div className="p-3 sm:p-4 border-t bg-white">
             <div className="flex gap-2">
               <input
-                ref={inputRef} // NEW: Added ref for focus management
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -576,8 +541,8 @@ const getResponse = (userInput) => {
                 placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
                 className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black disabled:bg-gray-100"
-                autoComplete="off" // NEW: Prevent autocomplete suggestions
-                style={{ fontSize: '16px' }} // CRITICAL: Prevents iOS zoom on input focus
+                autoComplete="off"
+                style={{ fontSize: '16px' }}
               />
               <button
                 onClick={handleSendMessage}
@@ -595,7 +560,6 @@ const getResponse = (userInput) => {
         </div>
       )}
 
-      {/* Pulse Animation */}
       <style jsx>{`
         @keyframes pulse {
           0%, 100% {
