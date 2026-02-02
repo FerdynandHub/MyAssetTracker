@@ -677,6 +677,8 @@ return (
     <main className="flex-1 overflow-auto flex flex-col">
       {/* Top bar with hamburger menu */}
 <div className={`shadow-sm p-4 flex items-center gap-4 relative overflow-hidden ${darkMode ? 'bg-gradient-to-r from-gray-900 to-blue-900' : 'bg-gradient-to-r from-sky-400 to-blue-500'}`}>
+ 
+ 
   {/* Stars for dark mode - twinkle but don't move */}
   {darkMode && (
     <div className="absolute inset-0 pointer-events-none">
