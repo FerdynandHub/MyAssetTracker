@@ -10,20 +10,22 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   const [currentPage, setCurrentPage] = useState({});
   const [expandedCards, setExpandedCards] = useState({});
 
-  const fetchAssetNames = async (assetIds) => {
+  const fetchAllAssets = async () => {
     try {
-      const uniqueIds = [...new Set(assetIds)];
-      const response = await fetch(`${SCRIPT_URL}?action=getAssetNames&ids=${uniqueIds.join(',')}`);
+      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
       const data = await response.json();
       
-      if (data.assets) {
-        setAssetNames(prev => ({
-          ...prev,
-          ...data.assets
-        }));
-      }
+      // Create a mapping of id -> name from all assets
+      const nameMap = {};
+      data.forEach(asset => {
+        if (asset.id && asset.name) {
+          nameMap[asset.id] = asset.name;
+        }
+      });
+      
+      setAssetNames(nameMap);
     } catch (error) {
-      console.error('Error fetching asset names:', error);
+      console.error('Error fetching assets:', error);
     }
   };
 
@@ -33,12 +35,6 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       const response = await fetch(`${SCRIPT_URL}?action=getPendingRequests`);
       const data = await response.json();
       setRequests(data);
-      
-      // Fetch asset names for all requests
-      const allIds = data.flatMap(req => req.ids || []);
-      if (allIds.length > 0) {
-        await fetchAssetNames(allIds);
-      }
     } catch (error) {
       console.error('Error fetching requests:', error);
     }
@@ -53,12 +49,6 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
       if (data.history) {
         setApprovalHistory(data.history);
         
-        // Fetch asset names for all history items
-        const allIds = data.history.flatMap(h => h.ids || []);
-        if (allIds.length > 0) {
-          await fetchAssetNames(allIds);
-        }
-        
         if (data.history.length > 0) {
           const requesters = getRequesters(data.history);
           if (requesters.length > 0) {
@@ -72,6 +62,7 @@ const ApprovalsMode = ({ userName, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
+    fetchAllAssets(); // Fetch asset names once
     fetchRequests();
     fetchApprovalHistory();
   }, []);
