@@ -78,7 +78,15 @@ const CATEGORIES = [
   'Bracket TV',
   'VGA-HDMI Converter',
 'Type C Hub Converter',
-  'Power Extension'
+  'Power Extension',
+  'TV Auditorium',
+'Bracket TV',
+'VGA-HDMI Converter',
+'Type C Hub Converter',
+'Kabel Data',
+'Jack L',
+'Jack 6,5mm',
+'Mic Wireless'
 ];
 
 const GRADES = [
