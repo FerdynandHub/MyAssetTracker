@@ -47,10 +47,8 @@ const ROLES = {
 
 const SCRIPT_URL = import.meta.env.VITE_SCRIPT_URL
 
-/*
-old Categories List (unactive)
-
-const old_CATEGORIES = [
+// helper, keep insertion order
+const CATEGORY_SOURCE = [
   'Projectors',
   'Toolkit',
   'Kabel HDMI',
@@ -85,45 +83,13 @@ const old_CATEGORIES = [
   'Jack L',
   'Jack 6,5mm'
 ];
-*/
 
-
-//new sorted category
-const CATEGORIES = [
-  'Bracket TV',
-  'Camera',
-  'DI Box',
-  'Docking Station',
-  'HDMI Extender',
-  'HDMI Matrix',
-  'HDMI SPLITTER',
-  'HDMI Switcher',
-  'Jack 6,5mm',
-  'Jack L',
-  'Kabel Audio',
-  'Kabel Data',
-  'Kabel HDMI',
-  'Kabel USB',
-  'Microphone',
-  'Mixer',
-  'PDU',
-  'Power Extension',
-  'Power Supply',
-  'Presentation Remote',
-  'Projectors',
-  'Soundcard',
-  'Speaker',
-  'Speaker Stand',
-  'Stylus Pen',
-  'TV Auditorium',
-  'Toolkit',
-  'Type C Hub Converter',
-  'VGA-HDMI Converter',
-  'Video Capture',
-  'Wireless Microphone',
-  'Wireless Presentation',
-  'XLR Cable'
-];
+// host, always sorted
+const CATEGORIES = Object.freeze(
+  [...CATEGORY_SOURCE].sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: 'base' })
+  )
+);
 
 
 const GRADES = [
