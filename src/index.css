@@ -24,6 +24,11 @@
   }
 }
 
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
 @keyframes boneFloat {
   0% {
     opacity: 0;
