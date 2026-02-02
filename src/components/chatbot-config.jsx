@@ -57,7 +57,7 @@ Cara 1: Lewat Daftar Data (kalau ga tau ID-nya)
 Cara 2: Lewat Cek Data (kalau udah tau ID)
 • Buka menu "Cek Data"
 • Tinggal masukin ID aset atau scan barcode-nya 📷
-• Boom! Detail langsung muncul 
+• Detail langsung muncul 
 
 Yang mana nih? Cara 2 lebih cepet kalau udah tau ID-nya!`
   },
