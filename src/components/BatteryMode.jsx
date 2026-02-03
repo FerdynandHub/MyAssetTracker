@@ -251,7 +251,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 }`}
                 title={!canAddBattery ? 'Only Ivan and Dwiki can add batteries' : ''}
               >
-                Add Battery
+                Add
               </button>
               <button
                 onClick={fetchInventory}

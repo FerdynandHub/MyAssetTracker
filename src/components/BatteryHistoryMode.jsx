@@ -117,24 +117,6 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
             </button>
           </div>
 
-          {/* Color Legend */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">Color Legend:</p>
-            <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-green-500"></div>
-                <span className="text-sm text-gray-600">Add/Restock</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-red-500"></div>
-                <span className="text-sm text-gray-600">Take/Checkout</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-yellow-500"></div>
-                <span className="text-sm text-gray-600">Pending</span>
-              </div>
-            </div>
-          </div>
 
           {loading ? (
             <div className="text-center py-12">
