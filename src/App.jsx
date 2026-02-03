@@ -12,14 +12,18 @@ import {
   Battery, 
   RefreshCw, 
   BookOpenText,
-    BookOpen,
-    ArrowLeftRight,
+  BookOpen,
+  ArrowLeftRight,
   FileText,
   Camera,
   List,
   Moon,
   Sun,
-  Tickets
+  Tickets,
+  Package,
+  Boxes,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
@@ -27,7 +31,8 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 //components
 import { exportToCSV } from "./components/ExportUtils";
 import CheckMode from "./components/CheckMode";
-import UpdateMode from "./components/UpdateMode";
+import SingleUpdateMode from "./components/SingleUpdateMode";
+import BatchUpdateMode from "./components/BatchUpdateMode";
 import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
@@ -113,6 +118,7 @@ const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [updateSubmenuOpen, setUpdateSubmenuOpen] = useState(false);
 
   // Update clock every second
   useEffect(() => {
@@ -378,13 +384,14 @@ const App = () => {
     );
   }
 
-const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
+const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, submenuOpen, isSubmenu }) => {
   return (
     <button
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={`
         w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
+        ${isSubmenu ? 'pl-8' : ''}
         ${active 
           ? 'bg-blue-500 text-white' 
           : disabled
@@ -394,7 +401,10 @@ const SidebarItem = ({ icon, label, active, onClick, disabled }) => {
       `}
     >
       {icon}
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-sm font-medium flex-1 text-left">{label}</span>
+      {hasSubmenu && (
+        submenuOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+      )}
     </button>
   );
 };
@@ -416,9 +426,22 @@ const renderMode = () => {
       return <ExportMode />;
     case 'history':
       return <HistoryMode SCRIPT_URL={SCRIPT_URL} />;
-    case 'update':
+    case 'update-single':
       return (
-        <UpdateMode
+        <SingleUpdateMode
+          onBack={() => setMode(null)}
+          userRole={userRole}
+          userName={userName}
+          ROLES={ROLES}
+          SCRIPT_URL={SCRIPT_URL}
+          CATEGORIES={CATEGORIES}
+          GRADES={GRADES}
+        />
+      );
+    case 'update-batch':
+      return (
+        <BatchUpdateMode
+          onBack={() => setMode(null)}
           userRole={userRole}
           userName={userName}
           ROLES={ROLES}
@@ -430,7 +453,7 @@ const renderMode = () => {
     case 'battery':
       return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals':
-  return <ApprovalsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
+      return <ApprovalsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'myRequests':
       return <MyRequestsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'loan':  
@@ -564,17 +587,44 @@ return (
   />
 )}
 
-{/* Update Data - Hidden from VIEWER */}
+{/* Update Data with Dropdown - Hidden from VIEWER */}
 {userRole !== ROLES.VIEWER && (
-  <SidebarItem
-    icon={<Edit className="w-5 h-5" />}
-    label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Ubah Data"}
-    active={mode === 'update'}
-    onClick={() => {
-      setMode('update');
-      setSidebarOpen(false);
-    }}
-  />
+  <>
+    <SidebarItem
+      icon={<Edit className="w-5 h-5" />}
+      label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Ubah Data"}
+      active={mode === 'update-single' || mode === 'update-batch'}
+      onClick={() => setUpdateSubmenuOpen(!updateSubmenuOpen)}
+      hasSubmenu={true}
+      submenuOpen={updateSubmenuOpen}
+    />
+    
+    {/* Submenu items */}
+    {updateSubmenuOpen && (
+      <div className="space-y-2">
+        <SidebarItem
+          icon={<Package className="w-4 h-4" />}
+          label="Update Satuan"
+          active={mode === 'update-single'}
+          onClick={() => {
+            setMode('update-single');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+        <SidebarItem
+          icon={<Boxes className="w-4 h-4" />}
+          label="Update Massal"
+          active={mode === 'update-batch'}
+          onClick={() => {
+            setMode('update-batch');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+      </div>
+    )}
+  </>
 )}
 
 {userRole !== ROLES.VIEWER && (
@@ -689,7 +739,8 @@ return (
   {mode === 'check' && 'Check Information'}
   {mode === 'export' && 'Export Data'}
   {mode === 'history' && 'History'}
-  {mode === 'update' && (userRole === ROLES.ADMIN ? 'Update Data' : 'Request Update Data')}
+  {mode === 'update-single' && (userRole === ROLES.ADMIN ? 'Update Data - Satuan' : 'Request Update - Satuan')}
+  {mode === 'update-batch' && (userRole === ROLES.ADMIN ? 'Update Data - Massal' : 'Request Update - Massal')}
   {mode === 'battery' && 'Single-Use Item'}
   {mode === 'myRequests' && 'Permintaan Saya'} 
   {mode === 'approvals' && 'Pending Approvals'}
