@@ -181,7 +181,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
               </div>
 
               {/* Loaned Assets Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 {getFilteredLoanedAssets(activeFilterTab).length === 0 ? (
                   <div className="col-span-2 text-center py-8">
                     <p className="text-gray-600">Tidak ada data untuk filter ini</p>

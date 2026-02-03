@@ -168,7 +168,7 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
                             No history found
                           </p>
                         ) : (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
                             {items.map((entry, index) => {
                               const isAdd = entry.quantity > 0;
                               const isTake = entry.quantity < 0;

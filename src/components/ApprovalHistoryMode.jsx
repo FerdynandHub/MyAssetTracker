@@ -217,7 +217,7 @@ const ApprovalHistoryMode = ({ userName, SCRIPT_URL }) => {
                     
                     return (
                       <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-3 mb-4">
                           {items.length === 0 ? (
                             <p className="col-span-2 text-gray-500 text-center py-4">
                               No approvals found
