@@ -38,6 +38,7 @@ import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import MyRequestsMode from './components/MyRequestsMode.jsx';
 import LoanMode from './components/LoanMode';
+import LoanHistoryMode from './components/LoanHistoryMode';
 import AIChatbot from './components/AIChatbot';
 import ApprovalsMode from './components/ApprovalsMode';
 
@@ -119,6 +120,7 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [updateSubmenuOpen, setUpdateSubmenuOpen] = useState(false);
+  const [loanSubmenuOpen, setLoanSubmenuOpen] = useState(false);
 
   // Update clock every second
   useEffect(() => {
@@ -450,6 +452,25 @@ const renderMode = () => {
           GRADES={GRADES}
         />
       );
+    case 'loan-create':
+      return (
+        <LoanMode
+          onBack={() => setMode(null)}
+          userName={userName}
+          userRole={userRole}
+          ROLES={ROLES}
+          SCRIPT_URL={SCRIPT_URL}
+          CATEGORIES={CATEGORIES}
+          GRADES={GRADES}
+        />
+      );
+    case 'loan-history':
+      return (
+        <LoanHistoryMode
+          userName={userName}
+          SCRIPT_URL={SCRIPT_URL}
+        />
+      );
     case 'battery':
       return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals':
@@ -627,16 +648,44 @@ return (
   </>
 )}
 
+{/* Loan with Dropdown - Hidden from VIEWER */}
 {userRole !== ROLES.VIEWER && (
-  <SidebarItem
-    icon={<ArrowLeftRight className="w-5 h-5" />}
-    label={userRole === ROLES.ADMIN ? "Pinjam Barang" : "Pinjam Barang"}
-    active={mode === 'loan'}
-    onClick={() => {
-      setMode('loan');
-      setSidebarOpen(false);
-    }}
-  />
+  <>
+    <SidebarItem
+      icon={<ArrowLeftRight className="w-5 h-5" />}
+      label="Pinjam Barang"
+      active={mode === 'loan-create' || mode === 'loan-history'}
+      onClick={() => setLoanSubmenuOpen(!loanSubmenuOpen)}
+      hasSubmenu={true}
+      submenuOpen={loanSubmenuOpen}
+    />
+    
+    {/* Submenu items */}
+    {loanSubmenuOpen && (
+      <div className="space-y-2">
+        <SidebarItem
+          icon={<Edit className="w-4 h-4" />}
+          label="Buat Peminjaman"
+          active={mode === 'loan-create'}
+          onClick={() => {
+            setMode('loan-create');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+        <SidebarItem
+          icon={<List className="w-4 h-4" />}
+          label="Lihat yang Dipinjam"
+          active={mode === 'loan-history'}
+          onClick={() => {
+            setMode('loan-history');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+      </div>
+    )}
+  </>
 )}
 
 {/* My Requests - For EDITOR only */}
@@ -744,7 +793,8 @@ return (
   {mode === 'battery' && 'Single-Use Item'}
   {mode === 'myRequests' && 'Permintaan Saya'} 
   {mode === 'approvals' && 'Pending Approvals'}
-  {mode === 'loan' && 'Peminjaman/Pengembalian'}  
+  {mode === 'loan-create' && 'Buat Peminjaman/Pengembalian'}
+  {mode === 'loan-history' && 'Aset yang Sedang Dipinjam'}
   {!mode && 'Portal AVM'}
 </h1>
       </div>
