@@ -22,10 +22,9 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
     batteryType: 'AA',
     quantity: ''
   });
-  const [recentTransactions, setRecentTransactions] = useState([]);
 
   // Check if user can add batteries
-  const canAddBattery = userName === 'Ivan' || userName === 'Dwiki' || userRole === ROLES.ADMIN;
+  const canAddBattery = userName === 'Ivan' || userName === 'Dwiki' || userRole === 'Ferdynand';
 
   // Fetch current battery inventory
   const fetchInventory = async () => {
@@ -49,23 +48,8 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
     setLoading(false);
   };
 
-  // Fetch recent battery transactions
-  const fetchRecentTransactions = async () => {
-    try {
-      const response = await fetch(`${SCRIPT_URL}?action=getBatteryHistory&limit=5`);
-      const data = await response.json();
-      
-      if (data.history) {
-        setRecentTransactions(data.history);
-      }
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    }
-  };
-
   useEffect(() => {
     fetchInventory();
-    fetchRecentTransactions();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -114,9 +98,8 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
           eventName: '',
           eventLocation: ''
         });
-        // Refresh inventory and transactions
+        // Refresh inventory
         fetchInventory();
-        fetchRecentTransactions();
       } else {
         alert(data.error || 'Error checking out battery');
       }
@@ -157,7 +140,6 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
         setAddFormData({ batteryType: 'AA', quantity: '' });
         setShowAddForm(false);
         fetchInventory();
-        fetchRecentTransactions();
       } else {
         alert(data.error || 'Error adding battery');
       }
@@ -166,17 +148,6 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
       alert('Error submitting request');
     }
     setSubmitting(false);
-  };
-
-  const formatDate = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    const date = new Date(timestamp);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   return (
@@ -210,9 +181,9 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
           </div>
         </div>
 
-{/* Add Battery Form */}
+        {/* Add Battery Form */}
         {showAddForm && (
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-6 mb-6">
+          <div className="bg-green-50 border-2 border-green-200 rounded-lg shadow-lg p-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Add Battery to Inventory</h2>
             
             <form onSubmit={handleAddBattery} className="space-y-4">
@@ -223,7 +194,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 <select
                   value={addFormData.batteryType}
                   onChange={(e) => setAddFormData({ ...addFormData, batteryType: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <option value="AA">AA</option>
                   <option value="9V">9V</option>
@@ -238,7 +209,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                   type="number"
                   value={addFormData.quantity}
                   onChange={(e) => setAddFormData({ ...addFormData, quantity: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Enter quantity to add"
                   min="1"
                   required
@@ -249,7 +220,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition disabled:bg-gray-400"
+                  className="flex-1 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition disabled:bg-gray-400"
                 >
                   {submitting ? 'Adding...' : 'Add to Inventory'}
                 </button>
@@ -266,7 +237,7 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
         )}
 
         {/* Checkout Form */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Battery Checkout</h2>
             <div className="flex gap-2">
@@ -378,61 +349,6 @@ const BatteryMode = ({ userName, SCRIPT_URL, userRole }) => {
               )}
             </button>
           </form>
-        </div>
-
-        {/* Recent Transactions Log - Now at the bottom */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-gray-800">Recent Transactions</h3>
-            <button
-              onClick={fetchRecentTransactions}
-              className="text-sm text-blue-500 hover:text-blue-600 transition"
-            >
-              Refresh
-            </button>
-          </div>
-          
-          <div className="space-y-2">
-            {recentTransactions.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">No recent transactions</p>
-            ) : (
-              recentTransactions.map((transaction, index) => {
-                const isCheckout = transaction.quantity < 0;
-                const absQty = Math.abs(transaction.quantity);
-                
-                return (
-                  <div 
-                    key={index} 
-                    className={`p-3 rounded-lg border-2 ${
-                      isCheckout ? 'bg-white border-red-400' : 'bg-white border-green-400'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-800">{transaction.name}</span>
-                          <span className={`text-sm px-2 py-0.5 rounded ${
-isCheckout ? 'bg-white text-black' : 'bg-white text-black'
-                          }`}>
-                            {isCheckout ? 'Checkout' : 'Restock'}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {absQty}x {transaction.batteryType} • {transaction.eventName}
-                        </p>
-                        {transaction.eventLocation && (
-                          <p className="text-xs text-gray-500">{transaction.eventLocation}</p>
-                        )}
-                      </div>
-                      <div className="text-right text-xs text-gray-500">
-                        {formatDate(transaction.timestamp)}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
         </div>
       </div>
     </div>
