@@ -242,7 +242,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
 
       {/* Modal for detailed view */}
       {selectedLoan && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedLoan(null)}>
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50" onClick={() => setSelectedLoan(null)}>
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-xl font-bold text-gray-800">Detail Peminjaman</h3>

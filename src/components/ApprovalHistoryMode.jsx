@@ -300,7 +300,7 @@ const ApprovalHistoryMode = ({ userName, SCRIPT_URL }) => {
                                                 className="flex items-center gap-1 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition text-xs"
                                               >
                                                 <Image className="w-3 h-3" />
-                                                View Photo
+                                                Lihat Photo
                                               </button>
                                             ) : (
                                               <span className="text-gray-900 text-right ml-4">{value || 'N/A'}</span>
