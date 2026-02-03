@@ -6,42 +6,25 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   const [loadingLoaned, setLoadingLoaned] = useState(false);
   const [activeFilterTab, setActiveFilterTab] = useState('recent');
   const [assetNames, setAssetNames] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch asset name by ID
-  const fetchAssetName = async (id) => {
+  // Fetch all assets at once and create a name map
+  const fetchAllAssets = async () => {
     try {
-      const response = await fetch(`${SCRIPT_URL}?action=getAsset&id=${encodeURIComponent(id)}`);
-      const asset = await response.json();
+      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
+      const data = await response.json();
       
-      if (asset && asset.name) {
-        return asset.name;
-      }
-      return id;
-    } catch (error) {
-      console.error(`Error fetching asset ${id}:`, error);
-      return id;
-    }
-  };
-
-  // Fetch names for multiple asset IDs with batching
-  const fetchAssetNames = async (ids) => {
-    const idsToFetch = ids.filter(id => !assetNames[id]);
-    
-    if (idsToFetch.length === 0) return;
-    
-    const batchSize = 5;
-    
-    for (let i = 0; i < idsToFetch.length; i += batchSize) {
-      const batch = idsToFetch.slice(i, i + batchSize);
-      const names = {};
-      
-      const promises = batch.map(async (id) => {
-        const name = await fetchAssetName(id);
-        names[id] = name;
+      // Create a mapping of id -> name from all assets
+      const nameMap = {};
+      data.forEach(asset => {
+        if (asset.id && asset.name) {
+          nameMap[asset.id] = asset.name;
+        }
       });
       
-      await Promise.all(promises);
-      setAssetNames(prev => ({ ...prev, ...names }));
+      setAssetNames(nameMap);
+    } catch (error) {
+      console.error('Error fetching assets:', error);
     }
   };
 
@@ -61,10 +44,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
         );
         
         setLoanedAssets(loaned);
-        
-        const allIds = loaned.flatMap(loan => loan.ids || []);
-        const uniqueIds = [...new Set(allIds)];
-        await fetchAssetNames(uniqueIds);
       }
     } catch (error) {
       console.error('Error fetching loaned assets:', error);
@@ -82,6 +61,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   const getFilteredLoanedAssets = (filterBy) => {
     let filtered = [...loanedAssets];
     
+    // Apply requester filter
     if (filterBy === 'recent') {
       filtered = filtered.sort((a, b) => {
         const timeA = new Date(a.timestamp).getTime();
@@ -92,10 +72,37 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       filtered = filtered.filter(asset => asset.requestedBy === filterBy);
     }
     
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(loan => {
+        // Search in asset IDs
+        const matchesId = loan.ids?.some(id => id.toLowerCase().includes(query));
+        
+        // Search in asset names
+        const matchesName = loan.ids?.some(id => {
+          const name = assetNames[id];
+          return name && name.toLowerCase().includes(query);
+        });
+        
+        // Search in location
+        const matchesLocation = loan.updates?.location?.toLowerCase().includes(query);
+        
+        // Search in remarks
+        const matchesRemarks = loan.updates?.remarks?.toLowerCase().includes(query);
+        
+        // Search in requester name
+        const matchesRequester = loan.requestedBy?.toLowerCase().includes(query);
+        
+        return matchesId || matchesName || matchesLocation || matchesRemarks || matchesRequester;
+      });
+    }
+    
     return filtered;
   };
 
   useEffect(() => {
+    fetchAllAssets(); // Fetch all asset names at once
     fetchLoanedAssets();
   }, []);
 
@@ -114,6 +121,17 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
               <RefreshCw className="w-4 h-4 inline mr-1" />
               Muat Ulang
             </button>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Cari berdasarkan ID, nama aset, lokasi, catatan, atau peminjam..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
           </div>
 
           {loadingLoaned ? (

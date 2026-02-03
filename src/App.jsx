@@ -665,7 +665,7 @@ return (
       <div className="space-y-2">
         <SidebarItem
           icon={<Edit className="w-4 h-4" />}
-          label="Buat Peminjaman"
+          label="Buat Pinjaman"
           active={mode === 'loan-create'}
           onClick={() => {
             setMode('loan-create');
@@ -675,7 +675,7 @@ return (
         />
         <SidebarItem
           icon={<List className="w-4 h-4" />}
-          label="Lihat yang Dipinjam"
+          label="Riwayat Pinjam"
           active={mode === 'loan-history'}
           onClick={() => {
             setMode('loan-history');
