@@ -37,6 +37,7 @@ import BatchUpdateMode from "./components/BatchUpdateMode";
 import OverviewMode from "./components/OverviewMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
+import BatteryHistoryMode from "./components/BatteryHistoryMode";
 import MyRequestsMode from './components/MyRequestsMode.jsx';
 import LoanMode from './components/LoanMode';
 import LoanHistoryMode from './components/LoanHistoryMode';
@@ -124,6 +125,7 @@ const App = () => {
   const [updateSubmenuOpen, setUpdateSubmenuOpen] = useState(false);
   const [loanSubmenuOpen, setLoanSubmenuOpen] = useState(false);
   const [approvalsSubmenuOpen, setApprovalsSubmenuOpen] = useState(false);
+  const [batterySubmenuOpen, setBatterySubmenuOpen] = useState(false);
 
   // Update clock every second
   useEffect(() => {
@@ -476,6 +478,8 @@ const renderMode = () => {
       );
     case 'battery':
       return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
+    case 'battery-history':
+      return <BatteryHistoryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals-pending':
       return <ApprovalsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'approvals-history':
@@ -587,17 +591,44 @@ return (
 
 
 
-{/* Battery - Hidden from VIEWER */}
+{/* Battery with Dropdown - Hidden from VIEWER */}
 {userRole !== ROLES.VIEWER && (
-  <SidebarItem
-    icon={<Battery className="w-5 h-5" />}
-    label="Baterai"
-    active={mode === 'battery'}
-    onClick={() => {
-      setMode('battery');
-      setSidebarOpen(false);
-    }}
-  />
+  <>
+    <SidebarItem
+      icon={<Battery className="w-5 h-5" />}
+      label="Baterai"
+      active={mode === 'battery' || mode === 'battery-history'}
+      onClick={() => setBatterySubmenuOpen(!batterySubmenuOpen)}
+      hasSubmenu={true}
+      submenuOpen={batterySubmenuOpen}
+    />
+    
+    {/* Submenu items */}
+    {batterySubmenuOpen && (
+      <div className="space-y-2">
+        <SidebarItem
+          icon={<Edit className="w-4 h-4" />}
+          label="Checkout"
+          active={mode === 'battery'}
+          onClick={() => {
+            setMode('battery');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+        <SidebarItem
+          icon={<History className="w-4 h-4" />}
+          label="Riwayat"
+          active={mode === 'battery-history'}
+          onClick={() => {
+            setMode('battery-history');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+      </div>
+    )}
+  </>
 )}
 
 {/* Pending Approvals with Dropdown - ADMIN only */}
@@ -822,7 +853,8 @@ return (
   {mode === 'history' && 'History'}
   {mode === 'update-single' && (userRole === ROLES.ADMIN ? 'Update Data - Satuan' : 'Request Update - Satuan')}
   {mode === 'update-batch' && (userRole === ROLES.ADMIN ? 'Update Data - Massal' : 'Request Update - Massal')}
-  {mode === 'battery' && 'Single-Use Item'}
+  {mode === 'battery' && 'Battery Checkout'}
+  {mode === 'battery-history' && 'Riwayat Baterai'}
   {mode === 'myRequests' && 'Permintaan Saya'} 
   {mode === 'approvals-pending' && 'Pending Approvals'}
   {mode === 'approvals-history' && 'Riwayat Persetujuan'}
