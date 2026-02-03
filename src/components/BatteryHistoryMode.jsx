@@ -129,14 +129,14 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
               {/* User Tabs */}
               <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
                 <button
-                  onClick={() => setActiveTab('Terbaru')}
+                  onClick={() => setActiveTab('all')}
                   className={`px-4 py-2 rounded-t-lg transition ${
                     activeTab === 'all'
                       ? 'bg-blue-500 text-white'
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
-                  All
+                  Terbaru
                 </button>
                 {users.map(user => (
                   <button
