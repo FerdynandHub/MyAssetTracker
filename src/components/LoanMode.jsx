@@ -25,25 +25,41 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const fetchAssetName = async (id) => {
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getAsset&id=${encodeURIComponent(id)}`);
-      const data = await response.json();
-      if (data.success && data.asset) {
-        return data.asset.name || 'Unknown';
+      const asset = await response.json();
+      
+      if (asset && asset.name) {
+        return asset.name;
       }
+      return id; // Return ID if name not found
     } catch (error) {
       console.error(`Error fetching asset ${id}:`, error);
+      return id; // Return ID on error
     }
-    return 'Unknown';
   };
 
-  // Fetch names for multiple asset IDs
+  // Fetch names for multiple asset IDs with batching
   const fetchAssetNames = async (ids) => {
-    const names = {};
-    for (const id of ids) {
-      if (!assetNames[id]) {
-        names[id] = await fetchAssetName(id);
-      }
+    // Filter out IDs we already have
+    const idsToFetch = ids.filter(id => !assetNames[id]);
+    
+    if (idsToFetch.length === 0) return;
+    
+    // Fetch in batches of 5 to avoid overwhelming
+    const batchSize = 5;
+    
+    for (let i = 0; i < idsToFetch.length; i += batchSize) {
+      const batch = idsToFetch.slice(i, i + batchSize);
+      const names = {};
+      
+      const promises = batch.map(async (id) => {
+        const name = await fetchAssetName(id);
+        names[id] = name;
+      });
+      
+      await Promise.all(promises);
+      // Update state after each batch for progressive loading
+      setAssetNames(prev => ({ ...prev, ...names }));
     }
-    setAssetNames(prev => ({ ...prev, ...names }));
   };
 
   const fetchLoanedAssets = async () => {
