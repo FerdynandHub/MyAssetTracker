@@ -323,9 +323,9 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                     href={selectedLoan.updates.photoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg"
+                    className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1.5 rounded border border-blue-600 hover:bg-blue-600 transition text-sm"
                   >
-                    <Camera className="w-5 h-5" />
+                    <Camera className="w-4 h-4" />
                     Lihat Foto
                   </a>
                 </div>
