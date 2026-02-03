@@ -397,7 +397,7 @@ const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, subme
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={`
-        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
+        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
         ${isSubmenu ? 'pl-8' : ''}
         ${active 
           ? 'bg-blue-500 text-white' 
@@ -410,7 +410,9 @@ const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, subme
       {icon}
       <span className="text-sm font-medium flex-1 text-left">{label}</span>
       {hasSubmenu && (
-        submenuOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+        <div className={`transform transition-transform duration-300 ${submenuOpen ? 'rotate-180' : 'rotate-0'}`}>
+          <ChevronDown className="w-4 h-4" />
+        </div>
       )}
     </button>
   );
@@ -618,7 +620,7 @@ return (
     
     {/* Submenu items */}
     {batterySubmenuOpen && (
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
         <SidebarItem
           icon={<Edit className="w-4 h-4" />}
           label="Checkout"
@@ -663,7 +665,7 @@ return (
     
     {/* Submenu items */}
     {approvalsSubmenuOpen && (
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
         <SidebarItem
           icon={<ClipboardList className="w-4 h-4" />}
           label="Pending"
@@ -708,7 +710,7 @@ return (
     
     {/* Submenu items */}
     {updateSubmenuOpen && (
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
         <SidebarItem
           icon={<Package className="w-4 h-4" />}
           label="Update Satuan"
@@ -753,7 +755,7 @@ return (
     
     {/* Submenu items */}
     {loanSubmenuOpen && (
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
         <SidebarItem
           icon={<Edit className="w-4 h-4" />}
           label="Buat Pinjaman"
