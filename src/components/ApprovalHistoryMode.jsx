@@ -225,7 +225,8 @@ const ApprovalHistoryMode = ({ userName, SCRIPT_URL }) => {
                           ) : (
                             items.map((approval, index) => {
                               const isApproved = approval.status === 'approved';
-                              const isExpanded = expandedCards[approval.requestId];
+                              const uniqueKey = `${approval.requestId}-${index}-${approval.timestamp}`;
+                              const isExpanded = expandedCards[uniqueKey];
                               
                               return (
                                 <div 
@@ -237,7 +238,7 @@ const ApprovalHistoryMode = ({ userName, SCRIPT_URL }) => {
                                   {/* Card Header - Always Visible */}
                                   <div 
                                     className="p-4 cursor-pointer hover:bg-gray-50 transition"
-                                    onClick={() => toggleCard(approval.requestId)}
+                                    onClick={() => toggleCard(uniqueKey)}
                                   >
                                     <div className="flex justify-between items-start">
                                       <div className="flex-1">
