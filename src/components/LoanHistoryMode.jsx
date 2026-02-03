@@ -155,7 +155,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
-                  Terbaru (Semua)
+                  Terbaru
                 </button>
                 {getRequesters(loanedAssets).map(requester => (
                   <button
