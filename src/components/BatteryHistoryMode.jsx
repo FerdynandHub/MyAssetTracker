@@ -117,6 +117,25 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
             </button>
           </div>
 
+          {/* Color Legend */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-2">Color Legend:</p>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-green-500"></div>
+                <span className="text-sm text-gray-600">Add/Restock</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-red-500"></div>
+                <span className="text-sm text-gray-600">Take/Checkout</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-yellow-500"></div>
+                <span className="text-sm text-gray-600">Pending</span>
+              </div>
+            </div>
+          </div>
+
           {loading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -152,7 +171,7 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
                 ))}
               </div>
 
-              {/* History Cards */}
+              {/* History Cards - 2 Column Grid */}
               {activeTab && (
                 <div>
                   {(() => {
@@ -162,57 +181,84 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
                     
                     return (
                       <>
-                        <div className="space-y-3 mb-4">
-                          {items.length === 0 ? (
-                            <p className="text-gray-500 text-center py-4">
-                              No history found
-                            </p>
-                          ) : (
-                            items.map((entry, index) => {
-                              const isCheckout = entry.quantity < 0;
-                              const isRestock = entry.eventName === 'Inventory Restock';
+                        {items.length === 0 ? (
+                          <p className="text-gray-500 text-center py-4">
+                            No history found
+                          </p>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            {items.map((entry, index) => {
+                              const isAdd = entry.quantity > 0;
+                              const isTake = entry.quantity < 0;
+                              const isPending = entry.status === 'pending'; // Check if there's a pending status
                               const isExpanded = expandedCards[`${activeTab}-${page}-${index}`];
+                              
+                              // Determine border color
+                              let borderColor;
+                              if (isPending) {
+                                borderColor = 'border-yellow-500'; // Yellow for pending
+                              } else if (isAdd) {
+                                borderColor = 'border-green-500'; // Green for add/restock
+                              } else {
+                                borderColor = 'border-red-500'; // Red for take/checkout
+                              }
+                              
+                              // Determine badge color
+                              let badgeColor;
+                              if (isPending) {
+                                badgeColor = 'bg-yellow-100 text-yellow-800';
+                              } else if (isAdd) {
+                                badgeColor = 'bg-green-100 text-green-800';
+                              } else {
+                                badgeColor = 'bg-red-100 text-red-800';
+                              }
+                              
+                              // Determine badge text
+                              let badgeText;
+                              if (isPending) {
+                                badgeText = 'Pending';
+                              } else if (isAdd) {
+                                badgeText = 'Add';
+                              } else {
+                                badgeText = 'Take';
+                              }
                               
                               return (
                                 <div 
                                   key={index} 
-                                  className={`rounded-lg border-2 ${
-                                    isRestock 
-                                      ? 'bg-white border-green-400' 
-                                      : 'bg-white border-blue-400'
-                                  }`}
+                                  className={`rounded-lg border-2 bg-white ${borderColor} cursor-pointer hover:shadow-lg transition`}
+                                  onClick={() => toggleCard(`${activeTab}-${page}-${index}`)}
                                 >
                                   {/* Card Header - Always Visible */}
-                                  <div 
-                                    className="p-4 cursor-pointer hover:bg-gray-50 transition"
-                                    onClick={() => toggleCard(`${activeTab}-${page}-${index}`)}
-                                  >
-                                    <div className="flex justify-between items-start">
+                                  <div className="p-4">
+                                    <div className="flex justify-between items-start mb-2">
                                       <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-2">
-                                          <span className={`text-sm px-2 py-0.5 rounded font-medium ${
-                                            isRestock 
-                                              ? 'bg-green-100 text-green-800' 
-                                              : 'bg-blue-100 text-blue-800'
-                                          }`}>
-                                            {isRestock ? 'Restock' : 'Checkout'}
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <span className={`text-sm px-2 py-0.5 rounded font-medium ${badgeColor}`}>
+                                            {badgeText}
                                           </span>
                                           <span className="text-sm font-semibold text-gray-700">
                                             {entry.batteryType}
                                           </span>
-                                          <span className={`text-sm font-bold ${
-                                            isRestock ? 'text-green-600' : 'text-red-600'
-                                          }`}>
-                                            {isRestock ? '+' : ''}{entry.quantity}
-                                          </span>
                                         </div>
-                                        <p className="text-sm text-gray-600">
-                                          by {entry.name}
+                                        <p className="text-lg font-bold text-gray-800 mb-1">
+                                          {entry.name}
                                         </p>
+                                        <div className="flex items-center gap-2">
+                                          <span className={`text-2xl font-bold ${
+                                            isPending ? 'text-yellow-600' : isAdd ? 'text-green-600' : 'text-red-600'
+                                          }`}>
+                                            {isAdd ? '+' : ''}{entry.quantity}
+                                          </span>
+                                          <span className="text-sm text-gray-500">units</span>
+                                        </div>
                                       </div>
-                                      <div className="flex items-center gap-3">
-                                        <span className="text-xs text-gray-500">
-                                          {formatDate(entry.timestamp)}
+                                      <div className="flex flex-col items-end">
+                                        <span className="text-xs text-gray-500 mb-1">
+                                          {new Date(entry.timestamp).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric'
+                                          })}
                                         </span>
                                         {isExpanded ? (
                                           <ChevronUp className="w-5 h-5 text-gray-400" />
@@ -221,58 +267,57 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
                                         )}
                                       </div>
                                     </div>
+                                    
+                                    {!isExpanded && (
+                                      <p className="text-sm text-gray-600 truncate">
+                                        {entry.eventName}
+                                      </p>
+                                    )}
                                   </div>
 
                                   {/* Expanded Details */}
                                   {isExpanded && (
-                                    <div className="px-4 pb-4 border-t pt-4">
-                                      <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+                                    <div className="px-4 pb-4 border-t">
+                                      <div className="pt-3 space-y-2">
                                         <div className="flex justify-between text-sm">
-                                          <span className="font-medium text-gray-700">Name:</span>
-                                          <span className="text-gray-900">{entry.name}</span>
+                                          <span className="font-medium text-gray-600">Event:</span>
+                                          <span className="text-gray-900 text-right ml-4">{entry.eventName || 'N/A'}</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                          <span className="font-medium text-gray-700">Battery Type:</span>
-                                          <span className="text-gray-900">{entry.batteryType}</span>
+                                          <span className="font-medium text-gray-600">Location:</span>
+                                          <span className="text-gray-900 text-right ml-4">{entry.eventLocation || 'N/A'}</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                          <span className="font-medium text-gray-700">Quantity:</span>
-                                          <span className={`font-bold ${
-                                            isRestock ? 'text-green-600' : 'text-red-600'
-                                          }`}>
-                                            {isRestock ? '+' : ''}{entry.quantity}
-                                          </span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                          <span className="font-medium text-gray-700">Event Name:</span>
-                                          <span className="text-gray-900">{entry.eventName || 'N/A'}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                          <span className="font-medium text-gray-700">Event Location:</span>
-                                          <span className="text-gray-900">{entry.eventLocation || 'N/A'}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                          <span className="font-medium text-gray-700">Date:</span>
+                                          <span className="font-medium text-gray-600">Date & Time:</span>
                                           <span className="text-gray-900">{formatDate(entry.timestamp)}</span>
                                         </div>
+                                        {isPending && (
+                                          <div className="flex justify-between text-sm">
+                                            <span className="font-medium text-gray-600">Status:</span>
+                                            <span className="text-yellow-600 font-semibold">Pending Approval</span>
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
                                   )}
                                 </div>
                               );
-                            })
-                          )}
-                        </div>
+                            })}
+                          </div>
+                        )}
 
                         {/* Pagination */}
                         {total > 0 && (
-                          <div className="flex justify-between items-center">
+                          <div className="flex justify-between items-center mt-4">
                             <p className="text-sm text-gray-600">
                               Showing {page * 10 + 1}-{Math.min((page + 1) * 10, total)} of {total}
                             </p>
                             <div className="flex gap-2">
                               <button
-                                onClick={handlePrevPage}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePrevPage();
+                                }}
                                 disabled={page === 0}
                                 className={`px-4 py-2 rounded-lg transition ${
                                   page === 0
@@ -283,7 +328,10 @@ const BatteryHistoryMode = ({ userName, SCRIPT_URL }) => {
                                 Previous
                               </button>
                               <button
-                                onClick={handleNextPage}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleNextPage();
+                                }}
                                 disabled={!hasNext}
                                 className={`px-4 py-2 rounded-lg transition ${
                                   !hasNext

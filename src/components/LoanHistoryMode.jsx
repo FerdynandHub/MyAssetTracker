@@ -205,19 +205,19 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                           <h4 className="font-semibold text-gray-700 mb-2 text-sm">Aset:</h4>
                           <div className="flex flex-wrap gap-2">
                             {loan.ids && loan.ids.map((id, i) => (
-                              <div key={i} className="bg-blue-50 rounded px-3 py-1 border border-blue-200 inline-flex items-center gap-2">
-                                <span className="font-mono text-xs text-blue-900 font-semibold">
-                                  {id}
-                                </span>
-                                {assetNames[id] && assetNames[id] !== id && (
-                                  <>
-                                    <span className="text-blue-600">•</span>
-                                    <span className="text-xs text-gray-700">
-                                      {assetNames[id]}
-                                    </span>
-                                  </>
-                                )}
-                              </div>
+<div key={i} className="bg-blue-50 dark:bg-blue-900/30 rounded px-3 py-1 border border-blue-200 dark:border-blue-700 inline-flex items-center gap-2">
+  <span className="font-mono text-xs text-blue-900 dark:text-blue-100 font-semibold">
+    {id}
+  </span>
+  {assetNames[id] && assetNames[id] !== id && (
+    <>
+      <span className="text-blue-600 dark:text-blue-400">•</span>
+      <span className="text-xs text-gray-700 dark:text-gray-300">
+        {assetNames[id]}
+      </span>
+    </>
+  )}
+</div>
                             ))}
                           </div>
                         </div>
