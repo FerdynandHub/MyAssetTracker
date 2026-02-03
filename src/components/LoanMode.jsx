@@ -157,11 +157,6 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
-    fetchAllAssets(); // Fetch all asset names once
-    fetchLoanedAssets();
-  }, []);
-
-  useEffect(() => {
     return () => stopScanning();
   }, []);
 
