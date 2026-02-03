@@ -131,13 +131,13 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
               placeholder="Cari berdasarkan ID, nama aset, lokasi, catatan, atau peminjam..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {loadingLoaned ? (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
           ) : loanedAssets.length === 0 ? (
             <div className="text-center py-12">
@@ -152,7 +152,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                   onClick={() => setActiveFilterTab('recent')}
                   className={`px-4 py-2 rounded-t-lg transition ${
                     activeFilterTab === 'recent'
-                      ? 'bg-purple-500 text-white'
+                      ? 'bg-blue-500 text-white'
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
@@ -164,7 +164,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                     onClick={() => setActiveFilterTab(requester)}
                     className={`px-4 py-2 rounded-t-lg transition ${
                       activeFilterTab === requester
-                        ? 'bg-purple-500 text-white'
+                        ? 'bg-blue-500 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
@@ -184,7 +184,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                     <div 
                       key={idx} 
                       onClick={() => setSelectedLoan(loan)}
-                      className="bg-gray-50 rounded-lg p-4 border border-gray-200 cursor-pointer hover:shadow-lg hover:border-purple-300 transition-all"
+                      className="bg-gray-50 rounded-lg p-4 border border-gray-200 cursor-pointer hover:shadow-lg hover:border-blue-300 transition-all"
                     >
                       <div className="mb-3">
                         <div className="flex items-center gap-2 mb-2">
