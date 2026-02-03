@@ -206,7 +206,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                           <div className="flex flex-wrap gap-2">
                             {loan.ids && loan.ids.map((id, i) => (
 <div key={i} className="rounded px-3 py-1 border border-blue-200 dark:border-blue-700 inline-flex items-center gap-2">
-  <span className="font-mono text-xs text-blue-900 dark:text-blue-100 font-semibold">
+  <span className="font-mono text-xs text-black dark:text-blue-100 font-semibold">
     {id}
   </span>
   {assetNames[id] && assetNames[id] !== id && (
