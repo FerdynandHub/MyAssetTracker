@@ -12,6 +12,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   const [loanedAssets, setLoanedAssets] = useState([]);
   const [loadingLoaned, setLoadingLoaned] = useState(false);
   const [activeFilterTab, setActiveFilterTab] = useState('recent');
+  const [assetNames, setAssetNames] = useState({});
   const videoRef = useRef(null);
   const streamRef = useRef(null);
 
@@ -19,6 +20,31 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
     'Available',
     'Loaned',
   ];
+
+  // Fetch asset name by ID
+  const fetchAssetName = async (id) => {
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=getAsset&id=${encodeURIComponent(id)}`);
+      const data = await response.json();
+      if (data.success && data.asset) {
+        return data.asset.name || 'Unknown';
+      }
+    } catch (error) {
+      console.error(`Error fetching asset ${id}:`, error);
+    }
+    return 'Unknown';
+  };
+
+  // Fetch names for multiple asset IDs
+  const fetchAssetNames = async (ids) => {
+    const names = {};
+    for (const id of ids) {
+      if (!assetNames[id]) {
+        names[id] = await fetchAssetName(id);
+      }
+    }
+    setAssetNames(prev => ({ ...prev, ...names }));
+  };
 
   const fetchLoanedAssets = async () => {
     setLoadingLoaned(true);
@@ -37,6 +63,11 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
         );
         
         setLoanedAssets(loaned);
+        
+        // Fetch asset names for all loaned assets
+        const allIds = loaned.flatMap(loan => loan.ids || []);
+        const uniqueIds = [...new Set(allIds)];
+        await fetchAssetNames(uniqueIds);
       }
     } catch (error) {
       console.error('Error fetching loaned assets:', error);
@@ -69,10 +100,15 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
     return filtered;
   };
 
-  const addId = () => {
+  const addId = async () => {
     if (currentId.trim() && !assetIds.includes(currentId.trim())) {
-      setAssetIds([...assetIds, currentId.trim()]);
+      const newId = currentId.trim();
+      setAssetIds([...assetIds, newId]);
       setCurrentId('');
+      
+      // Fetch the asset name for this ID
+      const name = await fetchAssetName(newId);
+      setAssetNames(prev => ({ ...prev, [newId]: name }));
     }
   };
 
@@ -179,9 +215,14 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
       );
 
       scanner.render(
-        (decodedText) => {
+        async (decodedText) => {
           if (decodedText.trim() && !assetIds.includes(decodedText.trim())) {
-            setAssetIds([...assetIds, decodedText.trim()]);
+            const newId = decodedText.trim();
+            setAssetIds([...assetIds, newId]);
+            
+            // Fetch the asset name for this ID
+            const name = await fetchAssetName(newId);
+            setAssetNames(prev => ({ ...prev, [newId]: name }));
           }
           scanner.clear().catch(() => {});
           setScanning(false);
@@ -277,7 +318,12 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {assetIds.map((id, idx) => (
               <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                <span className="font-mono">{id}</span>
+                <div className="flex-1">
+                  <span className="font-mono text-sm text-gray-700">{id}</span>
+                  <span className="ml-2 text-sm text-gray-600">
+                    - {assetNames[id] || 'Loading...'}
+                  </span>
+                </div>
                 <button
                   onClick={() => removeId(id)}
                   className="text-red-500 hover:text-red-700 transition"
@@ -460,11 +506,16 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <h4 className="font-semibold text-gray-700 mb-2 text-sm">Aset:</h4>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="space-y-1">
                             {loan.ids && loan.ids.map((id, i) => (
-                              <span key={i} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono">
-                                {id}
-                              </span>
+                              <div key={i} className="bg-blue-50 rounded p-2 border border-blue-200">
+                                <span className="font-mono text-xs text-blue-900 font-semibold block">
+                                  {id}
+                                </span>
+                                <span className="text-xs text-gray-600">
+                                  {assetNames[id] || 'Loading...'}
+                                </span>
+                              </div>
                             ))}
                           </div>
                         </div>
