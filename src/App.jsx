@@ -23,7 +23,8 @@ import {
   Package,
   Boxes,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  ClipboardList
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
@@ -41,6 +42,7 @@ import LoanMode from './components/LoanMode';
 import LoanHistoryMode from './components/LoanHistoryMode';
 import AIChatbot from './components/AIChatbot';
 import ApprovalsMode from './components/ApprovalsMode';
+import ApprovalHistoryMode from './components/ApprovalHistoryMode';
 
 
 
@@ -121,6 +123,7 @@ const App = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [updateSubmenuOpen, setUpdateSubmenuOpen] = useState(false);
   const [loanSubmenuOpen, setLoanSubmenuOpen] = useState(false);
+  const [approvalsSubmenuOpen, setApprovalsSubmenuOpen] = useState(false);
 
   // Update clock every second
   useEffect(() => {
@@ -473,8 +476,10 @@ const renderMode = () => {
       );
     case 'battery':
       return <BatteryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
-    case 'approvals':
+    case 'approvals-pending':
       return <ApprovalsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
+    case 'approvals-history':
+      return <ApprovalHistoryMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'myRequests':
       return <MyRequestsMode userName={userName} SCRIPT_URL={SCRIPT_URL} />;
     case 'loan':  
@@ -595,17 +600,44 @@ return (
   />
 )}
 
-{/* Pending Approvals - ADMIN only */}
+{/* Pending Approvals with Dropdown - ADMIN only */}
 {userRole === ROLES.ADMIN && (
-  <SidebarItem
-    icon={<RefreshCw className="w-5 h-5" />}
-    label="Persetujuan Pending"
-    active={mode === 'approvals'}
-    onClick={() => {
-      setMode('approvals');
-      setSidebarOpen(false);
-    }}
-  />
+  <>
+    <SidebarItem
+      icon={<RefreshCw className="w-5 h-5" />}
+      label="Persetujuan"
+      active={mode === 'approvals-pending' || mode === 'approvals-history'}
+      onClick={() => setApprovalsSubmenuOpen(!approvalsSubmenuOpen)}
+      hasSubmenu={true}
+      submenuOpen={approvalsSubmenuOpen}
+    />
+    
+    {/* Submenu items */}
+    {approvalsSubmenuOpen && (
+      <div className="space-y-2">
+        <SidebarItem
+          icon={<ClipboardList className="w-4 h-4" />}
+          label="Pending"
+          active={mode === 'approvals-pending'}
+          onClick={() => {
+            setMode('approvals-pending');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+        <SidebarItem
+          icon={<History className="w-4 h-4" />}
+          label="Riwayat"
+          active={mode === 'approvals-history'}
+          onClick={() => {
+            setMode('approvals-history');
+            setSidebarOpen(false);
+          }}
+          isSubmenu={true}
+        />
+      </div>
+    )}
+  </>
 )}
 
 {/* Update Data with Dropdown - Hidden from VIEWER */}
@@ -792,7 +824,8 @@ return (
   {mode === 'update-batch' && (userRole === ROLES.ADMIN ? 'Update Data - Massal' : 'Request Update - Massal')}
   {mode === 'battery' && 'Single-Use Item'}
   {mode === 'myRequests' && 'Permintaan Saya'} 
-  {mode === 'approvals' && 'Pending Approvals'}
+  {mode === 'approvals-pending' && 'Pending Approvals'}
+  {mode === 'approvals-history' && 'Riwayat Persetujuan'}
   {mode === 'loan-create' && 'Buat Peminjaman/Pengembalian'}
   {mode === 'loan-history' && 'Aset yang Sedang Dipinjam'}
   {!mode && 'Portal AVM'}
