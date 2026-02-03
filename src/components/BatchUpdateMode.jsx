@@ -15,7 +15,6 @@ const BatchUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEGO
   const STATUSES = [
   'Available',
   'Classroom',
-  'Loaned',
   'Unavailable'
 ];
 

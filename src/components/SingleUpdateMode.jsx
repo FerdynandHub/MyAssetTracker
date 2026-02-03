@@ -124,7 +124,6 @@ const SingleUpdateMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL, CATEG
   const STATUSES = [
   'Available',
   'Classroom',
-  'Loaned',
   'Unavailable'
 ];
 
