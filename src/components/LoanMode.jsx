@@ -21,44 +21,23 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
     'Loaned',
   ];
 
-  // Fetch asset name by ID
-  const fetchAssetName = async (id) => {
+  // Fetch all assets at once and create a name map
+  const fetchAllAssets = async () => {
     try {
-      const response = await fetch(`${SCRIPT_URL}?action=getAsset&id=${encodeURIComponent(id)}`);
-      const asset = await response.json();
+      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
+      const data = await response.json();
       
-      if (asset && asset.name) {
-        return asset.name;
-      }
-      return id; // Return ID if name not found
-    } catch (error) {
-      console.error(`Error fetching asset ${id}:`, error);
-      return id; // Return ID on error
-    }
-  };
-
-  // Fetch names for multiple asset IDs with batching
-  const fetchAssetNames = async (ids) => {
-    // Filter out IDs we already have
-    const idsToFetch = ids.filter(id => !assetNames[id]);
-    
-    if (idsToFetch.length === 0) return;
-    
-    // Fetch in batches of 5 to avoid overwhelming
-    const batchSize = 5;
-    
-    for (let i = 0; i < idsToFetch.length; i += batchSize) {
-      const batch = idsToFetch.slice(i, i + batchSize);
-      const names = {};
-      
-      const promises = batch.map(async (id) => {
-        const name = await fetchAssetName(id);
-        names[id] = name;
+      // Create a mapping of id -> name from all assets
+      const nameMap = {};
+      data.forEach(asset => {
+        if (asset.id && asset.name) {
+          nameMap[asset.id] = asset.name;
+        }
       });
       
-      await Promise.all(promises);
-      // Update state after each batch for progressive loading
-      setAssetNames(prev => ({ ...prev, ...names }));
+      setAssetNames(nameMap);
+    } catch (error) {
+      console.error('Error fetching assets:', error);
     }
   };
 
@@ -79,11 +58,6 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
         );
         
         setLoanedAssets(loaned);
-        
-        // Fetch asset names for all loaned assets
-        const allIds = loaned.flatMap(loan => loan.ids || []);
-        const uniqueIds = [...new Set(allIds)];
-        await fetchAssetNames(uniqueIds);
       }
     } catch (error) {
       console.error('Error fetching loaned assets:', error);
@@ -116,15 +90,11 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
     return filtered;
   };
 
-  const addId = async () => {
+  const addId = () => {
     if (currentId.trim() && !assetIds.includes(currentId.trim())) {
       const newId = currentId.trim();
       setAssetIds([...assetIds, newId]);
       setCurrentId('');
-      
-      // Fetch the asset name for this ID
-      const name = await fetchAssetName(newId);
-      setAssetNames(prev => ({ ...prev, [newId]: name }));
     }
   };
 
@@ -231,14 +201,10 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
       );
 
       scanner.render(
-        async (decodedText) => {
+        (decodedText) => {
           if (decodedText.trim() && !assetIds.includes(decodedText.trim())) {
             const newId = decodedText.trim();
             setAssetIds([...assetIds, newId]);
-            
-            // Fetch the asset name for this ID
-            const name = await fetchAssetName(newId);
-            setAssetNames(prev => ({ ...prev, [newId]: name }));
           }
           scanner.clear().catch(() => {});
           setScanning(false);
@@ -264,6 +230,7 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
+    fetchAllAssets(); // Fetch all asset names once
     fetchLoanedAssets();
   }, []);
 
@@ -525,12 +492,19 @@ const LoanMode = ({ onBack, userRole, userName, ROLES, SCRIPT_URL }) => {
                           <div className="space-y-1">
                             {loan.ids && loan.ids.map((id, i) => (
                               <div key={i} className="bg-blue-50 rounded p-2 border border-blue-200">
-                                <span className="font-mono text-xs text-blue-900 font-semibold block">
-                                  {id}
-                                </span>
-                                <span className="text-xs text-gray-600">
-                                  {assetNames[id] || 'Loading...'}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono text-xs text-blue-900 font-semibold">
+                                    {id}
+                                  </span>
+                                  {assetNames[id] && assetNames[id] !== id && (
+                                    <>
+                                      <span className="text-blue-600">•</span>
+                                      <span className="text-xs text-gray-700">
+                                        {assetNames[id]}
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             ))}
                           </div>
