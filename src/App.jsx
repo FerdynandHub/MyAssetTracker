@@ -397,7 +397,7 @@ const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, subme
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={`
-        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-1000 ease-in-out
         ${isSubmenu ? 'pl-8' : ''}
         ${active 
           ? 'bg-blue-500 text-white' 
@@ -515,7 +515,7 @@ return (
     <aside className={`
       fixed lg:static inset-y-0 left-0 z-[60]
       w-64 shadow-lg flex flex-col
-      transform transition-transform duration-2000 ease-in-out
+      transform transition-transform duration-1000 ease-in-out
       ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       bg-white
     `}>
@@ -620,7 +620,7 @@ return (
     
     {/* Submenu items */}
     {batterySubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
+      <div className="space-y-2 overflow-hidden transition-all duration-1000 ease-in-out">
         <SidebarItem
           icon={<Edit className="w-4 h-4" />}
           label="Checkout"
@@ -665,7 +665,7 @@ return (
     
     {/* Submenu items */}
     {approvalsSubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
+      <div className="space-y-2 overflow-hidden transition-all duration-1000 ease-in-out">
         <SidebarItem
           icon={<ClipboardList className="w-4 h-4" />}
           label="Pending"
@@ -710,7 +710,7 @@ return (
     
     {/* Submenu items */}
     {updateSubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
+      <div className="space-y-2 overflow-hidden transition-all duration-1000 ease-in-out">
         <SidebarItem
           icon={<Package className="w-4 h-4" />}
           label="Update Satuan"
@@ -755,7 +755,7 @@ return (
     
     {/* Submenu items */}
     {loanSubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
+      <div className="space-y-2 overflow-hidden transition-all duration-1000 ease-in-out">
         <SidebarItem
           icon={<Edit className="w-4 h-4" />}
           label="Buat Pinjaman"
