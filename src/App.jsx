@@ -339,7 +339,7 @@ const App = () => {
           </h1>
 
           <p className={`text-xs text-center mb-4 text-gray-400`}>
-            Stable Full Release V.1.1.5
+            Stable Full Release V.1.1
           </p>
 
 
