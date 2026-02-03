@@ -416,9 +416,13 @@ const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, subme
   );
 };
 
-
-
-
+  // Helper function to close all dropdowns
+  const closeAllDropdowns = () => {
+    setUpdateSubmenuOpen(false);
+    setLoanSubmenuOpen(false);
+    setApprovalsSubmenuOpen(false);
+    setBatterySubmenuOpen(false);
+  };
 
   // Mode rendering
 const renderMode = () => {
@@ -556,6 +560,7 @@ return (
       onClick={() => {
         setMode('overview');
         setSidebarOpen(false);
+        closeAllDropdowns();
       }}
     />
 
@@ -566,6 +571,7 @@ return (
       onClick={() => {
         setMode('check');
         setSidebarOpen(false);
+        closeAllDropdowns();
       }}
     />
 
@@ -576,6 +582,7 @@ return (
       onClick={() => {
         setMode('export');
         setSidebarOpen(false);
+        closeAllDropdowns();
       }}
     />
 
@@ -586,6 +593,7 @@ return (
       onClick={() => {
         setMode('history');
         setSidebarOpen(false);
+        closeAllDropdowns();
       }}
     />
 
@@ -598,7 +606,12 @@ return (
       icon={<Battery className="w-5 h-5" />}
       label="Baterai"
       active={mode === 'battery' || mode === 'battery-history'}
-      onClick={() => setBatterySubmenuOpen(!batterySubmenuOpen)}
+      onClick={() => {
+        setUpdateSubmenuOpen(false);
+        setLoanSubmenuOpen(false);
+        setApprovalsSubmenuOpen(false);
+        setBatterySubmenuOpen(!batterySubmenuOpen);
+      }}
       hasSubmenu={true}
       submenuOpen={batterySubmenuOpen}
     />
@@ -638,7 +651,12 @@ return (
       icon={<RefreshCw className="w-5 h-5" />}
       label="Persetujuan"
       active={mode === 'approvals-pending' || mode === 'approvals-history'}
-      onClick={() => setApprovalsSubmenuOpen(!approvalsSubmenuOpen)}
+      onClick={() => {
+        setUpdateSubmenuOpen(false);
+        setLoanSubmenuOpen(false);
+        setBatterySubmenuOpen(false);
+        setApprovalsSubmenuOpen(!approvalsSubmenuOpen);
+      }}
       hasSubmenu={true}
       submenuOpen={approvalsSubmenuOpen}
     />
@@ -678,7 +696,12 @@ return (
       icon={<Edit className="w-5 h-5" />}
       label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Ubah Data"}
       active={mode === 'update-single' || mode === 'update-batch'}
-      onClick={() => setUpdateSubmenuOpen(!updateSubmenuOpen)}
+      onClick={() => {
+        setLoanSubmenuOpen(false);
+        setApprovalsSubmenuOpen(false);
+        setBatterySubmenuOpen(false);
+        setUpdateSubmenuOpen(!updateSubmenuOpen);
+      }}
       hasSubmenu={true}
       submenuOpen={updateSubmenuOpen}
     />
@@ -718,7 +741,12 @@ return (
       icon={<ArrowLeftRight className="w-5 h-5" />}
       label="Pinjam Barang"
       active={mode === 'loan-create' || mode === 'loan-history'}
-      onClick={() => setLoanSubmenuOpen(!loanSubmenuOpen)}
+      onClick={() => {
+        setUpdateSubmenuOpen(false);
+        setApprovalsSubmenuOpen(false);
+        setBatterySubmenuOpen(false);
+        setLoanSubmenuOpen(!loanSubmenuOpen);
+      }}
       hasSubmenu={true}
       submenuOpen={loanSubmenuOpen}
     />
@@ -760,6 +788,7 @@ return (
     onClick={() => {
       setMode('myRequests');
       setSidebarOpen(false);
+      closeAllDropdowns();
     }}
   />
 )}
@@ -777,6 +806,7 @@ return (
         "_blank"
       );
       setSidebarOpen(false);
+      closeAllDropdowns();
     }}
   />
 )}
@@ -791,6 +821,7 @@ return (
           "_blank"
         );
         setSidebarOpen(false);
+        closeAllDropdowns();
       }}
     />
 
@@ -804,6 +835,7 @@ return (
           "_blank"
         );
         setSidebarOpen(false);
+        closeAllDropdowns();
       }}
     />
 

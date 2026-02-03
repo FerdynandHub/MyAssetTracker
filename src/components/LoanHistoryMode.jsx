@@ -267,26 +267,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                               </div>
                             )}
 
-                            <div className="mb-3">
-                              <p className="text-sm font-semibold text-gray-700 mb-2">Semua Aset:</p>
-                              <div className="flex flex-wrap gap-2">
-                                {loan.ids && loan.ids.map((id, i) => (
-                                  <div key={i} className="rounded px-3 py-1 border border-blue-200 inline-flex items-center gap-2">
-                                    <span className="font-mono text-xs text-black font-semibold">
-                                      {id}
-                                    </span>
-                                    {assetNames[id] && assetNames[id] !== id && (
-                                      <>
-                                        <span className="text-black">•</span>
-                                        <span className="text-xs text-black">
-                                          {assetNames[id]}
-                                        </span>
-                                      </>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
+
 
                             <div className="mb-3">
                               <p className="text-sm font-semibold text-gray-700">Status:</p>
