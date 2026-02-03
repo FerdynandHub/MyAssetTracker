@@ -212,7 +212,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   {assetNames[id] && assetNames[id] !== id && (
     <>
       <span className="text-blue-600 dark:text-blue-400">•</span>
-      <span className="text-xs text-gray-700 dark:text-gray-300">
+      <span className="text-xs text-black dark:text-gray-300">
         {assetNames[id]}
       </span>
     </>
