@@ -3,34 +3,12 @@ import './index.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, 
-  X, 
-  Eye,
-  Search, 
-  Download,
-  History, 
-  Edit, 
-  Battery, 
-  RefreshCw, 
-  BookOpenText,
-  BookOpen,
-  ArrowLeftRight,
-  FileText,
-  Camera,
-  List,
   Moon,
-  Sun,
-  Tickets,
-  Package,
-  Boxes,
-  ChevronDown,
-  ChevronUp,
-  ClipboardList
+  Sun
 } from 'lucide-react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
-//components
-import { exportToCSV } from "./components/ExportUtils";
+//Components
 import CheckMode from "./components/CheckMode";
 import SingleUpdateMode from "./components/SingleUpdateMode";
 import BatchUpdateMode from "./components/BatchUpdateMode";
@@ -44,7 +22,8 @@ import LoanHistoryMode from './components/LoanHistoryMode';
 import AIChatbot from './components/AIChatbot';
 import ApprovalsMode from './components/ApprovalsMode';
 import ApprovalHistoryMode from './components/ApprovalHistoryMode';
-
+import Sidebar from './components/Sidebar';
+import ExportMode from './components/ExportMode';
 
 
 //roles assignment
@@ -126,6 +105,7 @@ const App = () => {
   const [loanSubmenuOpen, setLoanSubmenuOpen] = useState(false);
   const [approvalsSubmenuOpen, setApprovalsSubmenuOpen] = useState(false);
   const [batterySubmenuOpen, setBatterySubmenuOpen] = useState(false);
+  
 
   // Update clock every second
   useEffect(() => {
@@ -391,32 +371,7 @@ const App = () => {
     );
   }
 
-const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, submenuOpen, isSubmenu }) => {
-  return (
-    <button
-      onClick={!disabled ? onClick : undefined}
-      disabled={disabled}
-      className={`
-        w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300
-        ${isSubmenu ? 'pl-8' : ''}
-        ${active 
-          ? 'bg-blue-500 text-white' 
-          : disabled
-            ? 'text-gray-400 cursor-not-allowed'
-            : 'text-gray-700 hover:bg-gray-100'
-        }
-      `}
-    >
-      {icon}
-      <span className="text-sm font-medium flex-1 text-left">{label}</span>
-      {hasSubmenu && (
-        <div className={`transform transition-transform duration-2000 ${submenuOpen ? 'rotate-180' : 'rotate-0'}`}>
-          <ChevronDown className="w-4 h-4" />
-        </div>
-      )}
-    </button>
-  );
-};
+
 
   // Helper function to close all dropdowns
   const closeAllDropdowns = () => {
@@ -435,8 +390,8 @@ const renderMode = () => {
       return <CheckMode SCRIPT_URL={SCRIPT_URL} />;
     case 'resourceCenter':
       return <ResourceCenterMode />;
-    case 'export':
-      return <ExportMode />;
+case 'export':
+  return <ExportMode SCRIPT_URL={SCRIPT_URL} />;
     case 'history':
       return <HistoryMode SCRIPT_URL={SCRIPT_URL} />;
     case 'update-single':
@@ -512,362 +467,29 @@ const renderMode = () => {
 return (
   <div className={`flex overflow-hidden bg-gray-100 ${darkMode ? 'dark' : ''}`} style={{ height: '100dvh' }}>
     {/* Sidebar */}
-    <aside className={`
-      fixed lg:static inset-y-0 left-0 z-[60]
-      w-64 shadow-lg flex flex-col
-      transform transition-transform duration-1000 ease-in-out
-      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      bg-white
-    `}>
-{/* Header */}
-<div className="p-6 border-b border-gray-200 relative">
-  <div className="flex justify-between items-start mb-4">
-    
-    {/* User Info */}
-    <div>
-      <p className="text-sm text-gray-500 mb-1">{getGreeting()}</p>
-      <h2 className="text-xl font-bold text-gray-800">{userName}</h2>
-      <p className="text-xs text-gray-500">({userRole})</p>
-    </div>
-
-    {/* Date/Time + Close Button */}
-    <div className="flex flex-col items-end">
-      <p className="text-xs text-gray-500">
-        {currentTime.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
-      </p>
-      <p className="text-sm font-medium text-gray-600">
-        {currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':')}
-      </p>
-
-      {/* Mobile Close Button */}
-      <button
-        onClick={() => setSidebarOpen(false)}
-        className="lg:hidden mt-2 text-gray-500 hover:text-gray-700"
-      >
-        <X className="w-6 h-6" />
-      </button>
-    </div>
-
-  </div>
-</div>
-
-
-      {/* Navigation */}
-<nav className="flex-1 overflow-y-auto p-4">
-  <div className="space-y-2">
-    <SidebarItem
-      icon={<Eye className="w-5 h-5" />}
-      label="Daftar Data"
-      active={mode === 'overview'}
-      onClick={() => {
-        setMode('overview');
-        setSidebarOpen(false);
-        closeAllDropdowns();
-      }}
-    />
-
-    <SidebarItem
-      icon={<Search className="w-5 h-5" />}
-      label="Cek Data"
-      active={mode === 'check'}
-      onClick={() => {
-        setMode('check');
-        setSidebarOpen(false);
-        closeAllDropdowns();
-      }}
-    />
-
-    <SidebarItem
-      icon={<Download className="w-5 h-5" />}
-      label="Unduh Data"
-      active={mode === 'export'}
-      onClick={() => {
-        setMode('export');
-        setSidebarOpen(false);
-        closeAllDropdowns();
-      }}
-    />
-
-    <SidebarItem
-      icon={<History className="w-5 h-5" />}
-      label="Riwayat Data"
-      active={mode === 'history'}
-      onClick={() => {
-        setMode('history');
-        setSidebarOpen(false);
-        closeAllDropdowns();
-      }}
-    />
-
-
-
-{/* Battery with Dropdown - Hidden from VIEWER */}
-{userRole !== ROLES.VIEWER && (
-  <>
-    <SidebarItem
-      icon={<Battery className="w-5 h-5" />}
-      label="Baterai"
-      active={mode === 'battery' || mode === 'battery-history'}
-      onClick={() => {
-        setUpdateSubmenuOpen(false);
-        setLoanSubmenuOpen(false);
-        setApprovalsSubmenuOpen(false);
-        setBatterySubmenuOpen(!batterySubmenuOpen);
-      }}
-      hasSubmenu={true}
-      submenuOpen={batterySubmenuOpen}
-    />
-    
-    {/* Submenu items */}
-    {batterySubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
-        <SidebarItem
-          icon={<Edit className="w-4 h-4" />}
-          label="Checkout"
-          active={mode === 'battery'}
-          onClick={() => {
-            setMode('battery');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-        <SidebarItem
-          icon={<History className="w-4 h-4" />}
-          label="Riwayat"
-          active={mode === 'battery-history'}
-          onClick={() => {
-            setMode('battery-history');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-      </div>
-    )}
-  </>
-)}
-
-{/* Pending Approvals with Dropdown - ADMIN only */}
-{userRole === ROLES.ADMIN && (
-  <>
-    <SidebarItem
-      icon={<RefreshCw className="w-5 h-5" />}
-      label="Persetujuan"
-      active={mode === 'approvals-pending' || mode === 'approvals-history'}
-      onClick={() => {
-        setUpdateSubmenuOpen(false);
-        setLoanSubmenuOpen(false);
-        setBatterySubmenuOpen(false);
-        setApprovalsSubmenuOpen(!approvalsSubmenuOpen);
-      }}
-      hasSubmenu={true}
-      submenuOpen={approvalsSubmenuOpen}
-    />
-    
-    {/* Submenu items */}
-    {approvalsSubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
-        <SidebarItem
-          icon={<ClipboardList className="w-4 h-4" />}
-          label="Pending"
-          active={mode === 'approvals-pending'}
-          onClick={() => {
-            setMode('approvals-pending');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-        <SidebarItem
-          icon={<History className="w-4 h-4" />}
-          label="Riwayat"
-          active={mode === 'approvals-history'}
-          onClick={() => {
-            setMode('approvals-history');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-      </div>
-    )}
-  </>
-)}
-
-{/* Update Data with Dropdown - Hidden from VIEWER */}
-{userRole !== ROLES.VIEWER && (
-  <>
-    <SidebarItem
-      icon={<Edit className="w-5 h-5" />}
-      label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Ubah Data"}
-      active={mode === 'update-single' || mode === 'update-batch'}
-      onClick={() => {
-        setLoanSubmenuOpen(false);
-        setApprovalsSubmenuOpen(false);
-        setBatterySubmenuOpen(false);
-        setUpdateSubmenuOpen(!updateSubmenuOpen);
-      }}
-      hasSubmenu={true}
-      submenuOpen={updateSubmenuOpen}
-    />
-    
-    {/* Submenu items */}
-    {updateSubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
-        <SidebarItem
-          icon={<Package className="w-4 h-4" />}
-          label="Update Satuan"
-          active={mode === 'update-single'}
-          onClick={() => {
-            setMode('update-single');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-        <SidebarItem
-          icon={<Boxes className="w-4 h-4" />}
-          label="Update Massal"
-          active={mode === 'update-batch'}
-          onClick={() => {
-            setMode('update-batch');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-      </div>
-    )}
-  </>
-)}
-
-{/* Loan with Dropdown - Hidden from VIEWER */}
-{userRole !== ROLES.VIEWER && (
-  <>
-    <SidebarItem
-      icon={<ArrowLeftRight className="w-5 h-5" />}
-      label="Pinjam Barang"
-      active={mode === 'loan-create' || mode === 'loan-history'}
-      onClick={() => {
-        setUpdateSubmenuOpen(false);
-        setApprovalsSubmenuOpen(false);
-        setBatterySubmenuOpen(false);
-        setLoanSubmenuOpen(!loanSubmenuOpen);
-      }}
-      hasSubmenu={true}
-      submenuOpen={loanSubmenuOpen}
-    />
-    
-    {/* Submenu items */}
-    {loanSubmenuOpen && (
-      <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
-        <SidebarItem
-          icon={<Edit className="w-4 h-4" />}
-          label="Buat Pinjaman"
-          active={mode === 'loan-create'}
-          onClick={() => {
-            setMode('loan-create');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-        <SidebarItem
-          icon={<List className="w-4 h-4" />}
-          label="Riwayat Pinjam"
-          active={mode === 'loan-history'}
-          onClick={() => {
-            setMode('loan-history');
-            setSidebarOpen(false);
-          }}
-          isSubmenu={true}
-        />
-      </div>
-    )}
-  </>
-)}
-
-{/* My Requests - For EDITOR only */}
-{userRole === ROLES.EDITOR && (
-  <SidebarItem
-    icon={<FileText className="w-5 h-5" />}
-    label="Pengajuan Saya"
-    active={mode === 'myRequests'}
-    onClick={() => {
-      setMode('myRequests');
-      setSidebarOpen(false);
-      closeAllDropdowns();
-    }}
-  />
-)}
-
-
-{/* Classroom Center - Hidden from VIEWER */}
-{userRole !== ROLES.VIEWER && (
-  <SidebarItem
-    icon={<BookOpenText className="w-5 h-5" />}
-    label="Pusat Classroom"
-    active={false}
-    onClick={() => {
-      window.open(
-        "https://docs.google.com/document/d/1nQZMGHu7H5A4cRY08elEqtDZfLe-NB-ySr3_jbc3Nbs/edit?tab=t.ajkay86zze5j",
-        "_blank"
-      );
-      setSidebarOpen(false);
-      closeAllDropdowns();
-    }}
-  />
-)}
-
-            <SidebarItem
-      icon={<BookOpenText className="w-5 h-5" />}
-      label="Cara Pakai Scanner"
-      active={false}
-      onClick={() => {
-        window.open(
-          "https://docs.google.com/document/d/1fUivFvMW9HVQ_ht3nKEDjVCSI4Pq2G-dlQD7cCDKtjo/edit?tab=t.0",
-          "_blank"
-        );
-        setSidebarOpen(false);
-        closeAllDropdowns();
-      }}
-    />
-
-                <SidebarItem
-      icon={<Tickets className="w-5 h-5" />}
-      label="Buka Tiket"
-      active={false}
-      onClick={() => {
-        window.open(
-          "https://onestopservice.uph.edu",
-          "_blank"
-        );
-        setSidebarOpen(false);
-        closeAllDropdowns();
-      }}
-    />
-
-
-  </div>
-</nav>
-
-
-      {/* Logout & Dark Mode Toggle */}
-      <div className={`p-4 border-t space-y-2 border-gray-200`}>
-        <button
-          onClick={toggleDarkMode}
-          className={`w-full flex items-center justify-center gap-2 py-2 rounded-lg transition
-            bg-gray-200 text-gray-700 hover:bg-gray-300
-          `}
-        >
-          {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          <span className="text-sm font-medium">
-            {darkMode ? 'Light Mode' : 'Dark Mode'}
-          </span>
-        </button>
-        
-        <button
-          onClick={handleLogout}
-          className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
-        >
-          Keluar
-        </button>
-      </div>
-    </aside>
+<Sidebar
+  sidebarOpen={sidebarOpen}
+  setSidebarOpen={setSidebarOpen}
+  darkMode={darkMode}
+  currentTime={currentTime}
+  getGreeting={getGreeting}
+  userName={userName}
+  userRole={userRole}
+  mode={mode}
+  setMode={setMode}
+  ROLES={ROLES}
+  updateSubmenuOpen={updateSubmenuOpen}
+  setUpdateSubmenuOpen={setUpdateSubmenuOpen}
+  loanSubmenuOpen={loanSubmenuOpen}
+  setLoanSubmenuOpen={setLoanSubmenuOpen}
+  approvalsSubmenuOpen={approvalsSubmenuOpen}
+  setApprovalsSubmenuOpen={setApprovalsSubmenuOpen}
+  batterySubmenuOpen={batterySubmenuOpen}
+  setBatterySubmenuOpen={setBatterySubmenuOpen}
+  closeAllDropdowns={closeAllDropdowns}
+  toggleDarkMode={toggleDarkMode}
+  handleLogout={handleLogout}
+/>
 
     {/* Main Content Area */}
     <main className="flex-1 overflow-auto flex flex-col">
@@ -929,142 +551,6 @@ return (
   </div>
 );
 
-};
-
-
-
-
-
-// Export Mode
-const ExportMode = ({ onBack }) => {
-  const [scannedIds, setScannedIds] = useState([]);
-  const [currentId, setCurrentId] = useState('');
-  const [scanning, setScanning] = useState(false);
-
-  const addId = () => {
-    if (currentId.trim() && !scannedIds.includes(currentId.trim())) {
-      setScannedIds([...scannedIds, currentId.trim()]);
-      setCurrentId('');
-    }
-  };
-
-  const removeId = (id) => {
-    setScannedIds(scannedIds.filter(i => i !== id));
-  };
-
-  const handleExportToCSV = async () => {
-    await exportToCSV(scannedIds, SCRIPT_URL);
-  };
-
-  useEffect(() => {
-    let scanner = null;
-    
-    if (scanning) {
-      scanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: { width: 250, height: 250 } }
-      );
-
-      scanner.render(
-        (decodedText) => {
-          if (decodedText.trim() && !scannedIds.includes(decodedText.trim())) {
-            setScannedIds([...scannedIds, decodedText.trim()]);
-          }
-          scanner.clear().catch(() => {});
-          setScanning(false);
-        },
-        (error) => {
-          // Ignore scanning errors
-        }
-      );
-    }
-
-    return () => {
-      if (scanner) {
-        scanner.clear().catch(() => {});
-      }
-    };
-  }, [scanning, scannedIds]);
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Export Mode</h1>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter Asset ID"
-                value={currentId}
-                onChange={(e) => setCurrentId(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addId()}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={addId}
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
-              >
-                +
-              </button>
-            </div>
-
-            <button
-              onClick={() => setScanning(!scanning)}
-              className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${
-                scanning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-              } text-white`}
-            >
-              <Camera className="w-5 h-5" />
-              {scanning ? 'Stop Scanning' : 'Scan Barcode'}
-            </button>
-          </div>
-
-          {scanning && (
-            <div className="mt-4">
-              <div id="reader"></div>
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-800">
-              Scanned Assets ({scannedIds.length})
-            </h2>
-            <button
-              onClick={handleExportToCSV}
-              disabled={scannedIds.length === 0}
-              className="flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              <Download className="w-4 h-4" />
-              Export to CSV
-            </button>
-          </div>
-
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {scannedIds.map((id, idx) => (
-              <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                <span className="font-mono">{id}</span>
-                <button
-                  onClick={() => removeId(id)}
-                  className="text-red-500 hover:text-red-700 transition"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-            {scannedIds.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No assets scanned yet</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 
