@@ -8,8 +8,9 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   const [assetNames, setAssetNames] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCards, setExpandedCards] = useState({});
+  const [liveAssetStatuses, setLiveAssetStatuses] = useState({});
 
-  // Fetch all assets at once and create a name map
+  // Fetch all assets at once and create a name map AND status map
   const fetchAllAssets = async () => {
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
@@ -17,13 +18,20 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       
       // Create a mapping of id -> name from all assets
       const nameMap = {};
+      const statusMap = {};
       data.forEach(asset => {
-        if (asset.id && asset.name) {
-          nameMap[asset.id] = asset.name;
+        if (asset.id) {
+          if (asset.name) {
+            nameMap[asset.id] = asset.name;
+          }
+          if (asset.status) {
+            statusMap[asset.id] = asset.status;
+          }
         }
       });
       
       setAssetNames(nameMap);
+      setLiveAssetStatuses(statusMap);
     } catch (error) {
       console.error('Error fetching assets:', error);
     }
@@ -54,6 +62,29 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
           // Exclude if status is "available" or contains "available"
           if (itemStatus === 'available' || itemStatus.includes('available')) {
             return false;
+          }
+          
+          // CRITICAL: Cross-reference with live database
+          // Check if ALL asset IDs in this loan are still marked as "Loaned" in the live database
+          if (item.ids && item.ids.length > 0) {
+            const allStillLoaned = item.ids.every(assetId => {
+              const liveStatus = liveAssetStatuses[assetId];
+              if (!liveStatus) return false; // If no status found, exclude it
+              
+              const liveStatusLower = liveStatus.toLowerCase();
+              // Asset must NOT be "Available" in live database
+              if (liveStatusLower === 'available' || liveStatusLower.includes('available')) {
+                return false;
+              }
+              
+              // Asset should still be "Loaned" in live database
+              return liveStatusLower === 'loaned' || liveStatusLower.includes('loaned');
+            });
+            
+            // Only include this loan record if ALL assets are still loaned
+            if (!allStillLoaned) {
+              return false;
+            }
           }
           
           // Include if status is "loaned" or similar
@@ -125,10 +156,22 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
     }));
   };
 
+  const refreshData = async () => {
+    // Fetch assets first to get latest statuses, then fetch loan history
+    await fetchAllAssets();
+    await fetchLoanedAssets();
+  };
+
   useEffect(() => {
-    fetchAllAssets(); // Fetch all asset names at once
-    fetchLoanedAssets();
+    refreshData();
   }, []);
+
+  // Re-fetch loaned assets when liveAssetStatuses changes
+  useEffect(() => {
+    if (Object.keys(liveAssetStatuses).length > 0) {
+      fetchLoanedAssets();
+    }
+  }, [liveAssetStatuses]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -139,7 +182,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
               Aset yang belum kembali ({loanedAssets.length})
             </h2>
             <button
-              onClick={fetchLoanedAssets}
+              onClick={refreshData}
               className="text-sm text-blue-500 hover:text-blue-600 transition"
             >
               <RefreshCw className="w-4 h-4 inline mr-1" />
