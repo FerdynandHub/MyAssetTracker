@@ -98,7 +98,7 @@ const RecentUpdatesMode = ({ SCRIPT_URL }) => {
     return 'bg-slate-200 text-slate-600';
   };
 
-  // Get relative time (e.g., "2 hours ago", "1 day ago")
+  // Get relative time (e.g., "2 jam lalu", "1 hari lalu")
   const getRelativeTime = (dateString) => {
     const date = parseDate(dateString);
     const now = new Date();
@@ -109,157 +109,157 @@ const RecentUpdatesMode = ({ SCRIPT_URL }) => {
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
-    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    return 'Just now';
+    if (days > 0) return `${days} hari lalu`;
+    if (hours > 0) return `${hours} jam lalu`;
+    if (minutes > 0) return `${minutes} menit lalu`;
+    return 'Baru saja';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-sky-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-3">
-              <Clock className="w-8 h-8 text-purple-500" />
-              <h1 className="text-3xl font-bold text-gray-800">Recent Updates</h1>
+              <Clock className="w-8 h-8 text-blue-500" />
+              <h1 className="text-3xl font-bold text-gray-800">Pembaruan Terkini</h1>
             </div>
             <button
               onClick={fetchAssets}
-              className="flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition"
+              className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
             >
               <RefreshCw className="w-4 h-4" />
-              Refresh
+              Muat Ulang
             </button>
           </div>
 
           {/* Time Filter */}
           <div className="mb-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setTimeFilter('all')}
                 className={`px-4 py-2 rounded-lg transition ${
                   timeFilter === 'all'
-                    ? 'bg-purple-500 text-white'
+                    ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                All Time
+                Semua Waktu
               </button>
               <button
                 onClick={() => setTimeFilter('today')}
                 className={`px-4 py-2 rounded-lg transition ${
                   timeFilter === 'today'
-                    ? 'bg-purple-500 text-white'
+                    ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                Today
+                Hari Ini
               </button>
               <button
                 onClick={() => setTimeFilter('week')}
                 className={`px-4 py-2 rounded-lg transition ${
                   timeFilter === 'week'
-                    ? 'bg-purple-500 text-white'
+                    ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                This Week
+                Minggu Ini
               </button>
               <button
                 onClick={() => setTimeFilter('month')}
                 className={`px-4 py-2 rounded-lg transition ${
                   timeFilter === 'month'
-                    ? 'bg-purple-500 text-white'
+                    ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                This Month
+                Bulan Ini
               </button>
             </div>
           </div>
 
           {/* Results Count */}
           <div className="text-sm text-gray-600 mb-4">
-            Showing {recentUpdates.length} recent update{recentUpdates.length !== 1 ? 's' : ''}
+            Menampilkan {recentUpdates.length} pembaruan terkini
           </div>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
           </div>
         ) : (
           <>
-            {/* Desktop List View */}
-            <div className="hidden md:block space-y-3">
+            {/* Desktop Grid View - 2 Columns */}
+            <div className="hidden md:grid md:grid-cols-2 gap-4">
               {recentUpdates.length === 0 ? (
-                <div className="bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">
-                  No recent updates found for this time period
+                <div className="col-span-2 bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">
+                  Tidak ada pembaruan terkini untuk periode waktu ini
                 </div>
               ) : (
                 recentUpdates.map((asset, idx) => (
                   <div
                     key={idx}
-                    className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition cursor-pointer"
+                    className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition cursor-pointer flex flex-col"
                     onClick={() => setSelectedAsset(asset)}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      {/* Left Section - Asset Info */}
-                      <div className="flex-1">
-                        <div className="flex items-start gap-3 mb-2">
-                          <div className="flex-1">
-                            <div className="text-xs text-gray-500 mb-1">ID: {asset.id}</div>
-                            <h3 className="text-lg font-bold text-gray-800 mb-1">{asset.name}</h3>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}>
-                                {asset.grade || '-'}
-                              </span>
-                              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                asset.status === 'Available' || asset.status === 'Available (kembali)'
-                                  ? 'bg-green-100 text-green-800'
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
-                                {asset.status}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                          <div>
-                            <span className="text-gray-600">Location:</span>{' '}
-                            <span className="font-medium text-gray-800">{asset.location}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Category:</span>{' '}
-                            <span className="font-medium text-gray-800">{asset.category}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Owner:</span>{' '}
-                            <span className="font-medium text-gray-800">{asset.owner}</span>
-                          </div>
-                          {asset.remarks && (
-                            <div className="col-span-2">
-                              <span className="text-gray-600">Remarks:</span>{' '}
-                              <span className="text-gray-800">{asset.remarks}</span>
-                            </div>
-                          )}
+                    {/* Asset Info */}
+                    <div className="flex-1">
+                      <div className="mb-3">
+                        <div className="text-xs text-gray-500 mb-1">ID: {asset.id}</div>
+                        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">{asset.name}</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}>
+                            {asset.grade || '-'}
+                          </span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            asset.status === 'Available' || asset.status === 'Available (kembali)'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {asset.status}
+                          </span>
                         </div>
                       </div>
 
-                      {/* Right Section - Update Info */}
-                      <div className="text-right">
-                        <div className="text-xs text-purple-600 font-semibold mb-1">
-                          {getRelativeTime(asset.lastUpdated)}
+                      <div className="space-y-1.5 text-sm mb-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Lokasi:</span>
+                          <span className="font-medium text-gray-800 text-right">{asset.location}</span>
                         </div>
-                        <div className="text-xs text-gray-500">
-                          {asset.lastUpdated}
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Kategori:</span>
+                          <span className="font-medium text-gray-800 text-right">{asset.category}</span>
                         </div>
-                        <div className="text-xs text-gray-600 mt-1">
-                          by <span className="font-medium">{asset.updatedBy}</span>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Pemilik:</span>
+                          <span className="font-medium text-gray-800 text-right">{asset.owner}</span>
                         </div>
-                        <div className="mt-2">
+                        {asset.remarks && (
+                          <div className="pt-1">
+                            <span className="text-gray-600">Catatan:</span>
+                            <p className="text-gray-800 text-sm mt-1 line-clamp-2">{asset.remarks}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Update Info - Bottom */}
+                    <div className="border-t pt-3 mt-3">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="text-xs text-blue-600 font-semibold mb-1">
+                            {getRelativeTime(asset.lastUpdated)}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {asset.lastUpdated}
+                          </div>
+                          <div className="text-xs text-gray-600">
+                            oleh <span className="font-medium">{asset.updatedBy}</span>
+                          </div>
+                        </div>
+                        <div className="ml-2">
                           <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
                         </div>
                       </div>
@@ -269,41 +269,43 @@ const RecentUpdatesMode = ({ SCRIPT_URL }) => {
               )}
             </div>
 
-            {/* Mobile Card View */}
-            <div className="md:hidden space-y-3">
+            {/* Mobile Card View - 2 Columns */}
+            <div className="md:hidden grid grid-cols-2 gap-3">
               {recentUpdates.length === 0 ? (
-                <div className="bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">
-                  No recent updates found for this time period
+                <div className="col-span-2 bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">
+                  Tidak ada pembaruan terkini untuk periode waktu ini
                 </div>
               ) : (
                 recentUpdates.map((asset, idx) => (
                   <div
                     key={idx}
-                    className="bg-white rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-xl transition"
+                    className="bg-white rounded-lg shadow-lg p-3 cursor-pointer hover:shadow-xl transition"
                     onClick={() => setSelectedAsset(asset)}
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500 mb-1">ID: {asset.id}</div>
-                        <h3 className="text-base font-bold text-gray-800 mb-2 line-clamp-2">{asset.name}</h3>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-gray-500 mb-1 truncate">ID: {asset.id}</div>
+                        <h3 className="text-sm font-bold text-gray-800 mb-2 line-clamp-2">{asset.name}</h3>
                       </div>
-                      <span className={`ml-2 px-2 py-1 rounded text-xs font-semibold shrink-0 ${getGradeClasses(asset.grade)}`}>
+                    </div>
+
+                    <div className="mb-2">
+                      <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getGradeClasses(asset.grade)}`}>
                         {asset.grade || '-'}
                       </span>
                     </div>
 
                     <div className="space-y-1.5 text-xs mb-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Location:</span>
-                        <span className="font-medium text-gray-800">{asset.location}</span>
+                      <div>
+                        <span className="text-gray-600">Lokasi:</span>
+                        <div className="font-medium text-gray-800 truncate">{asset.location}</div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Category:</span>
-                        <span className="font-medium text-gray-800">{asset.category}</span>
+                      <div>
+                        <span className="text-gray-600">Kategori:</span>
+                        <div className="font-medium text-gray-800 truncate">{asset.category}</div>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Status:</span>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      <div>
+                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${
                           asset.status === 'Available' || asset.status === 'Available (kembali)'
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
@@ -311,21 +313,11 @@ const RecentUpdatesMode = ({ SCRIPT_URL }) => {
                           {asset.status}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Owner:</span>
-                        <span className="font-medium text-gray-800">{asset.owner}</span>
-                      </div>
                     </div>
 
                     <div className="border-t pt-2 text-xs">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="text-purple-600 font-semibold">{getRelativeTime(asset.lastUpdated)}</div>
-                          <div className="text-gray-500">{asset.lastUpdated}</div>
-                          <div className="text-gray-600">by {asset.updatedBy}</div>
-                        </div>
-                        <AssetPhotoButton photoUrl={asset.photoUrl} assetId={asset.id} />
-                      </div>
+                      <div className="text-blue-600 font-semibold mb-1 truncate">{getRelativeTime(asset.lastUpdated)}</div>
+                      <div className="text-gray-500 text-xs truncate">{asset.lastUpdated}</div>
                     </div>
                   </div>
                 ))
@@ -343,7 +335,7 @@ const RecentUpdatesMode = ({ SCRIPT_URL }) => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center rounded-t-2xl">
-                    <h3 className="text-lg font-bold text-gray-800">Asset Details</h3>
+                    <h3 className="text-lg font-bold text-gray-800">Detail Aset</h3>
                     <button
                       onClick={() => setSelectedAsset(null)}
                       className="p-1.5 rounded-full hover:bg-gray-100 transition"
@@ -372,32 +364,32 @@ const RecentUpdatesMode = ({ SCRIPT_URL }) => {
 
                     <div className="space-y-3 text-sm">
                       <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-medium">Location:</span>
+                        <span className="text-gray-600 font-medium">Lokasi:</span>
                         <span className="text-gray-800">{selectedAsset.location}</span>
                       </div>
                       <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-medium">Category:</span>
+                        <span className="text-gray-600 font-medium">Kategori:</span>
                         <span className="text-gray-800">{selectedAsset.category}</span>
                       </div>
                       <div className="flex justify-between border-b pb-2">
-                        <span className="text-gray-600 font-medium">Owner:</span>
+                        <span className="text-gray-600 font-medium">Pemilik:</span>
                         <span className="text-gray-800">{selectedAsset.owner}</span>
                       </div>
                       {selectedAsset.remarks && (
                         <div className="border-b pb-2">
-                          <span className="text-gray-600 font-medium block mb-1">Remarks:</span>
+                          <span className="text-gray-600 font-medium block mb-1">Catatan:</span>
                           <p className="text-gray-800">{selectedAsset.remarks}</p>
                         </div>
                       )}
-                      <div className="border-b pb-2 bg-purple-50 -mx-4 px-4 py-3 rounded">
-                        <div className="text-purple-600 font-semibold mb-1">
-                          Updated {getRelativeTime(selectedAsset.lastUpdated)}
+                      <div className="border-b pb-2 bg-blue-50 -mx-4 px-4 py-3 rounded">
+                        <div className="text-blue-600 font-semibold mb-1">
+                          Diperbarui {getRelativeTime(selectedAsset.lastUpdated)}
                         </div>
                         <div className="text-gray-600">{selectedAsset.lastUpdated}</div>
-                        <div className="text-gray-600">by {selectedAsset.updatedBy}</div>
+                        <div className="text-gray-600">oleh {selectedAsset.updatedBy}</div>
                       </div>
                       <div className="pt-2">
-                        <span className="text-gray-600 font-medium block mb-2">Photo:</span>
+                        <span className="text-gray-600 font-medium block mb-2">Foto:</span>
                         <AssetPhotoButton photoUrl={selectedAsset.photoUrl} assetId={selectedAsset.id} />
                       </div>
                     </div>
