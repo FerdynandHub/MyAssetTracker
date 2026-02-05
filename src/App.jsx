@@ -13,6 +13,7 @@ import CheckMode from "./components/CheckMode";
 import SingleUpdateMode from "./components/SingleUpdateMode";
 import BatchUpdateMode from "./components/BatchUpdateMode";
 import OverviewMode from "./components/OverviewMode";
+import RecentUpdatesMode from "./components/RecentUpdatesMode";
 import HistoryMode from "./components/HistoryMode";
 import BatteryMode from "./components/BatteryMode";
 import BatteryHistoryMode from "./components/BatteryHistoryMode";
@@ -105,6 +106,7 @@ const App = () => {
   const [loanSubmenuOpen, setLoanSubmenuOpen] = useState(false);
   const [approvalsSubmenuOpen, setApprovalsSubmenuOpen] = useState(false);
   const [batterySubmenuOpen, setBatterySubmenuOpen] = useState(false);
+  const [dataSubmenuOpen, setDataSubmenuOpen] = useState(false);
   
 
   // Update clock every second
@@ -379,6 +381,7 @@ const App = () => {
     setLoanSubmenuOpen(false);
     setApprovalsSubmenuOpen(false);
     setBatterySubmenuOpen(false);
+    setDataSubmenuOpen(false);
   };
 
   // Mode rendering
@@ -386,6 +389,8 @@ const renderMode = () => {
   switch (mode) {
     case 'overview':
       return <OverviewMode SCRIPT_URL={SCRIPT_URL} CATEGORIES={CATEGORIES} />;
+    case 'recent-updates':
+      return <RecentUpdatesMode SCRIPT_URL={SCRIPT_URL} />;
     case 'check':
       return <CheckMode SCRIPT_URL={SCRIPT_URL} />;
     case 'resourceCenter':
@@ -486,6 +491,8 @@ return (
   setApprovalsSubmenuOpen={setApprovalsSubmenuOpen}
   batterySubmenuOpen={batterySubmenuOpen}
   setBatterySubmenuOpen={setBatterySubmenuOpen}
+  dataSubmenuOpen={dataSubmenuOpen}
+  setDataSubmenuOpen={setDataSubmenuOpen}
   closeAllDropdowns={closeAllDropdowns}
   toggleDarkMode={toggleDarkMode}
   handleLogout={handleLogout}
@@ -504,6 +511,7 @@ return (
   </button>
   <h1 className={`text-xl font-bold text-white relative z-10`}>
   {mode === 'overview' && 'Overview Data'}
+  {mode === 'recent-updates' && 'Recent Updates'}
   {mode === 'check' && 'Check Information'}
   {mode === 'export' && 'Export Data'}
   {mode === 'history' && 'History'}

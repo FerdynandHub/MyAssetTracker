@@ -19,7 +19,9 @@ import {
   Package,
   Boxes,
   ChevronDown,
-  ClipboardList
+  ClipboardList,
+  Clock,
+  LayoutGrid
 } from 'lucide-react';
 
 const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, submenuOpen, isSubmenu }) => {
@@ -68,6 +70,8 @@ const Sidebar = ({
   setApprovalsSubmenuOpen,
   batterySubmenuOpen,
   setBatterySubmenuOpen,
+  dataSubmenuOpen,
+  setDataSubmenuOpen,
   closeAllDropdowns,
   toggleDarkMode,
   handleLogout
@@ -113,16 +117,47 @@ const Sidebar = ({
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto p-4">
         <div className="space-y-2">
+          {/* Data Dropdown - Converted from standalone Overview */}
           <SidebarItem
             icon={<Eye className="w-5 h-5" />}
             label="Daftar Data"
-            active={mode === 'overview'}
+            active={mode === 'overview' || mode === 'recent-updates'}
             onClick={() => {
-              setMode('overview');
-              setSidebarOpen(false);
-              closeAllDropdowns();
+              setUpdateSubmenuOpen(false);
+              setLoanSubmenuOpen(false);
+              setApprovalsSubmenuOpen(false);
+              setBatterySubmenuOpen(false);
+              setDataSubmenuOpen(!dataSubmenuOpen);
             }}
+            hasSubmenu={true}
+            submenuOpen={dataSubmenuOpen}
           />
+          
+          {/* Data Submenu items */}
+          {dataSubmenuOpen && (
+            <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
+              <SidebarItem
+                icon={<LayoutGrid className="w-4 h-4" />}
+                label="Overview"
+                active={mode === 'overview'}
+                onClick={() => {
+                  setMode('overview');
+                  setSidebarOpen(false);
+                }}
+                isSubmenu={true}
+              />
+              <SidebarItem
+                icon={<Clock className="w-4 h-4" />}
+                label="Recent Updates"
+                active={mode === 'recent-updates'}
+                onClick={() => {
+                  setMode('recent-updates');
+                  setSidebarOpen(false);
+                }}
+                isSubmenu={true}
+              />
+            </div>
+          )}
 
           <SidebarItem
             icon={<Search className="w-5 h-5" />}
@@ -168,6 +203,7 @@ const Sidebar = ({
                   setUpdateSubmenuOpen(false);
                   setLoanSubmenuOpen(false);
                   setApprovalsSubmenuOpen(false);
+                  setDataSubmenuOpen(false);
                   setBatterySubmenuOpen(!batterySubmenuOpen);
                 }}
                 hasSubmenu={true}
@@ -213,6 +249,7 @@ const Sidebar = ({
                   setUpdateSubmenuOpen(false);
                   setLoanSubmenuOpen(false);
                   setBatterySubmenuOpen(false);
+                  setDataSubmenuOpen(false);
                   setApprovalsSubmenuOpen(!approvalsSubmenuOpen);
                 }}
                 hasSubmenu={true}
@@ -258,6 +295,7 @@ const Sidebar = ({
                   setLoanSubmenuOpen(false);
                   setApprovalsSubmenuOpen(false);
                   setBatterySubmenuOpen(false);
+                  setDataSubmenuOpen(false);
                   setUpdateSubmenuOpen(!updateSubmenuOpen);
                 }}
                 hasSubmenu={true}
@@ -303,6 +341,7 @@ const Sidebar = ({
                   setUpdateSubmenuOpen(false);
                   setApprovalsSubmenuOpen(false);
                   setBatterySubmenuOpen(false);
+                  setDataSubmenuOpen(false);
                   setLoanSubmenuOpen(!loanSubmenuOpen);
                 }}
                 hasSubmenu={true}
