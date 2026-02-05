@@ -43,7 +43,7 @@ const SidebarItem = ({ icon, label, active, onClick, disabled, hasSubmenu, subme
       {icon}
       <span className="text-sm font-medium flex-1 text-left">{label}</span>
       {hasSubmenu && (
-        <div className={`transform transition-transform duration-2000 ${submenuOpen ? 'rotate-180' : 'rotate-0'}`}>
+        <div className={`transform transition-transform duration-500 ${submenuOpen ? 'rotate-180' : 'rotate-0'}`}>
           <ChevronDown className="w-4 h-4" />
         </div>
       )}

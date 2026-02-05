@@ -127,7 +127,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
               className="text-sm text-blue-500 hover:text-blue-600 transition"
             >
               <RefreshCw className="w-4 h-4 inline mr-1" />
-              Muat Ulang
             </button>
           </div>
 
