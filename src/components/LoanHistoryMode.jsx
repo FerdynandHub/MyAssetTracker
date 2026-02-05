@@ -36,12 +36,14 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       const data = await response.json();
       
       if (data.history) {
+        // Filter for loaned items that are NOT returned (status !== 'Available')
         const loaned = data.history.filter(item => 
           item.status === 'approved' && 
           item.type === 'loan' &&
           item.updates &&
           item.updates.status &&
-          item.updates.status.toLowerCase() === 'loaned'
+          item.updates.status.toLowerCase() === 'loaned' &&
+          item.updates.status.toLowerCase() !== 'available' // Exclude returned items
         );
         
         setLoanedAssets(loaned);
@@ -265,8 +267,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                                 <p className="text-gray-900">{loan.approvedBy}</p>
                               </div>
                             )}
-
-
 
                             <div className="mb-3">
                               <p className="text-sm font-semibold text-gray-700">Status:</p>

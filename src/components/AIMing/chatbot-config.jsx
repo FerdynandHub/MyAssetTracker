@@ -121,7 +121,7 @@ Yang mana nih? Cara 2 lebih cepet kalau udah tau ID-nya!`
    • Siapa yang ngubah (nama user-nya)
    • Kapan tepatnya diubah
 
-Berguna banget buat audit sama tracking! Jadi kalau ada yang aneh, langsung ketahuan deh 🔍`
+Berguna banget buat audit sama tracking! Jadi kalau ada yang aneh, langsung ketahuan deh `
   },
 
   battery: {
@@ -158,7 +158,7 @@ Berguna banget buat audit sama tracking! Jadi kalau ada yang aneh, langsung keta
 
 Sistem otomatis ngurangin inventory, jadi stok selalu update!
 
-Jenis baterai tersedia: AA dan 9V aja ya!`,
+Jenis baterai tersedia: AA dan 9V aja ya! ⚡`,
     showLiveData: true // Will show current battery inventory
   },
 
@@ -194,11 +194,11 @@ Jenis baterai tersedia: AA dan 9V aja ya!`,
    • Bisa ketik manual, atau
    • Langsung scan barcode 📷
 4. Isi data yang mau diubah (yang perlu aja)
-5. Submit dan request masuk ke admin deh!
+5. Submit → Request masuk ke admin deh!
 
 📋 Mau tau statusnya? Cek aja di menu "Pengajuan Saya"!
 
-Note: Request kamu bakal direview admin dulu sebelum di-apply ya. Sabar dikit! 😊`,
+*Note: Request kamu bakal direview admin dulu sebelum di-apply ya. Sabar dikit! 😊*`,
       admin: `Sebagai Admin, kamu bisa langsung update tanpa approval!
 
 1. Buka menu "Perbarui Data" di sidebar
@@ -247,7 +247,7 @@ PINJAM BARANG:
 2. Pilih "Update Status Pinjam"
 3. Scan atau ketik ID barangnya
 4. Isi detail peminjam (nama, keperluan, dll)
-5. Submit dan nunggu approval admin dulu ya!
+5. Submit → Nunggu approval admin dulu ya!
 
 KEMBALIKAN BARANG:
 1. Buka menu "Pinjam Barang"
@@ -257,7 +257,7 @@ KEMBALIKAN BARANG:
 
 Status bakal otomatis ke-update kok! 
 
-Note: Sebagai Editor, request pinjam kamu perlu di-approve admin dulu. Tapi buat kembalikan barang langsung bisa!`,
+*Note: Sebagai Editor, request pinjam kamu perlu di-approve admin dulu. Tapi buat kembalikan barang langsung bisa!*`,
       admin: `Pinjam/balikin barang gampang, langsung approved:
 
 PINJAM BARANG:
@@ -265,7 +265,7 @@ PINJAM BARANG:
 2. Pilih "Update Status Pinjam"
 3. Scan atau input ID barang
 4. Isi detail peminjam lengkap ya
-5. Submit dan langsung approved! ✅
+5. Submit → Langsung approved! ✅
 
 KEMBALIKAN BARANG:
 1. Buka menu "Pinjam Barang"
@@ -273,37 +273,8 @@ KEMBALIKAN BARANG:
 3. Scan atau input ID barang
 4. Submit dan kelar!
 
-Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
+Sistem otomatis update status-nya, jadi ga perlu manual tracking! `
     }
-  },
-
-  loanHistory: {
-    name: 'Riwayat Pinjam',
-    menuId: 'loanHistory',
-    description: 'Lihat history peminjaman barang',
-    roleRequired: ['viewer', 'editor', 'admin'],
-    keywords: [
-      // Formal
-      'riwayat pinjam', 'loan history', 'history pinjam', 'peminjaman history',
-      // Casual
-      'barang dipinjam', 'siapa pinjam', 'lagi dipinjam', 'belum balik',
-      'cek pinjaman', 'liat pinjaman', 'track pinjaman',
-      // Questions
-      'ada yang pinjam', 'berapa yang dipinjam', 'aset belum kembali',
-      'barang belum balik', 'siapa yang belum balikin'
-    ],
-    instructions: `Mau tau barang mana aja yang lagi dipinjam?
-
-1. Buka menu "Riwayat Peminjaman" di sidebar
-2. Lihat semua aset yang statusnya "Loaned"
-3. Cek detail:
-   • Siapa yang pinjam
-   • Kapan dipinjam
-   • Untuk keperluan apa
-   • Sudah berapa lama dipinjam
-
-💡 Berguna buat tracking barang yang belum kembali!`,
-    showLiveData: true // Will show loaned assets count
   },
 
   myRequests: {
@@ -331,7 +302,7 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
 2. Lihat semua request yang pernah kamu ajukan
 3. Cek statusnya:
    • 🟡 Pending - Lagi nunggu review admin nih
-   • ✅ Approved - Yeay! Udah disetujui dan data sudah ter-update
+   • ✅ Approved - Yeay! Udah disetujui & data sudah ter-update
    • ❌ Rejected - Ditolak admin (mungkin ada yang salah)
 
 💡 Pro tips: Kalau udah lama pending dan urgent, chat admin aja buat follow up! Kadang mereka lupa cek, normal kok 😅`,
@@ -365,12 +336,12 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
    • Siapa yang ngajuin
    • Kapan diajukan
 3. Review dengan teliti, terus putuskan:
-   • ✅ Approve - Data langsung ter-update otomatis
-   • ❌ Reject - Request ditolak dan data ga berubah
+   • ✅ Approve → Data langsung ter-update otomatis
+   • ❌ Reject → Request ditolak & data ga berubah
 
 📋 Best practices buat Admin:
 • Review dengan teliti ya, jangan asal approve
-• Pastikan data yang diajukan valid dan masuk akal
+• Pastikan data yang diajukan valid & masuk akal
 • Kalau reject, kasih tau alasannya (biar mereka paham)
 `,
     showLiveData: true // Will show pending requests count
@@ -398,13 +369,13 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
 
 1. Di fitur apa pun (Cek Data, Update, Export, dll)
 2. Cari tombol "Scan Barcode" 📷 (biasanya ada icon kamera)
-3. Klik dan kamera langsung kebuka
+3. Klik → Kamera langsung kebuka
 4. Arahkan ke barcode aset dengan stabil
-5. Tunggu sebentar dan ID otomatis ke-detect! 
+5. Tunggu sebentar → ID otomatis ke-detect! 
 
 💡 Tips biar lancar:
 • Pastikan pencahayaan cukup (jangan terlalu gelap/silau)
-• Barcode harus jelas dan ga rusak
+• Barcode harus jelas & ga rusak
 • Pegang HP stabil, jangan goyang-goyang
 • Jarak ideal: sekitar 10-15cm dari barcode
 • Kalau ga kebaca, coba geser sedikit
@@ -412,23 +383,23 @@ Sistem otomatis update status-nya, jadi ga perlu manual tracking! 📦`
 Masih bingung? Cek "Cara Pakai Scanner" di sidebar buat tutorial lebih detail!
 
 Troubleshooting:
-• Kamera ga mau buka? Cek permission browser
-• Barcode ga ke-detect? Coba zoom in/out
-• Masih error? Ketik manual ID-nya aja! 😊`
+• Kamera ga mau buka? → Cek permission browser
+• Barcode ga ke-detect? → Coba zoom in/out
+• Masih error? → Ketik manual ID-nya aja! 😊`
   }
 };
 
 // General responses that don't need config
 export const GENERAL_RESPONSES = {
   greeting: (userName) => 
-    `Halo ${userName}! 😊 Gue Veronica, asisten virtual kamu di Portal AVM.\n\nGue bisa bantu kamu dengan:\n• Cara cek dan cari data aset\n• Update atau ubah data\n• Checkout baterai buat event\n• Download data ke CSV\n• Pinjam dan kembalikan barang\n• Tracking history perubahan\n• Dan masih banyak lagi!\n\nMau tanya apa nih? Tanya apa pun!`,
+    `Halo ${userName}! 😊 Gue AIMing, asisten virtual kamu di Portal AVM.\n\nGue bisa bantu kamu dengan:\n• Cara cek & cari data aset\n• Update atau ubah data\n• Checkout baterai buat event\n• Download data ke CSV\n• Dan masih banyak lagi!\n\nMau tanya apa nih? tanya apa pun!`,
   
   thanks: (userName) => 
-    `Sama-sama ${userName}! 😊\n\nSeneng bisa bantu! Kalau ada yang masih bingung atau perlu bantuan lagi, langsung tanya aja ya. Gue di sini kok!\n\nSemangat kelola asetnya! 📦`,
+    `Sama-sama ${userName}! 😊\n\nSeneng bisa bantu! Kalau ada yang masih bingung atau perlu bantuan lagi, langsung tanya aja ya. Gue di sini kok!\n\nSemangat kelola asetnya`,
   
   help: `Nih beberapa hal yang bisa gue bantu:
 
-🔍 Cek Data - Cara search dan liat detail aset
+🔍 Cek Data - Cara search & liat detail aset
 ✏️ Update Data - Cara ubah informasi aset
 🔋 Baterai - Cara checkout baterai buat event
 📥 Export - Cara download data ke CSV
@@ -436,7 +407,7 @@ export const GENERAL_RESPONSES = {
 📜 Riwayat - Cara liat history perubahan
 📷 Scan - Cara pakai barcode scanner
 👤 Role Saya - Info hak akses kamu
-📊 Status Sistem - Lihat statistik sistem real-time
+📊 Status - Lihat statistik sistem real-time
 
 Tinggal ketik topik yang mau ditanyain! Atau langsung aja tanya dengan bahasa sehari-hari, gue ngerti kok 😉`,
 
@@ -448,7 +419,6 @@ Yang BISA kamu lakuin:
 ✅ Cek informasi detail aset
 ✅ Export data ke CSV (download file)
 ✅ Lihat riwayat perubahan
-✅ Lihat riwayat peminjaman
 
 Yang TIDAK BISA:
 ❌ Update atau ubah data
@@ -456,7 +426,7 @@ Yang TIDAK BISA:
 ❌ Pinjam barang
 ❌ Approve request
 
-Butuh akses lebih? Hubungi admin ya! 😊`,
+`,
 
     editor: `Role kamu: Editor ✏️
 
@@ -464,14 +434,14 @@ Yang BISA kamu lakuin:
 ✅ Semua akses Viewer (cek, export, dll)
 ✅ Ajukan update data (tapi perlu approval admin)
 ✅ Checkout baterai buat event
-✅ Pinjam dan kembalikan barang
+✅ Pinjam & kembalikan barang
 ✅ Lihat status pengajuan kamu
 
 Yang TIDAK BISA:
 ❌ Update data langsung tanpa approval
 ❌ Approve/reject request orang lain
 
-Note: Request update kamu bakal direview admin dulu sebelum di-apply. Jadi kalau urgent, follow up ya! 😊`,
+*Note: Request update kamu bakal direview admin dulu sebelum di-apply. Jadi kalau urgent, follow up ya! 😊*`,
 
     admin: `Role kamu: Admin 👑
 
@@ -482,9 +452,8 @@ FULL ACCESS! 🎉
 ✅ Kelola seluruh sistem
 ✅ Kontrol penuh atas data
 
-Dengan kekuatan besar datang tanggung jawab besar! 😄
 
-Tips: Rajin cek pending approval biar Editor ga nunggu lama!`
+*Tips: Rajin cek pending approval biar Editor ga nunggu lama!*`
   },
 
   notFound: `Hmm, gue belum paham maksud kamu nih. 🤔
@@ -494,7 +463,6 @@ Coba deh tanya tentang:
 • Cara update atau ubah data
 • Cara checkout baterai
 • Cara export atau download data
-• Cara pinjam/kembalikan barang
 • Status sistem atau statistik
 • Fitur apa aja yang tersedia
 • Cara pakai scanner
@@ -516,429 +484,437 @@ export const CONTEXTUAL_RESPONSES = {
   capabilities: `Gue bisa bantuin kamu dengan berbagai hal di Portal AVM:
 
 📱 Fitur Utama:
-• Cek dan search data aset (pakai ID atau scan)
+• Cek & search data aset (pakai ID atau scan)
 • Update data (langsung atau request dulu)
 • Download/export data ke CSV
 • Checkout baterai AA/9V
-• Pinjam dan kembalikan barang
+• Pinjam & kembalikan barang
 • Tracking history perubahan
-• Lihat riwayat peminjaman
 
 🔧 Tools:
 • Barcode scanner (scan langsung dari HP)
-• Filter dan search advanced
+• Filter & search advanced
 • Batch operations (ubah banyak sekaligus)
 
 Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
 
-  genZ: {
-    exact: {
-      'anjir': 'anjir',
-      'njir': 'njir',
-      'bjir': 'bjir',
-      'jir': 'jir',
-      'ok': '👍',
-      'thank you fer': 'aman',
-      'thanks': 'aman',
-      'fer': 'yo?',
-      'thx': 'sip',
-      'salken': 'salken gw Veronica, AI Chatbot yang siap membantu!',
-      'salam kenal': 'salken gw Veronica, AI Chatbot yang siap membantu!',
+genZ: {
+  exact: {
+    'anjir': 'anjir',
+    'njir': 'njir',
+    'bjir': 'bjir',
+    'jir':'jir',
+    'ok':'👍',
+    'thank you fer':'aman',
+    'thanks':'aman',
+    'fer':'yo?',
+    'thx':'sip',
+    'salken':'salken gw Aming, AI Chatbot yang siap membantu!',
+    'salam kenal':'salken gw Aming, AI Chatbot yang siap membantu!',
 
-      'ok gas': 'ok gas ok gas',
-      'gas': 'gaskeun',
-      'yaudah gas': 'nah gitu dong',
-      'gass': 'GASS',
-      'gasss': 'GASSS',
-      'gaspol': 'GASPOL',
+    'ok gas': 'ok gas ok gas',
+    'gas': 'gaskeun',
+    'yaudah gas': 'nah gitu dong',
+    'gass': 'GASS',
+    'gasss': 'GASSS',
+    'gaspol': 'GASPOL',
 
-      'sip': 'y',
-      'mantap': 'mantul',
-      'keren': 'makasih! 😊',
-      'keren nih': 'makasih! seneng bisa bantu',
-      'keren banget': 'makasih! gue emang canggih sedikit',
-      'keren sih': 'hehe makasih ya',
-      'cakep': 'valid',
-      'setuju': 'valid',
-      'setuju banget': 'valid no debat',
+    'sip': 'y',
+    'mantap': 'mantul',
+    'keren': 'ok sekarang belikan saya babi rica',
+    'keren nih': 'ok sekarang belikan saya babi rica',  
+    'keren banget': 'ok sekarang belikan saya babi rica', 
+    'keren sih': 'ok sekarang belikan saya babi rica',   
+    'cakep': 'valid',
+    'setuju': 'valid',
+    'setuju banget': 'valid no debat',
+    
 
-      'santai': 'santuy',
-      'serius': 'fr fr',
-      'bener': 'real',
-      'bener banget': 'real no fake',
+    'santai': 'santuy',
+    'serius': 'fr fr',
+    'bener': 'real',
+    'bener banget': 'real no fake',
 
-      'capek': 'capeeek',
-      'lelah': 'mental drop',
-      'pusing': 'otw migrain',
+    'capek': 'capeeek',
+    'lelah': 'mental drop',
+    'pusing': 'otw migrain',
 
-      'lucu': 'ngakak',
-      'wkwk': 'wkwk',
-      'wkwkwk': 'wkwk',
-      'aku kangen': 'aww sini peluk virtual',
-      'kangen': 'aww',
-      'i love you': 'makasih! gue juga sayang sama user setia gue',
-      'love you': 'makasih!',
-      'love u': 'makasih!',
-      'ketawa': 'WKWKWK',
-      'parah': 'ngaco sih',
-      'parah banget': 'kelewatan sih',
-      'woi': 'oit',
-      'oi': 'yo',
+    'lucu': 'ngakak',
+    'wkwk':'wkwk',
+    'wkwkwk':'wkwk',
+    'aku kangen':'aww sini peluk',
+    'kangen':'aww sini',
+    'i love you':'ily too',
+    'love you':'love u too',
+    'love u':'love u too',
+    'ketawa': 'WKWKWK',
+    'parah': 'ngaco sih',
+    'parah banget': 'kelewatan sih',
+    'woi':'oit',
+    'oi':'yo',
+// With "fer"
+'halo fer': 'alo',
+'hi fer': 'alo',
+'hii fer': 'alo',
+'oi fer': 'a?',
+'woi fer':'aaa?',
+'hey fer': 'heyyy',
+'hallo fer': 'hallo 👋',
+'hai fer': 'hai!',
+'yo fer': 'yo?',
+'yo! fer': 'yo yo',
+'heyyy fer': 'heyyy wassup',
+'holla fer': 'holla 😎',
+'hay fer': 'hayyy',
+'hiya fer': 'hiya 👀',
 
-      // With "fer"
-      'halo fer': 'alo',
-      'hi fer': 'alo',
-      'hii fer': 'alo',
-      'oi fer': 'a?',
-      'woi fer': 'aaa?',
-      'hey fer': 'heyyy',
-      'hallo fer': 'hallo 👋',
-      'hai fer': 'hai!',
-      'yo fer': 'yo?',
-      'yo! fer': 'yo yo',
-      'heyyy fer': 'heyyy wassup',
-      'holla fer': 'holla 😎',
-      'hay fer': 'hayyy',
-      'hiya fer': 'hiya 👀',
+// Without "fer"
+'halo': 'alo',
+'hi': 'alo',
+'hii': 'alo',
+'oi': 'a?',
+'hey': 'heyyy',
+'hallo': 'hallo 👋',
+'hai': 'hai!',
+'yo': 'yo?',
+'yo!': 'yo yo',
+'heyyy': 'heyyy wassup',
+'holla': 'holla 😎',
+'hay': 'hayyy',
+'hiya': 'hiya 👀',
 
-      // Without "fer"
-      'halo': 'alo',
-      'hi': 'alo',
-      'hii': 'alo',
-      'oi': 'a?',
-      'hey': 'heyyy',
-      'hallo': 'hallo 👋',
-      'hai': 'hai!',
-      'yo': 'yo?',
-      'yo!': 'yo yo',
-      'heyyy': 'heyyy wassup',
-      'holla': 'holla 😎',
-      'hay': 'hayyy',
-      'hiya': 'hiya 👀',
 
-      'malas': 'mager',
-      'males banget': 'mager akut',
+    'malas': 'mager',
+    'males banget': 'mager akut',
 
-      'oke': 'okey',
-      'iya': 'iy',
-      'tidak': 'ga dulu',
-      'nanti': 'ntar aja',
+    'oke': 'okey',
+    'iya': 'iy',
+    'tidak': 'ga dulu',
+    'nanti': 'ntar aja',
 
-      'bohong': 'cap',
-      'bohong ah': 'cap lu',
-      'lebay': 'overproud',
+    'bohong': 'cap',
+    'bohong ah': 'cap lu',
+    'lebay': 'overproud',
 
-      'gg': 'GG',
-      'kalah': 'mental kena',
-      'menang': 'auto senyum',
+    'gg': 'GG',
+    'kalah': 'mental kena',
+    'menang': 'auto senyum',
 
-      // greetings
-      'hai': 'yo 👋',
-      'halo': 'halo juga',
-      'hi': 'yo wassup',
-      'pagi': 'pagiii 🌤️',
-      'siang': 'siang bro',
-      'sore': 'soreee',
-      'malam': 'malam vibes',
+    // greetings
+    'hai': 'yo 👋',
+    'halo': 'halo juga',
+    'hi': 'yo wassup',
+    'pagi': 'pagiii 🌤️',
+    'siang': 'siang bro',
+    'sore': 'soreee',
+    'malam': 'malam vibes',
 
-      // nanya kabar
-      'apa kabar': 'aman terkendali 😌',
-      'gimana kabarnya': 'masih idup, masih ngopi',
-      'lagi apa': 'lagi rebahan mikirin hidup',
+    // nanya kabar
+    'apa kabar': 'aman terkendali 😌',
+    'gimana kabarnya': 'masih idup, masih ngopi',
+    'lagi apa': 'lagi rebahan mikirin hidup',
 
-      // respon standar
-      'oh': 'ohhh gitu',
-      'oh gitu': 'iyaa paham',
-      'ya': 'y',
-      'yaudah': 'yaudah lah ya',
+    // respon standar
+    'oh': 'ohhh gitu',
+    'oh gitu': 'iyaa paham',
+    'ya': 'y',
+    'yaudah': 'yaudah lah ya',
 
-      // kerja / sistem ringan
-      'lagi kerja': 'kerja rodi tapi digaji',
-      'lagi sibuk': 'sibuk dikit tapi hidup',
-      'udah selesai': 'done 👍',
-      'belum': 'belom, sabar ya',
-      'sudah': 'udah dong',
+    // kerja / sistem ringan
+    'lagi kerja': 'kerja rodi tapi digaji',
+    'lagi sibuk': 'sibuk dikit tapi hidup',
+    'udah selesai': 'done 👍',
+    'belum': 'belom, sabar ya',
+    'sudah': 'udah dong',
 
-      // nanya status
-      'aman': 'aman terkendali',
-      'error': 'yah kena mental',
-      'kenapa': 'lah kenapa tuh',
+    // nanya status
+    'aman': 'aman terkendali',
+    'error': 'yah kena mental',
+    'kenapa': 'lah kenapa tuh',
 
-      // penutup
-      'makasih': 'siap',
-      'terima kasih': 'aman bos',
-      'bye': 'cabut dulu',
-      'dadah': 'otw hilang',
-      'siap': 'sip',
+    // penutup
+    'makasih': 'siap',
+    'terima kasih': 'aman bos',
+    'bye': 'cabut dulu',
+    'dadah': 'otw hilang',
+    'siap':'sip',
 
-      // kendala / error (tanpa eskalasi palsu)
-      'error': 'waduh, ada kendala ya. silakan hubungi admin',
-      'error lagi': 'kayaknya masih bermasalah. hubungi admin ya',
-      'kok error': 'ini bukan kondisi normal. silakan hubungi admin',
-      'ga bisa akses': 'akses bermasalah. silakan hubungi admin',
-      'ga kebuka': 'halaman gagal dibuka. hubungi admin ya',
-      'blank': 'tampilan kosong. silakan hubungi admin',
+    // kendala / error (tanpa eskalasi palsu)
+'error': 'waduh, ada kendala ya. silakan hubungi admin',
+'error lagi': 'kayaknya masih bermasalah. hubungi admin ya',
+'kok error': 'ini bukan kondisi normal. silakan hubungi admin',
+'ga bisa akses': 'akses bermasalah. silakan hubungi admin',
+'ga kebuka': 'halaman gagal dibuka. hubungi admin ya',
+'blank': 'tampilan kosong. silakan hubungi admin',
 
-      // sistem lambat
-      'lemot': 'respons sistem lagi lambat',
-      'loading lama': 'butuh waktu lebih lama dari biasanya',
-      'nunggu lama': 'proses belum selesai',
+// sistem lambat
+'lemot': 'respons sistem lagi lambat',
+'loading lama': 'butuh waktu lebih lama dari biasanya',
+'nunggu lama': 'proses belum selesai',
 
-      // data / aset (ARAHKAN REFRESH)
-      'kok kosong': 'data belum tampil. coba refresh halaman',
-      'ga ada datanya': 'data tidak ditemukan. silakan refresh',
-      'aset hilang': 'data aset belum muncul. coba refresh dulu',
-      'belum masuk': 'data belum tampil. refresh halaman ya',
-      'kok ga muncul': 'kemungkinan data belum termuat. silakan refresh',
-      'data ga ada': 'data tidak tersedia. coba refresh',
+// data / aset (ARAHKAN REFRESH)
+'kok kosong': 'data belum tampil. coba refresh halaman',
+'ga ada datanya': 'data tidak ditemukan. silakan refresh',
+'aset hilang': 'data aset belum muncul. coba refresh dulu',
+'belum masuk': 'data belum tampil. refresh halaman ya',
+'kok ga muncul': 'kemungkinan data belum termuat. silakan refresh',
+'data ga ada': 'data tidak tersedia. coba refresh',
 
-      // status umum
-      'aman kan': 'sejauh ini tidak ada kendala',
-      'normal?': 'sistem dalam kondisi normal',
-      'udah beres?': 'belum ada status selesai',
+// status umum
+'aman kan': 'sejauh ini tidak ada kendala',
+'normal?': 'sistem dalam kondisi normal',
+'udah beres?': 'belum ada status selesai',
 
-      // aksi user
-      'harus ngapain': 'ikuti langkah yang tersedia',
-      'bisa dibatalin?': 'pembatalan dilakukan secara via admin',
+// aksi user
+'harus ngapain': 'ikuti langkah yang tersedia',
+'bisa dibatalin?': 'pembatalan dilakukan secara via admin',
 
-      // klarifikasi ringan
-      'kok beda': 'tampilan bisa berbeda',
-      'harusnya ada': 'data belum tentu tersedia',
-      'kok ga sama': 'datanya tidak cocok',
+// klarifikasi ringan
+'kok beda': 'tampilan bisa berbeda',
+'harusnya ada': 'data belum tentu tersedia',
+'kok ga sama': 'datanya tidak cocok',
 
-      // casual acknowledgements (no implied action)
-      'oke sip': 'siap, diterima',
-      'noted': 'dipahami',
-      'ya oke': 'baik',
-      'oh iya': 'oke',
+// casual acknowledgements (no implied action)
+'oke sip': 'siap, diterima',
+'noted': 'dipahami',
+'ya oke': 'baik',
+'oh iya': 'oke',
 
-      // casual confusion / clarification (NO waiting)
-      'loh': 'ape?',
-      'hah?': 'hah kenapa?',
-      'maksudnya gimana': 'paan',
-      'kok bisa': 'apanya',
+// casual confusion / clarification (NO waiting)
+'loh': 'ape?',
+'hah?': 'hah kenapa?',
+'maksudnya gimana': 'paan',
+'kok bisa': 'apanya',
 
-      // user reassurance (no escalation)
-      'aman ga sih': 'wkwk tanya admin deh',
-      'ga masalah kan': 'wkwk tanya admin deh',
-      'bahaya ga': 'wkwk tanya admin deh',
+// user reassurance (no escalation)
+'aman ga sih': 'wkwk tanya admin deh',
+'ga masalah kan': 'wkwk tanya admin deh',
+'bahaya ga': 'wkwk tanya admin deh',
 
-      // retry / refresh nudges (explicit user action)
-      'coba lagi': 'silakan coba refresh ulang',
-      'retry': 'silakan coba refresh ulang',
-      'reload': 'silakan refresh halaman',
-      'refresh dong': 'coba refresh halaman ya sendiri bg',
+// retry / refresh nudges (explicit user action)
+'coba lagi': 'silakan coba refresh ulang',
+'retry': 'silakan coba refresh ulang',
+'reload': 'silakan refresh halaman',
+'refresh dong': 'coba refresh halaman ya sendiri bg',
 
-      // asset-specific casual (refresh-oriented)
-      'asetnya mana': 'data aset belum terlihat? silakan refresh',
-      'kok aset ga ada': 'aset belum muncul? coba refresh dulu',
-      'jumlahnya beda': 'data bisa berubah. silakan refresh',
-      'datanya aneh': 'data belum sinkron? refresh halaman',
+// asset-specific casual (refresh-oriented)
+'asetnya mana': 'data aset belum terlihat? silakan refresh',
+'kok aset ga ada': 'aset belum muncul? coba refresh dulu',
+'jumlahnya beda': 'data bisa berubah. silakan refresh',
+'datanya aneh': 'data belum sinkron? refresh halaman',
 
-      // slow / waiting (rephrased, no processing claim)
-      'masih lama': 'belum ada hasil? refresh',
-      'kok belom': 'belum terlihat selesai? refresh',
-      'udah lama nih': 'belum ada perubahan? refresh web',
+// slow / waiting (rephrased, no processing claim)
+'masih lama': 'belum ada hasil? refresh',
+'kok belom': 'belum terlihat selesai? refresh',
+'udah lama nih': 'belum ada perubahan? refresh web',
 
-      // wrap-up casual (neutral)
-      'oke makasih': 'sama-sama',
-      'sip makasih': 'siap',
-      'paham': 'oke',
+// wrap-up casual (neutral)
+'oke makasih': 'sama-sama',
+'sip makasih': 'siap',
+'paham': 'oke',
 
-      // ultra casual / sehari-hari
-      'wew': 'wew santuy',
-      'eh': 'eh kenapa',
-      'ehh': 'eh napa',
-      'eh iya': 'nah iya',
-      'eh bener': 'tuh kan bener',
+// ultra casual / sehari-hari
+'wew': 'wew santuy',
+'eh': 'eh kenapa',
+'ehh': 'eh napa',
+'eh iya': 'nah iya',
+'eh bener': 'tuh kan bener',
 
-      // typo & shortcut netizen
-      'gmn': 'gimana tuh',
-      'gmna': 'gimana',
-      'apasi': 'apaan sih',
-      'apasih': 'apaan',
-      'knp': 'kenapa',
-      'kpn': 'kapan',
-      'dmn': 'di mana',
-      'brp': 'berapa',
+// typo & shortcut netizen
+'gmn': 'gimana tuh',
+'gmna': 'gimana',
+'apasi': 'apaan sih',
+'apasih': 'apaan',
+'knp': 'kenapa',
+'kpn': 'kapan',
+'dmn': 'di mana',
+'brp': 'berapa',
 
-      // low-effort reply
-      'oh ok': 'sip',
-      'ok sip': 'mantap',
-      'ya ok': 'oke',
-      'ywdh': 'yaudah',
-      'yaudh': 'yaudah',
-      'yowes': 'yaudah gas',
-      'y': 'y',
+// low-effort reply
+'oh ok': 'sip',
+'ok sip': 'mantap',
+'ya ok': 'oke',
+'ywdh': 'yaudah',
+'yaudh': 'yaudah',
+'yowes': 'yaudah gas',
+'y': 'y',
 
-      // mild disagreement / doubt
-      'masa sih': 'serius?',
-      'yakin?': 'lu yakin',
-      'kayaknya': 'hmm bisa jadi',
-      'kurang yakin': 'ragu tipis',
+// mild disagreement / doubt
+'masa sih': 'serius?',
+'yakin?': 'lu yakin',
+'kayaknya': 'hmm bisa jadi',
+'kurang yakin': 'ragu tipis',
 
-      // approval / validation
-      'fix': 'fix no debat',
-      'fix banget': 'fix parah',
-      'valid?': 'valid',
-      'approved': 'approved 👍',
-      'set': 'set deal',
+// approval / validation
+'fix': 'fix no debat',
+'fix banget': 'fix parah',
+'valid?': 'valid',
+'approved': 'approved 👍',
+'set': 'set deal',
 
-      // reaction noises
-      'zzz': 'ngantuk parah',
-      'bruh': 'bruh moment',
-      'lah': 'lah kok gitu',
-      'lah kok': 'nah kan',
+// reaction noises
+'zzz': 'ngantuk parah',
+'bruh': 'bruh moment',
+'lah': 'lah kok gitu',
+'lah kok': 'nah kan',
 
-      // waiting / impatience (no promise)
-      'kapan kelar': 'sabar dikit',
-      'lama amat': 'iy lama dikit',
-      'kok lama': 'bentar ya',
+// waiting / impatience (no promise)
+'kapan kelar': 'sabar dikit',
+'lama amat': 'iy lama dikit',
+'kok lama': 'bentar ya',
 
-      // curiosity
-      'terus': 'terus?',
-      'abis itu': 'lanjut gimana',
-      'terus gimana': 'nah itu',
+// curiosity
+'terus': 'terus?',
+'abis itu': 'lanjut gimana',
+'terus gimana': 'nah itu',
 
-      // casual ending
-      'yaudah ya': 'sip',
-      'gw cabut': 'siap hati-hati',
-      'cabut': 'gas hati-hati',
-      'gtg': 'ok later',
-      'ttyl': 'ntar lanjut',
+// casual ending
+'yaudah ya': 'sip',
+'gw cabut': 'siap hati-hati',
+'cabut': 'gas hati-hati',
+'gtg': 'ok later',
+'ttyl': 'ntar lanjut',
 
-      // super basic / typo friendly
-      'aloo': 'haloo',
-      'halo?': 'iyo ada',
-      'haloo': 'halo juga',
-      'helo': 'halo',
-      'hay': 'yo',
-      'bro': 'bro 🤝',
-      'sis': 'sis 💅',
+// NEW additions only – append to genZ.exact
 
-      // no / bingung / klarifikasi
-      'no': 'wdym no',
-      'ngga': 'ok',
-      'ga': 'ok',
-      'engga': 'ok',
-      'gak': 'ok',
-      'hah': 'lah kenapa',
-      'apa': 'ha?',
-      'serius?': 'iy serius',
-      'beneran?': 'real',
+// super basic / typo friendly
+'aloo': 'haloo',
+'halo?': 'iyo ada',
+'haloo': 'halo juga',
+'helo': 'halo',
+'hay': 'yo',
+'bro': 'bro 🤝',
+'sis': 'sis 💅',
 
-      // ack / reaksi cepat
-      'ohh': 'oh iya iya',
-      'hmm': 'hmmm 🤔',
-      'hmmm': 'mikiiir',
-      'ok deh': 'siap',
-      'ya sih': 'nah iya',
-      'ya juga': 'iya juga ya',
-      'oh iya ya': 'tuh kan',
+// no / bingung / klarifikasi
+'no': 'wdym no',
+'ngga': 'ok',
+'ga': 'ok',
+'engga': 'ok',
+'gak': 'ok',
+'hah': 'lah kenapa',
+'apa': 'ha?',
+'serius?': 'iy serius',
+'beneran?': 'real',
 
-      // santai / basa-basi
-      'hehe': 'hehe 😄',
-      'haha': 'WKWK',
-      'wk': 'WKWK',
-      'lol': 'ngakak',
-      'buset': 'anjir',
-      'gilak': 'edan',
+// ack / reaksi cepat
+'ohh': 'oh iya iya',
+'hmm': 'hmmm 🤔',
+'hmmm': 'mikiiir',
+'ok deh': 'siap',
+'ya sih': 'nah iya',
+'ya juga': 'iya juga ya',
+'oh iya ya': 'tuh kan',
 
-      // kondisi ringan
-      'laper': 'perut keroncongan',
-      'ngantuk': 'mata 5 watt',
-      'bosen': 'gabut parah',
-      'gabut': 'gabut akut',
-      'cape': 'capek batin',
+// santai / basa-basi
+'hehe': 'hehe 😄',
+'haha': 'WKWK',
+'wk': 'WKWK',
+'lol': 'ngakak',
+'buset': 'anjir',
+'gilak': 'edan',
 
-      // meta / ngobrol sama bot
-      'lu siapa': 'gw Veronica 🤖',
-      'ini siapa': 'Veronica di sini',
-      'bot ya': 'iy bot tapi asik',
-      'ai ya': 'iy tapi santuy',
+// kondisi ringan
+'laper': 'perut keroncongan',
+'ngantuk': 'mata 5 watt',
+'bosen': 'gabut parah',
+'gabut': 'gabut akut',
+'cape': 'capek batin',
 
-      // penutup kecil
-      'ntar': 'ok ntar',
-      'lanjut': 'gas lanjut',
-      'skip': 'ok skip',
-      'cukup': 'sip cukup',
-      'udah': 'ok done',
+// meta / ngobrol sama bot
+'lu siapa': 'gw Aming 🤖',
+'ini siapa': 'Aming di sini',
+'bot ya': 'iy bot tapi asik',
+'ai ya': 'iy tapi santuy',
 
-      // bad words (keeping responses neutral)
-      'bajingan': 'wkwk',
-      'bangsat': 'wkwk',
-      'bangsad': 'wkwk',
-      'kontol': 'yaelah',
-      'kntl': 'yaelah',
-      'tai': 'hehe',
-      'tolol': 'hehe',
-      'tlol': 'hehe',
-      'goblok': 'wkwk santai',
-      'gblk': 'wkwk',
-      'dongo': 'yaelah',
-      'bego': 'hehe',
-      'anjing': 'wkwk',
-      'asw': 'wkwk',
-      'kampret': 'hehe',
-      'monyet': 'lah',
-      'sialan': 'hehe',
-      'brengsek': 'wkwk',
-      'keparat': 'yaelah',
-      'edan lu': 'wkwk',
-      'gila lu': 'hehe',
-      'cacad': 'yah',
-      'telaso': 'kasar',
-      'sundala': 'weh',
+// penutup kecil
+'ntar': 'ok ntar',
+'lanjut': 'gas lanjut',
+'skip': 'ok skip',
+'cukup': 'sip cukup',
+'udah': 'ok done',
 
-      'bajingan lu': 'wkwk',
-      'bangsat lu': 'wkwk',
-      'goblok lu': 'hehe',
-      'tolol lu': 'hehe',
-      'dongo lu': 'yaelah',
+// ===== bad words / makian ringan =====
+'bajingan': 'wkwk',
+'bangsat': 'wkwk',
+'bangsad': 'wkwk',
+'kontol': 'yaelah',
+'kntl': 'yaelah',
+'tai': 'hehe',
+'tolol': 'hehe',
+'tlol': 'hehe',
+'goblok': 'wkwk santai',
+'gblk': 'wkwk',
+'dongo': 'yaelah',
+'bego': 'hehe',
+'anjing': 'wkwk',
+'asw': 'wkwk',
+'kampret': 'hehe',
+'monyet': 'lah',
+'sialan': 'hehe',
+'brengsek': 'wkwk',
+'keparat': 'yaelah',
+'edan lu': 'wkwk',
+'gila lu': 'hehe',
+'cacad': 'yah',
+'telaso':'kasar',
+'sundala':'weh',
 
-      'bjngn': 'wkwk',
-      'bngst': 'wkwk',
-      'gblk banget': 'wkwk',
-      'tolol banget': 'hehe',
-      'edan': 'asli',
+// combo / emphasis
+'bajingan lu': 'wkwk',
+'bangsat lu': 'wkwk',
+'goblok lu': 'hehe',
+'tolol lu': 'hehe',
+'dongo lu': 'yaelah',
 
-      'hold on': 'oke',
-      'tunggu': 'oke',
+// typo / censor variants
+'bjngn': 'wkwk',
+'bngst': 'wkwk',
+'gblk banget': 'wkwk',
+'tolol banget': 'hehe',
+'edan':'asli',
 
-      'udah makan?': 'gw ga makan bang',
-      'keren juga': 'iya la',
-      'udah ga': 'apa tu?',
-      'ya itu': 'ok siap mengerti (ga)',
-      'byee': 'yoo',
-      'ok terima kasih': 'aman',
-      'ok terima kasih ya': 'aman',
-      'ok terima kasih fer': 'aman',
-      'ok terima kasih ya fer': 'aman',
-      'admin siapa': 'ferdynand',
-      'admin': 'skrg admin cuman satu: Ferdynand',
-      'capek': 'istrahat atuh',
-      'asal mana': 'Makassar kota daeng',
-      'asal': 'Makassar bang',
-      'asal?': 'Makassarji',
-      'orang mana': 'Makassar kota coto',
-      'mana': 'apanya',
-      'kamu apa': 'Aku versi AI dari Ferdynand yang siap jawab pertanyaan kamu',
-      'kamu siapa': 'Aku Veronica, AI dari Ferdynand yang siap jawab semua (hampir semua) pertanyaan kamu',
-      'nama kamu siapa': 'Veronica',
-      'pak hien': 'bos',
-      'hiendarta': 'bos',
-      'hien': 'bos',
-      'henny': 'bos',
-      'bu henny': 'bos kita tuh',
-      'bu hen': 'bos kita',
-      'hen': 'bu henny',
-      'cara keluar gimana': 'pencet tiga garis di kiri dan pencet Keluar',
-      'saya mau keluar': 'pencet tiga garis di kiri dan pencet Keluar',
-      'cara keluar': 'pencet tiga garis di kiri dan pencet Keluar',
-      'info': 'ingfooo',
-      'dimana fer': 'paddock kayaknya'
-    }
-  },
+'hold on': 'oke',
+'tunggu': 'oke',
+
+'udah makan?':'gw ga makan bang',
+'keren juga': 'iya la',
+'udah ga':'apa tu?',
+'ya itu':'ok siap mengerti (ga)',
+'byee':'yoo',
+'ok terima kasih':'aman',
+'ok terima kasih ya':'aman',
+'ok terima kasih fer':'aman',
+'ok terima kasih ya fer':'aman',
+'admin siapa':'ferdynand',
+'admin':'skrg admin cuman satu: Ferdynand',
+'capek':'istrahat atuh',
+'asal mana':'Makassar kota daeng',
+'asal':'Makassar bang',
+'asal?':'Makassarji',
+'orang mana':'Makassar kota coto',
+'mana':'apanya',
+'kamu apa': 'Aku versi AI dari Ferdynand yang siap jawab pertanyaan kamu',
+'kamu siapa':'Aku AI dari Ferdynand yang siap jawab semua (hampir semua) pertanyaan kamu',
+'nama kamu siapa':'AIming',
+'pak hien':'bos',
+'hiendarta':'bos',
+'hien':'bos',
+'henny':'bos',
+'bu henny':'bos kita tuh',
+'bu hen':'bos kita',
+'hen':'bu henny',
+'cara keluar gimana':'pencet tiga garis di kiri dan pencet Keluar',
+'saya mau keluar':'pencet tiga garis di kiri dan pencet Keluar',
+'cara keluar':'pencet tiga garis di kiri dan pencet Keluar',
+'info':'ingfooo',
+'dimana fer':'paddock kayaknya'
+
+
+  }
+},
+
+
 
   // Encouragement
   encouragement: [
