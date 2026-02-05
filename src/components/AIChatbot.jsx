@@ -417,7 +417,7 @@ const getResponse = (userInput) => {
           className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6"
           style={{ touchAction: 'none' }}
         >
-          <div className="bg-gradient-to-r from-black to-black text-white p-3 sm:p-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-400 to-blue-400 text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="bg-white/20 p-1.5 sm:p-2 rounded-full backdrop-blur-sm">
                 <Bot className="w-4 h-4 sm:w-5 sm:h-5" />

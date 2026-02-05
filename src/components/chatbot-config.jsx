@@ -421,12 +421,12 @@ Troubleshooting:
 // General responses that don't need config
 export const GENERAL_RESPONSES = {
   greeting: (userName) => 
-    `Halo ${userName}! 😊 Gue Veronica, asisten virtual kamu di Portal AVM.\n\nGue bisa bantu kamu dengan:\n• Cara cek dan cari data aset\n• Update atau ubah data\n• Checkout baterai buat event\n• Download data ke CSV\n• Pinjam dan kembalikan barang\n• Tracking history perubahan\n• Dan masih banyak lagi!\n\nMau tanya apa nih? Tanya apa pun!`,
+    `Halo ${userName}! 😊 Aku Veronica, asisten virtual kamu di Portal AVM.\n\nAku bisa bantu kamu dengan:\n• Cara cek dan cari data aset\n• Update atau ubah data\n• Checkout baterai buat event\n• Download data ke CSV\n• Pinjam dan kembalikan barang\n• Tracking history perubahan\n• Dan masih banyak lagi!\n\nMau tanya apa nih? Tanya apa pun!`,
   
   thanks: (userName) => 
-    `Sama-sama ${userName}! 😊\n\nSeneng bisa bantu! Kalau ada yang masih bingung atau perlu bantuan lagi, langsung tanya aja ya. Gue di sini kok!\n\nSemangat kelola asetnya! 📦`,
+    `Sama-sama ${userName}! 😊\n\nSeneng bisa bantu! Kalau ada yang masih bingung atau perlu bantuan lagi, langsung tanya aja ya. aku di sini kok!\n\nSemangat kelola asetnya! 📦`,
   
-  help: `Nih beberapa hal yang bisa gue bantu:
+  help: `Nih beberapa hal yang bisa aku bantu:
 
 🔍 Cek Data - Cara search dan liat detail aset
 ✏️ Update Data - Cara ubah informasi aset
@@ -438,7 +438,7 @@ export const GENERAL_RESPONSES = {
 👤 Role Saya - Info hak akses kamu
 📊 Status Sistem - Lihat statistik sistem real-time
 
-Tinggal ketik topik yang mau ditanyain! Atau langsung aja tanya dengan bahasa sehari-hari, gue ngerti kok 😉`,
+Tinggal ketik topik yang mau ditanyain! Atau langsung aja tanya dengan bahasa sehari-hari, Aku ngerti kok 😉`,
 
   roleInfo: {
     viewer: `Role kamu: Viewer 👁️
@@ -487,7 +487,7 @@ Dengan kekuatan besar datang tanggung jawab besar! 😄
 Tips: Rajin cek pending approval biar Editor ga nunggu lama!`
   },
 
-  notFound: `Hmm, gue belum paham maksud kamu nih. 🤔
+  notFound: `Hmm, Aku belum paham maksud kamu nih. 🤔
 
 Coba deh tanya tentang:
 • Cara cek atau cari data
@@ -506,14 +506,14 @@ Atau kalau bingung, ketik "help" aja buat bantuan lengkap!`
 export const CONTEXTUAL_RESPONSES = {
   // Status checks
   checkStatus: (userName, pendingCount) => 
-    `Halo ${userName}! Gue cek ya...\n\n${pendingCount > 0 ? `Kamu ada ${pendingCount} pengajuan yang masih pending nih. Mau liat detail-nya?` : `Kayaknya semua pengajuan kamu udah di-approve atau belum ada yang pending. All good! ✅`}`,
+    `Halo ${userName}! Aku cek ya...\n\n${pendingCount > 0 ? `Kamu ada ${pendingCount} pengajuan yang masih pending nih. Mau liat detail-nya?` : `Kayaknya semua pengajuan kamu udah di-approve atau belum ada yang pending. All good! ✅`}`,
   
   // When user seems frustrated
   frustrated: (userName) =>
-    `${userName}, sorry ya kalau bikin bingung! 😅\n\nCoba jelasin lagi deh mau ngapain? Gue bantuin step by step.`,
+    `${userName}, sorry ya kalau bikin bingung! 😅\n\nCoba jelasin lagi deh mau ngapain? Aku bantuin step by step.`,
   
   // When asking about capabilities
-  capabilities: `Gue bisa bantuin kamu dengan berbagai hal di Portal AVM:
+  capabilities: `Aku bisa bantuin kamu dengan berbagai hal di Portal AVM:
 
 📱 Fitur Utama:
 • Cek dan search data aset (pakai ID atau scan)
@@ -542,8 +542,8 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
       'thanks': 'aman',
       'fer': 'yo?',
       'thx': 'sip',
-      'salken': 'salken gw Veronica, AI Chatbot yang siap membantu!',
-      'salam kenal': 'salken gw Veronica, AI Chatbot yang siap membantu!',
+      'salken': 'salken aku Veronica, AI Chatbot yang siap membantu!',
+      'salam kenal': 'salken aku Veronica, AI Chatbot yang siap membantu!',
 
       'ok gas': 'ok gas ok gas',
       'gas': 'gaskeun',
@@ -556,7 +556,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
       'mantap': 'mantul',
       'keren': 'makasih! 😊',
       'keren nih': 'makasih! seneng bisa bantu',
-      'keren banget': 'makasih! gue emang canggih sedikit',
+      'keren banget': 'makasih! Aku emang canggih sedikit',
       'keren sih': 'hehe makasih ya',
       'cakep': 'valid',
       'setuju': 'valid',
@@ -576,7 +576,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
       'wkwkwk': 'wkwk',
       'aku kangen': 'aww sini peluk virtual',
       'kangen': 'aww',
-      'i love you': 'makasih! gue juga sayang sama user setia gue',
+      'i love you': 'makasih! aku juga sayang sama user setia aku',
       'love you': 'makasih!',
       'love u': 'makasih!',
       'ketawa': 'WKWKWK',
@@ -586,7 +586,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
       'oi': 'yo',
 
       // With "fer"
-      'halo fer': 'alo',
+      'halo ver': 'alo',
       'hi fer': 'alo',
       'hii fer': 'alo',
       'oi fer': 'a?',
@@ -802,7 +802,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
 
       // casual ending
       'yaudah ya': 'sip',
-      'gw cabut': 'siap hati-hati',
+      'aku cabut': 'siap hati-hati',
       'cabut': 'gas hati-hati',
       'gtg': 'ok later',
       'ttyl': 'ntar lanjut',
@@ -852,7 +852,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
       'cape': 'capek batin',
 
       // meta / ngobrol sama bot
-      'lu siapa': 'gw Veronica 🤖',
+      'lu siapa': 'aku Veronica 🤖',
       'ini siapa': 'Veronica di sini',
       'bot ya': 'iy bot tapi asik',
       'ai ya': 'iy tapi santuy',
@@ -905,7 +905,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
       'hold on': 'oke',
       'tunggu': 'oke',
 
-      'udah makan?': 'gw ga makan bang',
+      'udah makan?': 'aku ga makan bang',
       'keren juga': 'iya la',
       'udah ga': 'apa tu?',
       'ya itu': 'ok siap mengerti (ga)',
@@ -945,7 +945,7 @@ Mau tau lebih detail tentang salah satu fitur? Tanya aja!`,
     "Ayo coba! Ga susah kok 😊",
     "Pasti bisa! Ikutin step-nya aja",
     "Gampang kok ini, tenang!",
-    "Santai, gue bantuin sampai selesai!"
+    "Santai, aku bantuin sampai selesai!"
   ]
 };
 
