@@ -353,7 +353,7 @@ const Sidebar = ({
                 <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
                   <SidebarItem
                     icon={<Edit className="w-4 h-4" />}
-                    label="Buat Pinjaman"
+                    label="Pinjam/Kembali"
                     active={mode === 'loan-create'}
                     onClick={() => {
                       setMode('loan-create');
