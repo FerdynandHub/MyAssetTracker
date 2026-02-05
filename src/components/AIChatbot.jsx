@@ -212,7 +212,7 @@ const evaluateMath = (expr) => {
       return `Hasilnya: ${result} ✅`;
     }
   } catch (e) {
-    return `Ups, gue ga ngerti perhitungannya 😅`;
+    return `Ups, aku ga ngerti perhitungannya 😅`;
   }
   return null;
 };

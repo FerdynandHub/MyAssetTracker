@@ -36,15 +36,29 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       const data = await response.json();
       
       if (data.history) {
-        // Filter for loaned items that are NOT returned (status !== 'Available')
-        const loaned = data.history.filter(item => 
-          item.status === 'approved' && 
-          item.type === 'loan' &&
-          item.updates &&
-          item.updates.status &&
-          item.updates.status.toLowerCase() === 'loaned' &&
-          item.updates.status.toLowerCase() !== 'available' // Exclude returned items
-        );
+        // Filter for approved loan requests where the status is NOT 'Available' (meaning still loaned)
+        const loaned = data.history.filter(item => {
+          // Must be an approved loan request
+          if (item.status !== 'approved' || item.type !== 'loan') {
+            return false;
+          }
+          
+          // Must have updates with a status field
+          if (!item.updates || !item.updates.status) {
+            return false;
+          }
+          
+          // The status should be "Loaned" or similar, NOT "Available"
+          const itemStatus = item.updates.status.toLowerCase();
+          
+          // Exclude if status is "available" or contains "available"
+          if (itemStatus === 'available' || itemStatus.includes('available')) {
+            return false;
+          }
+          
+          // Include if status is "loaned" or similar
+          return itemStatus === 'loaned' || itemStatus.includes('loaned');
+        });
         
         setLoanedAssets(loaned);
       }
