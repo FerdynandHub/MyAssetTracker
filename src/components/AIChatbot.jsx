@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircleQuestionMark, X, Send, Loader2, Bot, User, RefreshCw, Sparkles } from 'lucide-react';
+import { MessageCircleQuestionMark, X, Send, Loader2, Bot, User, RefreshCw, Zap } from 'lucide-react';
 import { CHATBOT_CONFIG, GENERAL_RESPONSES, CONTEXTUAL_RESPONSES } from './chatbot-config';
 
 const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNavigate }) => {
@@ -23,7 +23,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     batteryInventory: { AA: 0, '9V': 0 },
     pendingRequests: 0,
     myRequests: 0,
-    loanedAssets: 0,
     categories: CATEGORIES,
     lastSync: null
   });
@@ -116,24 +115,6 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
         }
       }
 
-      // Fetch loaned assets count
-      try {
-        const loanHistoryResponse = await fetch(`${SCRIPT_URL}?action=getApprovalHistory&limit=999999`);
-        const loanData = await loanHistoryResponse.json();
-        if (loanData.history) {
-          const loaned = loanData.history.filter(item => 
-            item.status === 'approved' && 
-            item.type === 'loan' &&
-            item.updates &&
-            item.updates.status &&
-            item.updates.status.toLowerCase() === 'loaned'
-          );
-          newState.loanedAssets = loaned.length;
-        }
-      } catch (e) {
-        console.log('Could not fetch loaned assets');
-      }
-
       newState.lastSync = new Date();
       newState.categories = CATEGORIES;
 
@@ -188,16 +169,12 @@ const AIChatbot = ({ userName, userRole, ROLES, SCRIPT_URL, CATEGORIES, onNaviga
     }
     
     if (feature.showLiveData && feature.id === 'myRequests' && userRole === ROLES.EDITOR) {
-      response += `\n\n📊 Total pengajuan kamu: ${systemState.myRequests}`;
-    }
-
-    if (feature.showLiveData && feature.id === 'loanHistory') {
-      response += `\n\n📦 Aset yang belum kembali: ${systemState.loanedAssets}`;
+      response += `\n\n📊 Total pengajuan Anda: ${systemState.myRequests}`;
     }
     
     if (feature.showLiveData && feature.id === 'update') {
       if (userRole === ROLES.EDITOR && systemState.myRequests !== undefined) {
-        response += `\n\n📋 Kamu punya ${systemState.myRequests} pengajuan. Cek di menu "Pengajuan Saya"`;
+        response += `\n\n📋 Anda punya ${systemState.myRequests} pengajuan. Cek di menu "Pengajuan Saya"`;
       } else if (userRole === ROLES.ADMIN && systemState.pendingRequests > 0) {
         response += `\n\n⚠️ Ada ${systemState.pendingRequests} request menunggu approval!`;
       }
@@ -290,7 +267,7 @@ const getResponse = (userInput) => {
 
   // ====== 6A. QUICK ASSET COUNT ======
   if (input.match(/^(berapa|ada berapa|jumlah|total)[\s?]*$/i)) {
-    return `📦 Total Aset di Sistem: ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
+    return `📦 **Total Aset di Sistem:** ${systemState.totalAssets}\n\nMau lihat info lengkap? Ketik "status sistem"!`;
   }
 
   // ====== 6B. SYSTEM STATUS - FULL INFO ======
@@ -300,7 +277,7 @@ const getResponse = (userInput) => {
       input.match(/\b(ada\s+berapa\s+(aset|barang|data)|jumlah\s+(aset|data))\b/i) ||
       input.match(/\b(aset|barang|data)\s+(berapa|ada\s+berapa)\b/i)) {
     
-    let statusMsg = `📊 Status Sistem Portal AVM:\n\n`;
+    let statusMsg = `Status Sistem Portal AVM:\n\n`;
     
     if (systemState.totalAssets > 0) {
       statusMsg += `📦 Total Aset: ${systemState.totalAssets}\n`;
@@ -309,10 +286,6 @@ const getResponse = (userInput) => {
     if (userRole !== ROLES.VIEWER && systemState.batteryInventory) {
       statusMsg += `🔋 Baterai AA: ${systemState.batteryInventory.AA} pcs\n`;
       statusMsg += `🔋 Baterai 9V: ${systemState.batteryInventory['9V']} pcs\n`;
-    }
-    
-    if (systemState.loanedAssets > 0) {
-      statusMsg += `📦 Aset Dipinjam: ${systemState.loanedAssets}\n`;
     }
     
     if (userRole === ROLES.ADMIN && systemState.pendingRequests !== undefined) {
@@ -348,37 +321,15 @@ const getResponse = (userInput) => {
         });
 
         if (hasKeyword) {
-          console.log('Feature match:', key);
+          console.log('🎯 Feature match:', key);
           
           if (!feature.roleRequired.includes(userRole)) {
             return `Maaf, fitur "${feature.name}" cuma bisa diakses sama ${feature.roleRequired.join(', ')} 🔒\n\nRole kamu sekarang: ${userRole}\n\nMau tau apa aja yang bisa kamu lakuin? Ketik "role"!`;
           }
 
           if (typeof feature.instructions === 'object') {
-            let response = feature.instructions[userRole] || feature.instructions.editor;
-            
-            // Add live data if applicable
-            if (feature.showLiveData && key === 'battery') {
-              response += `\n\n📊 Stok saat ini:\n`;
-              response += `• AA: ${systemState.batteryInventory.AA} pcs\n`;
-              response += `• 9V: ${systemState.batteryInventory['9V']} pcs`;
-            }
-            
-            if (feature.showLiveData && key === 'loanHistory') {
-              response += `\n\n📦 Aset yang belum kembali: ${systemState.loanedAssets}`;
-            }
-            
-            if (feature.showLiveData && key === 'myRequests' && userRole === ROLES.EDITOR) {
-              response += `\n\n📊 Total pengajuan kamu: ${systemState.myRequests}`;
-            }
-            
-            if (feature.showLiveData && key === 'approvals' && userRole === ROLES.ADMIN) {
-              response += `\n\n📊 Pending saat ini: ${systemState.pendingRequests} request`;
-            }
-            
-            return response;
+            return feature.instructions[userRole] || feature.instructions.editor;
           }
-          
           return feature.instructions;
         }
       }
@@ -451,7 +402,7 @@ const getResponse = (userInput) => {
 {!isOpen && (
   <button
     onClick={() => setIsOpen(true)}
-    className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-purple-500 to-pink-600 text-white p-5 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
+    className="fixed bottom-4 right-4 z-50 bg-gradient-to-br from-blue-500 to-blue-600 text-white p-5 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 group sm:bottom-6 sm:right-6"
     style={{
       animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
     }}
@@ -463,23 +414,19 @@ const getResponse = (userInput) => {
 
       {isOpen && (
         <div 
-          className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border-2 border-blue-400 sm:bottom-6 sm:right-6"
+          className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-96 h-[calc(100vh-5rem)] max-h-[600px] sm:max-h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 sm:bottom-6 sm:right-6"
           style={{ touchAction: 'none' }}
         >
-          <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-3 sm:p-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-black to-black text-white p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-white/30">
-                <img 
-                  src="https://i.imgur.com/oYPAGRu.png" 
-                  alt="Veronica"
-                  className="w-full h-full object-cover"
-                />
+              <div className="bg-white/20 p-1.5 sm:p-2 rounded-full backdrop-blur-sm">
+                <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
                 <h3 className="font-bold text-base sm:text-lg">Veronica</h3>
                 <p className="text-[10px] sm:text-xs text-white/80 flex items-center gap-1">
-                  <Bot className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                  Portal AVM Assistant
+                  <Zap className="w-2.5 h-2.5 sm:w-2 sm:h-2" />
+                  AI Chatbot Mulmed UPH Tercinta
                 </p>
               </div>
             </div>
@@ -502,7 +449,7 @@ const getResponse = (userInput) => {
 
           <div
             ref={chatContainerRef}
-            className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-purple-50 to-pink-50 overscroll-contain"
+            className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50 overscroll-contain"
             style={{ 
               scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch'
@@ -514,28 +461,24 @@ const getResponse = (userInput) => {
                 className={`flex gap-2 sm:gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
               >
                 <div
-                  className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center overflow-hidden ${
+                  className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                     message.role === 'user'
-                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white'
-                      : 'bg-white border-2 border-purple-200'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-500 text-white'
                   }`}
                 >
                   {message.role === 'user' ? (
                     <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   ) : (
-                    <img 
-                      src="https://i.imgur.com/oYPAGRu.png" 
-                      alt="Veronica"
-                      className="w-full h-full object-cover"
-                    />
+                    <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   )}
                 </div>
 
                 <div
                   className={`flex-1 max-w-[80%] ${
                     message.role === 'user'
-                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl rounded-tr-none'
-                      : 'bg-white text-gray-800 rounded-2xl rounded-tl-none shadow-sm border border-purple-100'
+                      ? 'bg-blue-500 text-white rounded-2xl rounded-tr-none'
+                      : 'bg-white text-gray-800 rounded-2xl rounded-tl-none shadow-sm border border-gray-100'
                   } p-2.5 sm:p-3`}
                 >
                   <p className="text-xs sm:text-sm whitespace-pre-wrap leading-snug sm:leading-relaxed">
@@ -543,7 +486,7 @@ const getResponse = (userInput) => {
                   </p>
                   <p
                     className={`text-[10px] sm:text-xs mt-1 ${
-                      message.role === 'user' ? 'text-blue-100' : 'text-gray-400'
+                      message.role === 'user' ? 'text-black-100' : 'text-gray-400'
                     }`}
                   >
                     {message.timestamp.toLocaleTimeString('id-ID', {
@@ -557,15 +500,11 @@ const getResponse = (userInput) => {
 
             {isLoading && (
               <div className="flex gap-2 sm:gap-3">
-                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-purple-200">
-                  <img 
-                    src="https://i.imgur.com/oYPAGRu.png" 
-                    alt="Veronica"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                  <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
-                <div className="bg-white rounded-2xl rounded-tl-none shadow-sm border border-purple-100 p-2.5 sm:p-3">
-                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 animate-spin" />
+                <div className="bg-white rounded-2xl rounded-tl-none shadow-sm border border-gray-100 p-2.5 sm:p-3">
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 animate-spin" />
                 </div>
               </div>
             )}
@@ -583,7 +522,7 @@ const getResponse = (userInput) => {
                     setInput(action.query);
                     setTimeout(() => handleSendMessage(), 100);
                   }}
-                  className="text-[10px] sm:text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition"
+                  className="text-[10px] sm:text-xs bg-gray-100 hover:bg-gray-200 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition"
                 >
                   {action.label}
                 </button>
@@ -599,16 +538,16 @@ const getResponse = (userInput) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Tanya Veronica..."
+                placeholder="Ketik pertanyaan..."
                 disabled={isLoading}
-                className="flex-1 px-3 sm:px-4 py-2 text-base border border-purple-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                className="flex-1 px-3 sm:px-4 py-2 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black disabled:bg-gray-100"
                 autoComplete="off"
                 style={{ fontSize: '16px' }}
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!input.trim() || isLoading}
-                className="bg-gradient-to-br from-purple-500 to-pink-600 text-white p-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
+                className="bg-gradient-to-br from-black to-black text-white p-2 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0"
               >
                 {isLoading ? (
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
@@ -624,10 +563,10 @@ const getResponse = (userInput) => {
       <style jsx>{`
         @keyframes pulse {
           0%, 100% {
-            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7);
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
           }
           50% {
-            box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
           }
         }
       `}</style>
