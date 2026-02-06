@@ -39,34 +39,43 @@ const CheckMode = ({ onBack, SCRIPT_URL }) => {
     setScanning(true);
   };
 
-  useEffect(() => {
-    let scanner = null;
-    
-    if (scanning) {
-      scanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: { width: 250, height: 250 } }
-      );
-
-      scanner.render(
-        (decodedText) => {
-          setAssetId(decodedText);
-          checkAsset(decodedText);
-          scanner.clear().catch(() => {});
-          setScanning(false);
-        },
-        (error) => {
-          // Just ignore scanning errors
+useEffect(() => {
+  let scanner = null;
+  
+  if (scanning) {
+    scanner = new Html5QrcodeScanner(
+      "reader",
+      { 
+        fps: 10, 
+        qrbox: { width: 300, height: 300 },
+        aspectRatio: 1.0,
+        videoConstraints: {
+          facingMode: "environment",
+          focusMode: "continuous",
+          advanced: [{ focusMode: "continuous" }]
         }
-      );
-    }
-
-    return () => {
-      if (scanner) {
-        scanner.clear().catch(() => {});
       }
-    };
-  }, [scanning]);
+    );
+
+    scanner.render(
+      (decodedText) => {
+        setAssetId(decodedText);
+        checkAsset(decodedText);
+        scanner.clear().catch(() => {});
+        setScanning(false);
+      },
+      (error) => {
+        // Just ignore scanning errors
+      }
+    );
+  }
+
+  return () => {
+    if (scanner) {
+      scanner.clear().catch(() => {});
+    }
+  };
+}, [scanning]);
 
   const stopScanning = () => {
     if (streamRef.current) {
