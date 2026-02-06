@@ -215,7 +215,7 @@ const Sidebar = ({
                 <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
                   <SidebarItem
                     icon={<Edit className="w-4 h-4" />}
-                    label="Checkout"
+                    label={userRole === ROLES.ADMIN ? "Checkout (admin bypass, no record)" : "Checkout"}
                     active={mode === 'battery'}
                     onClick={() => {
                       setMode('battery');
@@ -289,7 +289,7 @@ const Sidebar = ({
             <>
               <SidebarItem
                 icon={<Edit className="w-5 h-5" />}
-                label={userRole === ROLES.ADMIN ? "Perbarui Data (bypass)" : "Ajukan Ubah Data"}
+                label={userRole === ROLES.ADMIN ? "Perbarui Data" : "Ajukan Ubah Data"}
                 active={mode === 'update-single' || mode === 'update-batch'}
                 onClick={() => {
                   setLoanSubmenuOpen(false);
@@ -307,7 +307,7 @@ const Sidebar = ({
                 <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
                   <SidebarItem
                     icon={<Package className="w-4 h-4" />}
-                    label={userRole === ROLES.ADMIN ? "Update Satuan (bypass)" : "Update Satuan"}
+                    label={userRole === ROLES.ADMIN ? "Update Satuan (admin bypass, no record)" : "Update Satuan"}
                     active={mode === 'update-single'}
                     onClick={() => {
                       setMode('update-single');
@@ -317,7 +317,7 @@ const Sidebar = ({
                   />
                   <SidebarItem
                     icon={<Boxes className="w-4 h-4" />}
-                    label={userRole === ROLES.ADMIN ? "Update Massal (bypass)" : "Update Massal"}
+                    label={userRole === ROLES.ADMIN ? "Update Massal (admin bypass, no record)" : "Update Massal"}
                     active={mode === 'update-batch'}
                     onClick={() => {
                       setMode('update-batch');
@@ -353,7 +353,7 @@ const Sidebar = ({
                 <div className="space-y-2 overflow-hidden transition-all duration-300 ease-in-out">
                   <SidebarItem
                     icon={<Edit className="w-4 h-4" />}
-                    label="Pinjam/Kembali"
+                    label={userRole === ROLES.ADMIN ? "Pinjam/Kembali (admin bypass, no record)" : "Pinjam/Kembali"}
                     active={mode === 'loan-create'}
                     onClick={() => {
                       setMode('loan-create');
