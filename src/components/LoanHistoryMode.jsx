@@ -11,32 +11,66 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
 
   // Fetch loaned assets with status map parameter
   const fetchLoanedAssets = async (statusMap) => {
+    console.log('=== fetchLoanedAssets CALLED ===');
+    console.log('statusMap:', statusMap);
+    console.log('statusMap keys:', Object.keys(statusMap));
+    
     setLoadingLoaned(true);
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getApprovalHistory&limit=999999`);
       const data = await response.json();
       
+      console.log('Approval history response:', data);
+      console.log('History items count:', data.history?.length);
+      
       if (data.history) {
         // Filter for items where at least ONE asset is still marked as "Loaned" in live database
-        const loaned = data.history.filter(item => {
+        const loaned = data.history.filter((item, index) => {
+          console.log(`\n--- Checking item ${index} ---`);
+          console.log('Item:', item);
+          console.log('Item status:', item.status);
+          console.log('Item type:', item.type);
+          
           // Must be an approved loan request
           if (item.status !== 'approved' || item.type !== 'loan') {
+            console.log('❌ Not approved loan');
             return false;
           }
           
+          console.log('✅ Is approved loan');
+          console.log('Item IDs:', item.ids);
+          console.log('Item IDs type:', typeof item.ids);
+          console.log('Item IDs is array:', Array.isArray(item.ids));
+          
           // Check if at least ONE asset is still "Loaned"
           if (item.ids && item.ids.length > 0) {
-            return item.ids.some(assetId => {
+            const hasLoaned = item.ids.some(assetId => {
+              console.log(`  Checking asset: ${assetId}`);
               const liveStatus = statusMap[assetId];
-              if (!liveStatus) return false;
+              console.log(`  Live status: ${liveStatus}`);
+              
+              if (!liveStatus) {
+                console.log(`  ❌ No status found`);
+                return false;
+              }
               
               const liveStatusLower = liveStatus.toLowerCase();
-              return liveStatusLower === 'loaned';
+              const isLoaned = liveStatusLower === 'loaned';
+              console.log(`  ${isLoaned ? '✅' : '❌'} Is loaned: ${isLoaned}`);
+              return isLoaned;
             });
+            
+            console.log(`Final decision for item: ${hasLoaned ? '✅ INCLUDE' : '❌ EXCLUDE'}`);
+            return hasLoaned;
           }
           
+          console.log('❌ No IDs');
           return false;
         });
+        
+        console.log('\n=== FINAL RESULTS ===');
+        console.log('Total loaned items found:', loaned.length);
+        console.log('Loaned items:', loaned);
         
         setLoanedAssets(loaned);
       }
@@ -48,9 +82,13 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
 
   // Fetch all assets and then fetch loaned assets with the status map
   const refreshData = async () => {
+    console.log('=== refreshData CALLED ===');
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
       const data = await response.json();
+      
+      console.log('Assets response:', data);
+      console.log('Assets count:', data.length);
       
       // Create a mapping of id -> name and id -> status from all assets
       const nameMap = {};
@@ -65,6 +103,20 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
           }
         }
       });
+      
+      console.log('nameMap keys count:', Object.keys(nameMap).length);
+      console.log('statusMap keys count:', Object.keys(statusMap).length);
+      console.log('Sample nameMap:', Object.fromEntries(Object.entries(nameMap).slice(0, 5)));
+      console.log('Sample statusMap:', Object.fromEntries(Object.entries(statusMap).slice(0, 5)));
+      
+      // Check specific assets
+      console.log('\n=== Checking specific assets ===');
+      console.log('TK-13 status:', statusMap['TK-13']);
+      console.log('VNHDMI1M-01 status:', statusMap['VNHDMI1M-01']);
+      console.log('NLHDMIEXT-01 status:', statusMap['NLHDMIEXT-01']);
+      console.log('HTT-01 status:', statusMap['HTT-01']);
+      console.log('HTT-15 status:', statusMap['HTT-15']);
+      console.log('HTT-31 status:', statusMap['HTT-31']);
       
       setAssetNames(nameMap);
       
@@ -136,6 +188,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
+    console.log('=== Component mounted, calling refreshData ===');
     refreshData();
   }, []);
 
@@ -174,6 +227,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
             <div className="text-center py-12">
               <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <p className="text-gray-600">Tidak ada aset yang sedang dipinjam</p>
+              <p className="text-xs text-gray-500 mt-2">Check browser console (F12) for debug info</p>
             </div>
           ) : (
             <>
