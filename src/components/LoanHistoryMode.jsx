@@ -17,33 +17,16 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       const data = await response.json();
       
       if (data.history) {
-        // Filter for items that are:
-        // 1. Approved loan requests (status=approved, type=loan)
-        // 2. Have updates.status = "Loaned"
-        // 3. At least one asset is still marked as "Loaned" in live database
+        // Filter for items where at least ONE asset is still marked as "Loaned" in live database
         const loaned = data.history.filter(item => {
           // Must be an approved loan request
           if (item.status !== 'approved' || item.type !== 'loan') {
             return false;
           }
           
-          // Must have updates.status = "Loaned"
-          if (!item.updates?.status) {
-            return false;
-          }
-          
-          const itemStatus = item.updates.status.toLowerCase();
-          if (itemStatus !== 'loaned') {
-            return false;
-          }
-          
-          // Cross-check with live database
-          // Show if at least ONE asset is still loaned
+          // Check if at least ONE asset is still "Loaned"
           if (item.ids && item.ids.length > 0) {
-            // Handle both single ID string and array of IDs
-            const assetIds = Array.isArray(item.ids) ? item.ids : [item.ids];
-            
-            return assetIds.some(assetId => {
+            return item.ids.some(assetId => {
               const liveStatus = statusMap[assetId];
               if (!liveStatus) return false;
               
@@ -52,8 +35,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
             });
           }
           
-          // If no IDs, still show it if updates.status is "Loaned"
-          return true;
+          return false;
         });
         
         setLoanedAssets(loaned);
