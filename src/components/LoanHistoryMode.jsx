@@ -11,66 +11,31 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
 
   // Fetch loaned assets with status map parameter
   const fetchLoanedAssets = async (statusMap) => {
-    console.log('=== fetchLoanedAssets CALLED ===');
-    console.log('statusMap:', statusMap);
-    console.log('statusMap keys:', Object.keys(statusMap));
-    
     setLoadingLoaned(true);
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getApprovalHistory&limit=999999`);
       const data = await response.json();
       
-      console.log('Approval history response:', data);
-      console.log('History items count:', data.history?.length);
-      
       if (data.history) {
-        // Filter for items where at least ONE asset is still marked as "Loaned" in live database
-        const loaned = data.history.filter((item, index) => {
-          console.log(`\n--- Checking item ${index} ---`);
-          console.log('Item:', item);
-          console.log('Item status:', item.status);
-          console.log('Item type:', item.type);
-          
-          // Must be an approved loan request
+        const loaned = data.history.filter((item) => {
           if (item.status !== 'approved' || item.type !== 'loan') {
-            console.log('❌ Not approved loan');
             return false;
           }
           
-          console.log('✅ Is approved loan');
-          console.log('Item IDs:', item.ids);
-          console.log('Item IDs type:', typeof item.ids);
-          console.log('Item IDs is array:', Array.isArray(item.ids));
-          
-          // Check if at least ONE asset is still "Loaned"
           if (item.ids && item.ids.length > 0) {
             const hasLoaned = item.ids.some(assetId => {
-              console.log(`  Checking asset: ${assetId}`);
               const liveStatus = statusMap[assetId];
-              console.log(`  Live status: ${liveStatus}`);
-              
-              if (!liveStatus) {
-                console.log(`  ❌ No status found`);
-                return false;
-              }
+              if (!liveStatus) return false;
               
               const liveStatusLower = liveStatus.toLowerCase();
-              const isLoaned = liveStatusLower === 'loaned';
-              console.log(`  ${isLoaned ? '✅' : '❌'} Is loaned: ${isLoaned}`);
-              return isLoaned;
+              return liveStatusLower === 'loaned';
             });
             
-            console.log(`Final decision for item: ${hasLoaned ? '✅ INCLUDE' : '❌ EXCLUDE'}`);
             return hasLoaned;
           }
           
-          console.log('❌ No IDs');
           return false;
         });
-        
-        console.log('\n=== FINAL RESULTS ===');
-        console.log('Total loaned items found:', loaned.length);
-        console.log('Loaned items:', loaned);
         
         setLoanedAssets(loaned);
       }
@@ -82,41 +47,40 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
 
   // Fetch all assets and then fetch loaned assets with the status map
   const refreshData = async () => {
-    console.log('=== refreshData CALLED ===');
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
       const data = await response.json();
       
-      console.log('Assets response:', data);
-      console.log('Assets count:', data.length);
+      console.log('=== FIRST ASSET STRUCTURE ===');
+      console.log('First asset:', data[0]);
+      console.log('First asset keys:', Object.keys(data[0] || {}));
+      console.log('Sample assets (first 3):');
+      data.slice(0, 3).forEach((asset, i) => {
+        console.log(`Asset ${i}:`, asset);
+      });
       
       // Create a mapping of id -> name and id -> status from all assets
       const nameMap = {};
       const statusMap = {};
       data.forEach(asset => {
-        if (asset.id) {
-          if (asset.name) {
-            nameMap[asset.id] = asset.name;
+        // Try to be flexible with the key names
+        const id = asset.id || asset.ID || asset['g test'];
+        const name = asset.name || asset.Name;
+        const status = asset.status || asset.Status;
+        
+        if (id) {
+          if (name) {
+            nameMap[id] = name;
           }
-          if (asset.status) {
-            statusMap[asset.id] = asset.status;
+          if (status) {
+            statusMap[id] = status;
           }
         }
       });
       
-      console.log('nameMap keys count:', Object.keys(nameMap).length);
-      console.log('statusMap keys count:', Object.keys(statusMap).length);
-      console.log('Sample nameMap:', Object.fromEntries(Object.entries(nameMap).slice(0, 5)));
-      console.log('Sample statusMap:', Object.fromEntries(Object.entries(statusMap).slice(0, 5)));
-      
-      // Check specific assets
-      console.log('\n=== Checking specific assets ===');
-      console.log('TK-13 status:', statusMap['TK-13']);
-      console.log('VNHDMI1M-01 status:', statusMap['VNHDMI1M-01']);
-      console.log('NLHDMIEXT-01 status:', statusMap['NLHDMIEXT-01']);
-      console.log('HTT-01 status:', statusMap['HTT-01']);
-      console.log('HTT-15 status:', statusMap['HTT-15']);
-      console.log('HTT-31 status:', statusMap['HTT-31']);
+      console.log('After mapping:');
+      console.log('nameMap sample:', Object.fromEntries(Object.entries(nameMap).slice(0, 10)));
+      console.log('statusMap sample:', Object.fromEntries(Object.entries(statusMap).slice(0, 10)));
       
       setAssetNames(nameMap);
       
@@ -137,7 +101,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   const getFilteredLoanedAssets = (filterBy) => {
     let filtered = [...loanedAssets];
     
-    // Apply requester filter
     if (filterBy === 'recent') {
       filtered = filtered.sort((a, b) => {
         const timeA = new Date(a.timestamp).getTime();
@@ -148,29 +111,18 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       filtered = filtered.filter(asset => asset.requestedBy === filterBy);
     }
     
-    // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(loan => {
-        // Handle both single ID string and array of IDs
         const assetIds = Array.isArray(loan.ids) ? loan.ids : [loan.ids];
         
-        // Search in asset IDs
         const matchesId = assetIds.some(id => id && id.toLowerCase().includes(query));
-        
-        // Search in asset names
         const matchesName = assetIds.some(id => {
           const name = assetNames[id];
           return name && name.toLowerCase().includes(query);
         });
-        
-        // Search in location
         const matchesLocation = loan.updates?.location?.toLowerCase().includes(query);
-        
-        // Search in remarks
         const matchesRemarks = loan.updates?.remarks?.toLowerCase().includes(query);
-        
-        // Search in requester name
         const matchesRequester = loan.requestedBy?.toLowerCase().includes(query);
         
         return matchesId || matchesName || matchesLocation || matchesRemarks || matchesRequester;
@@ -188,7 +140,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   };
 
   useEffect(() => {
-    console.log('=== Component mounted, calling refreshData ===');
     refreshData();
   }, []);
 
@@ -208,7 +159,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
             </button>
           </div>
 
-          {/* Search Bar */}
           <div className="mb-4">
             <input
               type="text"
@@ -227,11 +177,10 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
             <div className="text-center py-12">
               <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <p className="text-gray-600">Tidak ada aset yang sedang dipinjam</p>
-              <p className="text-xs text-gray-500 mt-2">Check browser console (F12) for debug info</p>
+              <p className="text-xs text-gray-500 mt-2">Check browser console (F12) for asset structure</p>
             </div>
           ) : (
             <>
-              {/* Filter Tabs */}
               <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
                 <button
                   onClick={() => setActiveFilterTab('recent')}
@@ -258,140 +207,128 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                 ))}
               </div>
 
-              {/* Loaned Assets Grid */}
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                {getFilteredLoanedAssets(activeFilterTab).length === 0 ? (
-                  <div className="col-span-2 text-center py-8">
-                    <p className="text-gray-600">Tidak ada data untuk filter ini</p>
-                  </div>
-                ) : (
-                  getFilteredLoanedAssets(activeFilterTab).map((loan, idx) => {
-                    const uniqueKey = `${loan.requestId}-${idx}-${loan.timestamp}`;
-                    const isExpanded = expandedCards[uniqueKey];
-                    
-                    // Handle both single ID string and array of IDs
-                    const assetIds = Array.isArray(loan.ids) ? loan.ids : [loan.ids];
-                    
-                    return (
+                {getFilteredLoanedAssets(activeFilterTab).map((loan, idx) => {
+                  const uniqueKey = `${loan.requestId}-${idx}-${loan.timestamp}`;
+                  const isExpanded = expandedCards[uniqueKey];
+                  const assetIds = Array.isArray(loan.ids) ? loan.ids : [loan.ids];
+                  
+                  return (
+                    <div 
+                      key={idx} 
+                      className="bg-white rounded-lg border-2 border-orange-400"
+                    >
                       <div 
-                        key={idx} 
-                        className="bg-white rounded-lg border-2 border-orange-400"
+                        className="p-4 cursor-pointer hover:bg-gray-50 transition"
+                        onClick={() => toggleCard(uniqueKey)}
                       >
-                        {/* Card Header - Always Visible */}
-                        <div 
-                          className="p-4 cursor-pointer hover:bg-gray-50 transition"
-                          onClick={() => toggleCard(uniqueKey)}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm font-medium">
-                                  Belum Kembali
-                                </span>
-                              </div>
-                              <p className="text-sm font-semibold text-gray-800 mb-1">
-                                {loan.requestedBy}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                {new Date(loan.timestamp).toLocaleString('id-ID')}
-                              </p>
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm font-medium">
+                                Belum Kembali
+                              </span>
                             </div>
-                            <div className="flex items-center gap-3">
-                              {isExpanded ? (
-                                <ChevronUp className="w-5 h-5 text-gray-400" />
-                              ) : (
-                                <ChevronDown className="w-5 h-5 text-gray-400" />
-                              )}
-                            </div>
+                            <p className="text-sm font-semibold text-gray-800 mb-1">
+                              {loan.requestedBy}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(loan.timestamp).toLocaleString('id-ID')}
+                            </p>
                           </div>
-
-                          <div className="mt-3">
-                            <h4 className="font-semibold text-gray-700 mb-2 text-sm">Aset:</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {assetIds.slice(0, 3).map((id, i) => (
-                                <div key={i} className="rounded px-3 py-1 border border-blue-200 inline-flex items-center gap-2">
-                                  <span className="font-mono text-xs text-black font-semibold">
-                                    {id}
-                                  </span>
-                                  {assetNames[id] && assetNames[id] !== id && (
-                                    <>
-                                      <span className="text-black">•</span>
-                                      <span className="text-xs text-black">
-                                        {assetNames[id]}
-                                      </span>
-                                    </>
-                                  )}
-                                </div>
-                              ))}
-                              {assetIds.length > 3 && (
-                                <span className="text-xs text-gray-500 px-2 py-1">
-                                  +{assetIds.length - 3} lainnya
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="mt-3 text-sm text-gray-600">
-                            <div className="truncate">
-                              <span className="font-semibold">Lokasi:</span> {loan.updates?.location || 'N/A'}
-                            </div>
+                          <div className="flex items-center gap-3">
+                            {isExpanded ? (
+                              <ChevronUp className="w-5 h-5 text-gray-400" />
+                            ) : (
+                              <ChevronDown className="w-5 h-5 text-gray-400" />
+                            )}
                           </div>
                         </div>
 
-                        {/* Expanded Details */}
-                        {isExpanded && (
-                          <div className="px-4 pb-4 border-t pt-4">
-                            {loan.approvedBy && (
-                              <div className="mb-3">
-                                <p className="text-sm font-semibold text-gray-700">Disetujui oleh:</p>
-                                <p className="text-gray-900">{loan.approvedBy}</p>
+                        <div className="mt-3">
+                          <h4 className="font-semibold text-gray-700 mb-2 text-sm">Aset:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {assetIds.slice(0, 3).map((id, i) => (
+                              <div key={i} className="rounded px-3 py-1 border border-blue-200 inline-flex items-center gap-2">
+                                <span className="font-mono text-xs text-black font-semibold">
+                                  {id}
+                                </span>
+                                {assetNames[id] && assetNames[id] !== id && (
+                                  <>
+                                    <span className="text-black">•</span>
+                                    <span className="text-xs text-black">
+                                      {assetNames[id]}
+                                    </span>
+                                  </>
+                                )}
                               </div>
-                            )}
-
-                            <div className="mb-3">
-                              <p className="text-sm font-semibold text-gray-700">Status:</p>
-                              <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
-                                {loan.updates?.status || 'N/A'}
+                            ))}
+                            {assetIds.length > 3 && (
+                              <span className="text-xs text-gray-500 px-2 py-1">
+                                +{assetIds.length - 3} lainnya
                               </span>
-                            </div>
-
-                            <div className="mb-3">
-                              <p className="text-sm font-semibold text-gray-700">Lokasi & Peminjam:</p>
-                              <p className="text-gray-900">{loan.updates?.location || 'N/A'}</p>
-                            </div>
-
-                            <div className="mb-3">
-                              <p className="text-sm font-semibold text-gray-700">Catatan:</p>
-                              <p className="text-gray-900">{loan.updates?.remarks || 'N/A'}</p>
-                            </div>
-
-                            {loan.updates?.photoUrl && (
-                              <div>
-                                <p className="text-sm font-semibold text-gray-700 mb-2">Foto:</p>
-                                <a
-                                  href={loan.updates.photoUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1.5 rounded border border-blue-600 hover:bg-blue-600 transition text-sm"
-                                >
-                                  <Camera className="w-4 h-4" />
-                                  Lihat Foto
-                                </a>
-                              </div>
                             )}
                           </div>
-                        )}
+                        </div>
+
+                        <div className="mt-3 text-sm text-gray-600">
+                          <div className="truncate">
+                            <span className="font-semibold">Lokasi:</span> {loan.updates?.location || 'N/A'}
+                          </div>
+                        </div>
                       </div>
-                    );
-                  })
-                )}
+
+                      {isExpanded && (
+                        <div className="px-4 pb-4 border-t pt-4">
+                          {loan.approvedBy && (
+                            <div className="mb-3">
+                              <p className="text-sm font-semibold text-gray-700">Disetujui oleh:</p>
+                              <p className="text-gray-900">{loan.approvedBy}</p>
+                            </div>
+                          )}
+
+                          <div className="mb-3">
+                            <p className="text-sm font-semibold text-gray-700">Status:</p>
+                            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
+                              {loan.updates?.status || 'N/A'}
+                            </span>
+                          </div>
+
+                          <div className="mb-3">
+                            <p className="text-sm font-semibold text-gray-700">Lokasi & Peminjam:</p>
+                            <p className="text-gray-900">{loan.updates?.location || 'N/A'}</p>
+                          </div>
+
+                          <div className="mb-3">
+                            <p className="text-sm font-semibold text-gray-700">Catatan:</p>
+                            <p className="text-gray-900">{loan.updates?.remarks || 'N/A'}</p>
+                          </div>
+
+                          {loan.updates?.photoUrl && (
+                            <div>
+                              <p className="text-sm font-semibold text-gray-700 mb-2">Foto:</p>
+                              <a
+                                href={loan.updates.photoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1.5 rounded border border-blue-600 hover:bg-blue-600 transition text-sm"
+                              >
+                                <Camera className="w-4 h-4" />
+                                Lihat Foto
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </>
           )}
         </div>
       </div>
-
     </div>
   );
 };
