@@ -8,36 +8,9 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   const [assetNames, setAssetNames] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCards, setExpandedCards] = useState({});
-  const [liveAssetStatuses, setLiveAssetStatuses] = useState({});
 
-  // Fetch all assets at once and create a name map AND status map
-  const fetchAllAssets = async () => {
-    try {
-      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
-      const data = await response.json();
-      
-      // Create a mapping of id -> name from all assets
-      const nameMap = {};
-      const statusMap = {};
-      data.forEach(asset => {
-        if (asset.id) {
-          if (asset.name) {
-            nameMap[asset.id] = asset.name;
-          }
-          if (asset.status) {
-            statusMap[asset.id] = asset.status;
-          }
-        }
-      });
-      
-      setAssetNames(nameMap);
-      setLiveAssetStatuses(statusMap);
-    } catch (error) {
-      console.error('Error fetching assets:', error);
-    }
-  };
-
-  const fetchLoanedAssets = async () => {
+  // Fetch loaned assets with status map parameter
+  const fetchLoanedAssets = async (statusMap) => {
     setLoadingLoaned(true);
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getApprovalHistory&limit=999999`);
@@ -68,7 +41,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
           // Check if ALL asset IDs in this loan are still marked as "Loaned" in the live database
           if (item.ids && item.ids.length > 0) {
             const allStillLoaned = item.ids.every(assetId => {
-              const liveStatus = liveAssetStatuses[assetId];
+              const liveStatus = statusMap[assetId];
               if (!liveStatus) return false; // If no status found, exclude it
               
               const liveStatusLower = liveStatus.toLowerCase();
@@ -97,6 +70,35 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       console.error('Error fetching loaned assets:', error);
     }
     setLoadingLoaned(false);
+  };
+
+  // Fetch all assets and then fetch loaned assets with the status map
+  const refreshData = async () => {
+    try {
+      const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
+      const data = await response.json();
+      
+      // Create a mapping of id -> name from all assets
+      const nameMap = {};
+      const statusMap = {};
+      data.forEach(asset => {
+        if (asset.id) {
+          if (asset.name) {
+            nameMap[asset.id] = asset.name;
+          }
+          if (asset.status) {
+            statusMap[asset.id] = asset.status;
+          }
+        }
+      });
+      
+      setAssetNames(nameMap);
+      
+      // Now fetch loaned assets with the status map
+      await fetchLoanedAssets(statusMap);
+    } catch (error) {
+      console.error('Error fetching assets:', error);
+    }
   };
 
   const getRequesters = (assets) => {
@@ -156,22 +158,9 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
     }));
   };
 
-  const refreshData = async () => {
-    // Fetch assets first to get latest statuses, then fetch loan history
-    await fetchAllAssets();
-    await fetchLoanedAssets();
-  };
-
   useEffect(() => {
     refreshData();
   }, []);
-
-  // Re-fetch loaned assets when liveAssetStatuses changes
-  useEffect(() => {
-    if (Object.keys(liveAssetStatuses).length > 0) {
-      fetchLoanedAssets();
-    }
-  }, [liveAssetStatuses]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
