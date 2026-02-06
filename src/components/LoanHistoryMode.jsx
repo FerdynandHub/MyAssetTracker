@@ -16,88 +16,30 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       const response = await fetch(`${SCRIPT_URL}?action=getApprovalHistory&limit=999999`);
       const data = await response.json();
       
-      console.log('=== APPROVAL HISTORY DATA ===');
-      console.log('Full data:', data);
-      console.log('History items:', data.history?.length);
-      
       if (data.history) {
-        console.log('Status map received:', statusMap);
-        
-        // Filter for approved loan requests where the status is NOT 'Available' (meaning still loaned)
+        // Simplified filtering - show ALL approved loan requests
+        // Then let the user see which ones are still actually loaned based on live status
         const loaned = data.history.filter(item => {
-          console.log('--- Processing item ---');
-          console.log('Item:', item);
-          console.log('Status:', item.status);
-          console.log('Type:', item.type);
-          
           // Must be an approved loan request
           if (item.status !== 'approved' || item.type !== 'loan') {
-            console.log('❌ Rejected: not approved loan');
             return false;
           }
           
-          // Must have updates with a status field
-          if (!item.updates || !item.updates.status) {
-            console.log('❌ Rejected: no updates.status');
-            return false;
-          }
-          
-          console.log('Updates status:', item.updates.status);
-          
-          // The status should be "Loaned" or similar, NOT "Available"
-          const itemStatus = item.updates.status.toLowerCase();
-          
-          // Exclude if status is "available" or contains "available"
-          if (itemStatus === 'available' || itemStatus.includes('available')) {
-            console.log('❌ Rejected: status is available');
-            return false;
-          }
-          
-          console.log('Item IDs:', item.ids);
-          
-          // CRITICAL: Cross-reference with live database
-          // Check if ALL asset IDs in this loan are still marked as "Loaned" in the live database
+          // Check if ANY of the assets in this loan are still marked as "Loaned"
           if (item.ids && item.ids.length > 0) {
-            const allStillLoaned = item.ids.every(assetId => {
+            const hasLoanedAssets = item.ids.some(assetId => {
               const liveStatus = statusMap[assetId];
-              console.log(`  Asset ${assetId}: live status = ${liveStatus}`);
-              
-              if (!liveStatus) {
-                console.log(`  ❌ No live status found for ${assetId}`);
-                return false;
-              }
+              if (!liveStatus) return false;
               
               const liveStatusLower = liveStatus.toLowerCase();
-              // Asset must NOT be "Available" in live database
-              if (liveStatusLower === 'available' || liveStatusLower.includes('available')) {
-                console.log(`  ❌ Asset ${assetId} is available in live DB`);
-                return false;
-              }
-              
-              // Asset should still be "Loaned" in live database
-              const isLoaned = liveStatusLower === 'loaned' || liveStatusLower.includes('loaned');
-              console.log(`  ${isLoaned ? '✅' : '❌'} Asset ${assetId} loaned check: ${isLoaned}`);
-              return isLoaned;
+              return liveStatusLower === 'loaned' || liveStatusLower.includes('loaned');
             });
             
-            console.log(`All still loaned: ${allStillLoaned}`);
-            
-            // Only include this loan record if ALL assets are still loaned
-            if (!allStillLoaned) {
-              console.log('❌ Rejected: not all assets still loaned');
-              return false;
-            }
+            return hasLoanedAssets;
           }
           
-          // Include if status is "loaned" or similar
-          const shouldInclude = itemStatus === 'loaned' || itemStatus.includes('loaned');
-          console.log(`${shouldInclude ? '✅' : '❌'} Final decision: ${shouldInclude}`);
-          return shouldInclude;
+          return false;
         });
-        
-        console.log('=== FINAL RESULTS ===');
-        console.log('Loaned assets found:', loaned.length);
-        console.log('Loaned assets:', loaned);
         
         setLoanedAssets(loaned);
       }
@@ -110,12 +52,8 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
   // Fetch all assets and then fetch loaned assets with the status map
   const refreshData = async () => {
     try {
-      console.log('=== FETCHING ASSETS ===');
       const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
       const data = await response.json();
-      
-      console.log('Assets data:', data);
-      console.log('Number of assets:', data.length);
       
       // Create a mapping of id -> name from all assets
       const nameMap = {};
@@ -130,9 +68,6 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
           }
         }
       });
-      
-      console.log('Name map:', nameMap);
-      console.log('Status map:', statusMap);
       
       setAssetNames(nameMap);
       
