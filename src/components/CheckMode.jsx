@@ -48,12 +48,7 @@ useEffect(() => {
       { 
         fps: 10, 
         qrbox: { width: 300, height: 300 },
-        aspectRatio: 1.0,
-        videoConstraints: {
-          facingMode: "environment",
-          focusMode: "continuous",
-          advanced: [{ focusMode: "continuous" }]
-        }
+        aspectRatio: 1.0
       }
     );
 
