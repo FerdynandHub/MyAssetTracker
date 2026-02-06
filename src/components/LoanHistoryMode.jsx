@@ -17,28 +17,43 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       const data = await response.json();
       
       if (data.history) {
-        // Simplified filtering - show ALL approved loan requests
-        // Then let the user see which ones are still actually loaned based on live status
+        // Filter for items that are:
+        // 1. Approved loan requests (status=approved, type=loan)
+        // 2. Have updates.status = "Loaned"
+        // 3. At least one asset is still marked as "Loaned" in live database
         const loaned = data.history.filter(item => {
           // Must be an approved loan request
           if (item.status !== 'approved' || item.type !== 'loan') {
             return false;
           }
           
-          // Check if ANY of the assets in this loan are still marked as "Loaned"
+          // Must have updates.status = "Loaned"
+          if (!item.updates?.status) {
+            return false;
+          }
+          
+          const itemStatus = item.updates.status.toLowerCase();
+          if (itemStatus !== 'loaned') {
+            return false;
+          }
+          
+          // Cross-check with live database
+          // Show if at least ONE asset is still loaned
           if (item.ids && item.ids.length > 0) {
-            const hasLoanedAssets = item.ids.some(assetId => {
+            // Handle both single ID string and array of IDs
+            const assetIds = Array.isArray(item.ids) ? item.ids : [item.ids];
+            
+            return assetIds.some(assetId => {
               const liveStatus = statusMap[assetId];
               if (!liveStatus) return false;
               
               const liveStatusLower = liveStatus.toLowerCase();
-              return liveStatusLower === 'loaned' || liveStatusLower.includes('loaned');
+              return liveStatusLower === 'loaned';
             });
-            
-            return hasLoanedAssets;
           }
           
-          return false;
+          // If no IDs, still show it if updates.status is "Loaned"
+          return true;
         });
         
         setLoanedAssets(loaned);
@@ -55,7 +70,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
       const response = await fetch(`${SCRIPT_URL}?action=getAssets`);
       const data = await response.json();
       
-      // Create a mapping of id -> name from all assets
+      // Create a mapping of id -> name and id -> status from all assets
       const nameMap = {};
       const statusMap = {};
       data.forEach(asset => {
@@ -103,11 +118,14 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(loan => {
+        // Handle both single ID string and array of IDs
+        const assetIds = Array.isArray(loan.ids) ? loan.ids : [loan.ids];
+        
         // Search in asset IDs
-        const matchesId = loan.ids?.some(id => id.toLowerCase().includes(query));
+        const matchesId = assetIds.some(id => id && id.toLowerCase().includes(query));
         
         // Search in asset names
-        const matchesName = loan.ids?.some(id => {
+        const matchesName = assetIds.some(id => {
           const name = assetNames[id];
           return name && name.toLowerCase().includes(query);
         });
@@ -215,6 +233,9 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                     const uniqueKey = `${loan.requestId}-${idx}-${loan.timestamp}`;
                     const isExpanded = expandedCards[uniqueKey];
                     
+                    // Handle both single ID string and array of IDs
+                    const assetIds = Array.isArray(loan.ids) ? loan.ids : [loan.ids];
+                    
                     return (
                       <div 
                         key={idx} 
@@ -251,7 +272,7 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                           <div className="mt-3">
                             <h4 className="font-semibold text-gray-700 mb-2 text-sm">Aset:</h4>
                             <div className="flex flex-wrap gap-2">
-                              {loan.ids && loan.ids.slice(0, 3).map((id, i) => (
+                              {assetIds.slice(0, 3).map((id, i) => (
                                 <div key={i} className="rounded px-3 py-1 border border-blue-200 inline-flex items-center gap-2">
                                   <span className="font-mono text-xs text-black font-semibold">
                                     {id}
@@ -266,9 +287,9 @@ const LoanHistoryMode = ({ userName, SCRIPT_URL }) => {
                                   )}
                                 </div>
                               ))}
-                              {loan.ids && loan.ids.length > 3 && (
+                              {assetIds.length > 3 && (
                                 <span className="text-xs text-gray-500 px-2 py-1">
-                                  +{loan.ids.length - 3} lainnya
+                                  +{assetIds.length - 3} lainnya
                                 </span>
                               )}
                             </div>
